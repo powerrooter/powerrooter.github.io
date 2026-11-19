@@ -7,13 +7,15 @@
  * then deploy a new web app version.
  */
 var LOCATIONS = ["Power Brooklyn", "Power HQ"];
+var NOTIFY_EMAILS = ["office@powerrooter.com"];
+var CHECKLIST_KEY = "pr-checklist-2026";
 
 var SHEET_LOG = "Office Stock Log";
 var SHEET_VANS = "Van Counts";
 var SHEET_ITEMS = "Items";
 
 var LOG_HEADERS = ["timestamp", "action", "item", "section", "qty", "person", "van plate", "note", "location"];
-var VAN_HEADERS = ["report date", "van plate", "mechanic", "item", "section", "listed qty", "actual qty"];
+var VAN_HEADERS = ["report date", "van plate", "mechanic", "item", "section", "listed qty", "actual qty", "status", "note", "received"];
 var ITEM_HEADERS = ["section", "item", "listed qty"];
 
 var SEED_ITEMS = [{"section": "300 Machine & Tools", "item": "Maintained 300 Machine with 75 Ft of cable", "qty": 1}, {"section": "300 Machine & Tools", "item": "Extra 25 Ft of cable", "qty": 2}, {"section": "300 Machine & Tools", "item": "Extra Pins", "qty": 5}, {"section": "300 Machine & Tools", "item": "Pairs of yellow gloves", "qty": 2}, {"section": "300 Machine & Tools", "item": "Whip", "qty": 1}, {"section": "300 Machine & Tools", "item": "U Blade 3\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Half Blade 3\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "U Blade 4\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Half Blade 4\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Saw blade", "qty": 1}, {"section": "300 Machine & Tools", "item": "Puncher & Stand", "qty": 1}, {"section": "300 Machine & Tools", "item": "Hammer", "qty": 1}, {"section": "300 Machine & Tools", "item": "Channel Lock 10\" or 12\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Channel Lock 6.5\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Pipe Wrench", "qty": 1}, {"section": "300 Machine & Tools", "item": "PB Blaster / WD-40", "qty": 1}, {"section": "300 Machine & Tools", "item": "Extension wire 25 ft", "qty": 1}, {"section": "300 Machine & Tools", "item": "Duct Tape", "qty": 2}, {"section": "300 Machine & Tools", "item": "Long gloves", "qty": 1}, {"section": "300 Machine & Tools", "item": "Philip screw driver", "qty": 1}, {"section": "300 Machine & Tools", "item": "Flat screw driver", "qty": 1}, {"section": "300 Machine & Tools", "item": "Nut Driver", "qty": 1}, {"section": "300 Machine & Tools", "item": "Screw driver 4 in 1", "qty": 1}, {"section": "300 Machine & Tools", "item": "Outlet adapters 2-3", "qty": 1}, {"section": "300 Machine & Tools", "item": "PVC pipe with elbow for trap out sewer 2\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Repair plates 4\"", "qty": 2}, {"section": "Hand Machine & Tools", "item": "Hand Machine with 25 ft cable", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Extra 25 ft cable", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Drop head 25 ft cable", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Construction gloves", "qty": 3}, {"section": "Hand Machine & Tools", "item": "Channel lock 10\" or 12\"", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Channel lock 6.5\"", "qty": 1}, {"section": "Hand Machine & Tools", "item": "PVC channel lock", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Vise grip", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Flat Screw driver", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Philip screw driver", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Nut driver", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Screw driver 4 in 1", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Teflon Tape", "qty": 5}, {"section": "Hand Machine & Tools", "item": "Electric Tape", "qty": 5}, {"section": "Hand Machine & Tools", "item": "Epoxy", "qty": 2}, {"section": "Hand Machine & Tools", "item": "Plumbers putty", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Outlet adapters 2-3", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Extension wire 25 ft", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Wheeling Case", "qty": 1}, {"section": "100 Machine", "item": "Maintained 100 machine with 75 ft cable", "qty": 1}, {"section": "100 Machine", "item": "Construction gloves", "qty": 3}, {"section": "100 Machine", "item": "Boiler plugs", "qty": 10}, {"section": "Toilet", "item": "Toilet auger", "qty": 1}, {"section": "Toilet", "item": "Wax Rings", "qty": 10}, {"section": "Toilet", "item": "Johnny bolts", "qty": 10}, {"section": "Toilet", "item": "Silicone gun", "qty": 1}, {"section": "Toilet", "item": "Silicone", "qty": 2}, {"section": "Toilet", "item": "Plaster", "qty": 1}, {"section": "Toilet", "item": "Foam spray", "qty": 1}, {"section": "Toilet", "item": "Fill valves (Fluidmaster)", "qty": 3}, {"section": "Toilet", "item": "Flappers", "qty": 5}, {"section": "Toilet", "item": "Ratchet wrench set", "qty": 1}, {"section": "Toilet", "item": "Lock wrench for johnny bolts", "qty": 1}, {"section": "Camera & Tools", "item": "Camera", "qty": 1}, {"section": "Camera & Tools", "item": "Locator", "qty": 1}, {"section": "Camera & Tools", "item": "Rags", "qty": 2}, {"section": "Air Tank", "item": "Maintained Air tank", "qty": 2}, {"section": "Air Tank", "item": "Hose", "qty": 1}, {"section": "Air Tank", "item": "Hose Adapter", "qty": 1}, {"section": "Air Tank", "item": "Flush bag 2\"", "qty": 1}, {"section": "Air Tank", "item": "Flush bag 1/2\"–3\"", "qty": 1}, {"section": "Air Tank", "item": "Flush bag 3\"–4\"", "qty": 1}, {"section": "Air Tank", "item": "Flush bag 3\"–6\"", "qty": 1}, {"section": "Water Testing", "item": "Water hose 150 Ft", "qty": 1}, {"section": "Water Testing", "item": "Speedy with adapter to sink / toilet", "qty": 1}, {"section": "Water Testing", "item": "Nozzle", "qty": 1}, {"section": "Drill", "item": "Electric Drill", "qty": 1}, {"section": "Drill", "item": "Carbide hole saw bit 7/8\"", "qty": 1}, {"section": "Drill", "item": "Center bits", "qty": 2}, {"section": "Drill", "item": "PVC saw hole bit 7/8\"", "qty": 2}, {"section": "Drill", "item": "Plugs 7/8\"", "qty": 5}, {"section": "Tubular Piping", "item": "Pipe Cutter", "qty": 1}, {"section": "Tubular Piping", "item": "Brass Sink traps", "qty": 2}, {"section": "Tubular Piping", "item": "P trap set 1 1/2\"", "qty": 2}, {"section": "Tubular Piping", "item": "Elbows 1 1/2\"", "qty": 5}, {"section": "Tubular Piping", "item": "Offsets 1 1/2\"", "qty": 2}, {"section": "Tubular Piping", "item": "Tail Ends 1 1/2\"", "qty": 2}, {"section": "Tubular Piping", "item": "Slip nuts & washers 1 1/2\"", "qty": 5}, {"section": "Tubular Piping", "item": "P Trap sets 1 1/4\"", "qty": 3}, {"section": "Tubular Piping", "item": "Elbows 1 1/4\"", "qty": 5}, {"section": "Tubular Piping", "item": "Offsets 1 1/4\"", "qty": 2}, {"section": "Tubular Piping", "item": "Tail ends 1 1/4\"", "qty": 2}, {"section": "Tubular Piping", "item": "Slip nuts & washers 1 1/4\"", "qty": 5}, {"section": "Caps", "item": "Caps 3\"", "qty": 5}, {"section": "Caps", "item": "Caps 3 1/2\"", "qty": 5}, {"section": "Caps", "item": "Caps 4\"", "qty": 10}, {"section": "Caps", "item": "Caps 4 1/2\"", "qty": 5}, {"section": "Caps", "item": "Jim Cap 3\"", "qty": 5}, {"section": "Caps", "item": "Jim Cap 4\"", "qty": 5}, {"section": "Caps", "item": "Jim Cap 5\"", "qty": 5}, {"section": "Caps", "item": "Test Plugs 3\"", "qty": 4}, {"section": "Caps", "item": "Test Plugs 4\"", "qty": 4}, {"section": "Couplings & Elbows", "item": "Couplings 4\"", "qty": 5}, {"section": "Couplings & Elbows", "item": "Couplings 3\"", "qty": 5}, {"section": "Couplings & Elbows", "item": "Couplings 2\"", "qty": 5}, {"section": "Couplings & Elbows", "item": "Couplings 2–1 1/2\"", "qty": 2}, {"section": "Miscellaneous", "item": "Grinder with blades", "qty": 1}, {"section": "Miscellaneous", "item": "Shop Vac", "qty": 1}, {"section": "Miscellaneous", "item": "Pump Vac", "qty": 1}, {"section": "Miscellaneous", "item": "Pump with hose", "qty": 1}, {"section": "Miscellaneous", "item": "Set of L keys", "qty": 1}, {"section": "Miscellaneous", "item": "Sledgehammer", "qty": 1}, {"section": "Miscellaneous", "item": "Chisel", "qty": 1}, {"section": "Miscellaneous", "item": "Suction cups", "qty": 2}, {"section": "Miscellaneous", "item": "Extra extension wire 25 ft", "qty": 1}, {"section": "Miscellaneous", "item": "Extra extension wire 50 ft", "qty": 1}, {"section": "Miscellaneous", "item": "Goggles", "qty": 2}, {"section": "Miscellaneous", "item": "Boxes latex gloves", "qty": 6}, {"section": "Miscellaneous", "item": "Bulb outlet adapter", "qty": 1}, {"section": "Miscellaneous", "item": "Regular / Rechargeable flashlight", "qty": 1}, {"section": "Miscellaneous", "item": "Rubber boots", "qty": 1}, {"section": "Miscellaneous", "item": "Disposable boots", "qty": 1}, {"section": "Miscellaneous", "item": "Raincoat", "qty": 1}, {"section": "Miscellaneous", "item": "Grabber", "qty": 1}, {"section": "Miscellaneous", "item": "Bolt Cutter", "qty": 1}, {"section": "Miscellaneous", "item": "Razor blade", "qty": 1}, {"section": "Miscellaneous", "item": "Head Flash light", "qty": 1}, {"section": "Miscellaneous", "item": "Crow Bar", "qty": 1}, {"section": "Miscellaneous", "item": "Long Bar", "qty": 1}, {"section": "Miscellaneous", "item": "Pump", "qty": 1}, {"section": "Miscellaneous", "item": "Degreasing Wipes", "qty": 1}, {"section": "Miscellaneous", "item": "Degrease Spray", "qty": 1}, {"section": "Miscellaneous", "item": "Shoe Covers", "qty": 10}, {"section": "Registration & Insurance", "item": "Registration in the van", "qty": 1}, {"section": "Registration & Insurance", "item": "Insurance card in the van", "qty": 1}];
@@ -42,7 +44,10 @@ function doPost(e) {
   }
   try {
     ensureSheets_();
-    return json_(appendMovement_(readBody_(e)));
+    var data = readBody_(e);
+    var action = String(data.action || "").trim().toUpperCase();
+    if (action === "CHECKLIST") return json_(saveChecklist_(data));
+    return json_(appendMovement_(data));
   } catch (err) {
     return json_({ ok: false, error: message_(err) });
   } finally {
@@ -242,9 +247,11 @@ function readVanCounts_() {
     var date = dateKey_(cell_(row, parsed.map, "report date"));
     var actualRaw = cell_(row, parsed.map, "actual qty");
     if (!item || !van || !/^\d{4}-\d{2}-\d{2}$/.test(date)) return;
-    if (actualRaw === "" || actualRaw == null) return;
-    var actual = Number(actualRaw);
-    if (!isFinite(actual)) return;
+    var actual = null;
+    if (actualRaw !== "" && actualRaw != null) {
+      actual = Number(actualRaw);
+      if (!isFinite(actual)) return;
+    }
     out.push({
       date: date,
       van: van,
@@ -252,7 +259,9 @@ function readVanCounts_() {
       item: item,
       section: text_(cell_(row, parsed.map, "section")),
       listed: numberOrNull_(cell_(row, parsed.map, "listed qty")),
-      actual: actual
+      actual: actual,
+      status: text_(cell_(row, parsed.map, "status")),
+      note: text_(cell_(row, parsed.map, "note"))
     });
   });
   return out;
@@ -352,4 +361,398 @@ function timestampIso_(value) {
 
 function message_(err) {
   return String(err && err.message ? err.message : err);
+}
+
+function normPlate_(value) {
+  return String(value || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+}
+
+function itemKey_(section, item) {
+  return String(section || "") + "\n" + String(item || "");
+}
+
+function saveChecklist_(data) {
+  if (String(data.key || "") !== CHECKLIST_KEY) {
+    return { ok: false, error: "Checklist key doesn't match." };
+  }
+  var mechanic = text_(data.mechanic);
+  var van = text_(data.van || data.vanPlate);
+  var date = dateKey_(data.date);
+  if (!mechanic) return { ok: false, error: "Enter the mechanic's name." };
+  if (!van) return { ok: false, error: "Enter the van license plate." };
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return { ok: false, error: "Enter the checklist date." };
+  var items = normalizeChecklistItems_(data.items);
+  if (!items.length) return { ok: false, error: "The checklist has no items." };
+  var history = readVanCounts_().filter(function (row) {
+    return !(normPlate_(row.van) === normPlate_(van) && row.date === date);
+  });
+  var report = buildReport_(mechanic, van, date, items, history, readLog_(), text_(data.notice));
+  writeChecklist_(date, van, mechanic, items);
+  var emailed = false;
+  var emailError = "";
+  if (data.notify !== false) {
+    try {
+      sendChecklistEmail_(report);
+      emailed = true;
+    } catch (err) {
+      emailError = message_(err);
+    }
+  }
+  return {
+    ok: true,
+    baseline: report.baseline,
+    needs: report.needs.length,
+    recount: report.recount.length,
+    emailed: emailed,
+    emailError: emailError
+  };
+}
+
+function normalizeChecklistItems_(items) {
+  var list = [];
+  if (!items || !items.length) return list;
+  var known = readItems_();
+  for (var i = 0; i < items.length; i++) {
+    var raw = items[i] || {};
+    var item = text_(raw.item);
+    if (!item) continue;
+    var wantedSection = text_(raw.section);
+    var matches = known.filter(function (row) {
+      if (row.item !== item) return false;
+      if (wantedSection && row.section !== wantedSection) return false;
+      return true;
+    });
+    var section = matches.length === 1 ? matches[0].section : wantedSection;
+    var name = matches.length === 1 ? matches[0].item : item;
+    var actual = raw.actual;
+    if (actual === "" || actual == null) actual = null;
+    else {
+      actual = Number(actual);
+      if (!isFinite(actual)) actual = null;
+    }
+    var listed = raw.listed == null || raw.listed === "" ? null : Number(raw.listed);
+    if (listed != null && !isFinite(listed)) listed = null;
+    list.push({
+      section: section,
+      item: name,
+      listed: listed,
+      actual: actual,
+      status: text_(raw.status),
+      note: text_(raw.note)
+    });
+  }
+  return list;
+}
+
+function writeChecklist_(date, van, mechanic, items) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_VANS);
+  ensureHeaders_(sheet, VAN_HEADERS);
+  deleteReportRows_(sheet, date, normPlate_(van));
+  var headerMap = {};
+  var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  headers.forEach(function (header, index) {
+    headerMap[String(header || "").trim().toLowerCase()] = index;
+  });
+  var width = Math.max(sheet.getLastColumn(), 1);
+  var received = new Date();
+  var values = items.map(function (item) {
+    var line = [];
+    for (var c = 0; c < width; c++) line.push("");
+    var fields = {
+      "report date": date,
+      "van plate": textCell_(van),
+      "mechanic": textCell_(mechanic),
+      "item": item.item,
+      "section": item.section,
+      "listed qty": item.listed == null ? "" : item.listed,
+      "actual qty": item.actual == null ? "" : item.actual,
+      "status": item.status,
+      "note": textCell_(item.note),
+      "received": received
+    };
+    Object.keys(fields).forEach(function (key) {
+      if (headerMap[key] != null) line[headerMap[key]] = fields[key];
+    });
+    return line;
+  });
+  if (!values.length) return;
+  sheet.getRange(sheet.getLastRow() + 1, 1, values.length, width).setValues(values);
+}
+
+function deleteReportRows_(sheet, date, vanKey) {
+  var values = sheet.getDataRange().getValues();
+  if (values.length < 2) return;
+  var map = {};
+  values[0].forEach(function (header, index) {
+    map[String(header || "").trim().toLowerCase()] = index;
+  });
+  var rows = [];
+  for (var i = 1; i < values.length; i++) {
+    var rowDate = dateKey_(cell_(values[i], map, "report date"));
+    var rowVan = normPlate_(text_(cell_(values[i], map, "van plate")));
+    if (rowDate === date && rowVan === vanKey) rows.push(i + 1);
+  }
+  rows.sort(function (a, b) { return b - a; });
+  rows.forEach(function (rowNumber) { sheet.deleteRow(rowNumber); });
+}
+
+function buildReport_(mechanic, van, date, items, history, log, notice) {
+  var dates = [];
+  history.forEach(function (row) {
+    if (normPlate_(row.van) === normPlate_(van) && row.date && dates.indexOf(row.date) === -1 && row.date < date) dates.push(row.date);
+  });
+  dates.sort();
+  var previous = dates.length ? dates[dates.length - 1] : "";
+  var prevBy = {};
+  if (previous) {
+    history.forEach(function (row) {
+      if (normPlate_(row.van) === normPlate_(van) && row.date === previous) prevBy[itemKey_(row.section, row.item)] = row;
+    });
+  }
+  var taken = {};
+  if (previous) {
+    log.forEach(function (row) {
+      if (row.action !== "TAKE" || normPlate_(row.van) !== normPlate_(van)) return;
+      var day = nyDateKey_(row.timestamp);
+      if (!day || day <= previous || day > date) return;
+      var id = itemKey_(row.section, row.item);
+      taken[id] = (taken[id] || 0) + (Number(row.qty) || 0);
+    });
+  }
+  var needs = [];
+  var recount = [];
+  var discrepancies = [];
+  var registration = [];
+  var notes = [];
+  items.forEach(function (row) {
+    var status = row.status || inferStatus_(row);
+    var actual = row.actual == null || !isFinite(Number(row.actual)) ? null : Number(row.actual);
+    var listed = row.listed == null || !isFinite(Number(row.listed)) ? null : Number(row.listed);
+    if (row.note) notes.push({ section: row.section, item: row.item, note: row.note });
+    if (row.section === "Registration & Insurance" && status !== "Exact" && (actual === 0 || actual == null || status === "Less")) {
+      registration.push({ item: row.item, actual: actual });
+    }
+    if (status === "Less" && actual == null) {
+      recount.push({ section: row.section, item: row.item, listed: listed, note: row.note || "" });
+      return;
+    }
+    if (status === "Less" && actual != null && listed != null && listed - actual > 0) {
+      var stock = officeStock_(log, row.section, row.item);
+      var need = listed - actual;
+      var brooklyn = stock["Power Brooklyn"] || 0;
+      var hq = stock["Power HQ"] || 0;
+      needs.push({
+        section: row.section,
+        item: row.item,
+        listed: listed,
+        actual: actual,
+        need: need,
+        brooklyn: brooklyn,
+        hq: hq,
+        source: suggestSource_(need, brooklyn, hq),
+        big: isBigMissing_(row.item, listed, actual),
+        note: row.note || ""
+      });
+    }
+    if (previous && actual != null) {
+      var prev = prevBy[itemKey_(row.section, row.item)];
+      var prevActual = prev && prev.actual != null && isFinite(Number(prev.actual)) ? Number(prev.actual) : null;
+      if (prevActual != null) {
+        var took = taken[itemKey_(row.section, row.item)] || 0;
+        var expected = prevActual + took;
+        if (actual !== expected) {
+          discrepancies.push({
+            item: row.item,
+            previous: prevActual,
+            taken: took,
+            expected: expected,
+            actual: actual,
+            direction: actual < expected ? "below" : "above"
+          });
+        }
+      }
+    }
+  });
+  needs.sort(function (a, b) {
+    if (a.big !== b.big) return a.big ? -1 : 1;
+    if (a.need !== b.need) return b.need - a.need;
+    return a.item < b.item ? -1 : 1;
+  });
+  return {
+    mechanic: mechanic,
+    van: van,
+    date: date,
+    notice: notice || "",
+    baseline: !previous,
+    needs: needs,
+    recount: recount,
+    discrepancies: discrepancies,
+    registration: registration,
+    notes: notes,
+    big: needs.filter(function (row) { return row.big; })
+  };
+}
+
+function officeStock_(log, section, item) {
+  var totals = {};
+  LOCATIONS.forEach(function (name) { totals[name] = 0; });
+  log.forEach(function (row) {
+    if (itemKey_(row.section, row.item) !== itemKey_(section, item)) return;
+    if (row.action !== "ADD" && row.action !== "TAKE") return;
+    var delta = row.action === "ADD" ? Number(row.qty) : -Number(row.qty);
+    if (!isFinite(delta)) return;
+    totals[row.location] = (totals[row.location] || 0) + delta;
+  });
+  return totals;
+}
+
+function suggestSource_(need, brooklyn, hq) {
+  if (brooklyn >= need && hq >= need) return brooklyn >= hq ? "Brooklyn" : "HQ";
+  if (brooklyn >= need) return "Brooklyn";
+  if (hq >= need) return "HQ";
+  if (brooklyn + hq >= need) return "Split";
+  return "Order";
+}
+
+function isBigMissing_(item, listed, actual) {
+  if (actual !== 0) return false;
+  if (Number(listed) === 1) return true;
+  return /machine|camera|locator|drill|grinder|pipe cutter|bolt cutter/i.test(item || "");
+}
+
+function inferStatus_(row) {
+  if (row.status) return row.status;
+  if (row.actual == null || !isFinite(Number(row.actual)) || !isFinite(Number(row.listed))) return "";
+  if (Number(row.actual) < Number(row.listed)) return "Less";
+  if (Number(row.actual) > Number(row.listed)) return "More";
+  return "Exact";
+}
+
+function nyDateKey_(value) {
+  if (!value) return "";
+  var s = String(value);
+  if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+  var parsed = new Date(s);
+  if (isNaN(parsed.getTime())) return "";
+  return Utilities.formatDate(parsed, "America/New_York", "yyyy-MM-dd");
+}
+
+function formatLongDate_(iso) {
+  var parts = String(iso || "").split("-");
+  if (parts.length < 3) return String(iso || "");
+  var date = new Date(Date.UTC(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]), 17, 0, 0));
+  return Utilities.formatDate(date, "America/New_York", "MMM d, yyyy");
+}
+
+function esc_(value) {
+  return String(value == null ? "" : value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+function sendChecklistEmail_(report) {
+  var to = NOTIFY_EMAILS.filter(function (email) { return text_(email); }).join(",");
+  if (!to) throw new Error("NOTIFY_EMAILS is empty.");
+  var when = formatLongDate_(report.date);
+  var subject = "Van " + report.van + " needs " + report.needs.length + " items — " + report.mechanic + " — " + when;
+  var link = "https://powerrooter.github.io/stock/?van=" + encodeURIComponent(report.van);
+  var html = [];
+  html.push('<div style="font-family:sans-serif;color:#1b3a4b;font-size:16px;line-height:1.4;max-width:640px">');
+  html.push("<p><b>" + esc_(report.mechanic) + "</b> checked van <b>" + esc_(report.van) + "</b> on " + esc_(when) + ".</p>");
+  html.push("<p>" + report.needs.length + " items to bring or order. " + report.recount.length + " counts are missing and need a recount.</p>");
+  if (report.registration.length) {
+    html.push('<p style="background:#fdeceb;padding:12px;border-radius:8px"><b>Registration or insurance card is missing:</b> ' +
+      esc_(report.registration.map(function (row) { return row.item; }).join(", ")) + ".</p>");
+  }
+  if (report.notice) html.push('<p style="background:#fff4e5;padding:12px;border-radius:8px">' + esc_(report.notice) + "</p>");
+  if (report.baseline) html.push("<p>First checklist for this van. This count is the baseline.</p>");
+  if (report.big.length) {
+    html.push("<h2>Big missing items</h2><ul>");
+    report.big.forEach(function (row) {
+      html.push("<li>" + esc_(row.item) + " — need " + row.need + "</li>");
+    });
+    html.push("</ul>");
+  }
+  html.push("<h2>Bring to the van</h2>");
+  html.push(needsTable_(report.needs));
+  var orders = report.needs.filter(function (row) { return row.source === "Order"; });
+  html.push("<h2>Order</h2>");
+  if (!orders.length) html.push("<p>The offices can cover every short item.</p>");
+  else {
+    html.push("<ul>");
+    orders.forEach(function (row) {
+      var have = row.brooklyn + row.hq;
+      html.push("<li>" + esc_(row.item) + ": order " + (row.need - have) + " (offices have " + have + ", van needs " + row.need + ")</li>");
+    });
+    html.push("</ul>");
+  }
+  html.push("<h2>Recount</h2>");
+  if (!report.recount.length) html.push("<p>Every short item has a count.</p>");
+  else {
+    html.push("<ul>");
+    report.recount.forEach(function (row) {
+      html.push("<li>" + esc_(row.item) + ": count missing, recount (listed " + (row.listed == null ? "?" : row.listed) + ")" +
+        (row.note ? " — " + esc_(row.note) : "") + "</li>");
+    });
+    html.push("</ul>");
+  }
+  html.push("<h2>Discrepancies</h2>");
+  if (report.baseline) html.push("<p>No earlier checklist to compare.</p>");
+  else if (!report.discrepancies.length) html.push("<p>The new count matches the last checklist plus what this van took from the office.</p>");
+  else {
+    html.push("<ul>");
+    report.discrepancies.forEach(function (row) {
+      var sentence = row.direction === "below"
+        ? "Has " + row.actual + ", expected " + row.expected + ". Lost, used, or not logged."
+        : "Has " + row.actual + ", expected " + row.expected + ". More than the office logged.";
+      html.push("<li>" + esc_(row.item) + ": " + sentence + "</li>");
+    });
+    html.push("</ul>");
+  }
+  if (report.notes.length) {
+    html.push("<h2>Notes from " + esc_(report.mechanic) + "</h2><ul>");
+    report.notes.forEach(function (row) {
+      html.push("<li>" + esc_(row.item) + ": " + esc_(row.note) + "</li>");
+    });
+    html.push("</ul>");
+  }
+  html.push('<p><a href="' + link + '">Open this van on the stock page</a></p>');
+  html.push("</div>");
+  var plain = [
+    report.mechanic + " checked van " + report.van + " on " + when + ".",
+    report.needs.length + " items to bring or order. " + report.recount.length + " to recount.",
+    report.baseline ? "First checklist for this van. This count is the baseline." : "",
+    "",
+    "Bring to the van:"
+  ];
+  report.needs.forEach(function (row) {
+    plain.push(row.section + ": " + row.item + " — need " + row.need + " (has " + row.actual + " of " + row.listed + "), Brooklyn " + row.brooklyn + ", HQ " + row.hq + ", " + row.source);
+  });
+  plain.push("", "Stock page: " + link);
+  MailApp.sendEmail({
+    to: to,
+    subject: subject,
+    htmlBody: html.join(""),
+    body: plain.filter(function (line) { return line != null; }).join("\n")
+  });
+}
+
+function needsTable_(needs) {
+  if (!needs.length) return "<p>Nothing short with a known count.</p>";
+  var html = ['<table style="width:100%;border-collapse:collapse;font-size:16px">'];
+  var last = "";
+  needs.forEach(function (row) {
+    if (row.section !== last) {
+      last = row.section;
+      html.push('<tr><td colspan="2" style="padding:12px 0 4px;font-weight:700">' + esc_(row.section || "Other") + "</td></tr>");
+    }
+    html.push('<tr><td style="padding:8px 8px 8px 0;vertical-align:top">' + esc_(row.item) +
+      (row.note ? '<br><span style="color:#5c6b73">' + esc_(row.note) + "</span>" : "") +
+      '</td><td style="padding:8px 0;vertical-align:top;white-space:nowrap">Need ' + row.need +
+      "<br>Brooklyn " + row.brooklyn + " · HQ " + row.hq +
+      "<br>" + esc_(row.source) + "</td></tr>");
+  });
+  html.push("</table>");
+  return html.join("");
 }

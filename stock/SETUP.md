@@ -12,6 +12,8 @@ The stock page keeps the shared inventory for Power Brooklyn and Power HQ in a G
 
 The Van Counts tab is filled from the weekly van checklists. You do not type those rows by hand.
 
+If the script is already deployed, follow stock/UPDATE.md to paste the new code, deploy a new version, and approve the email permission. The /exec address does not change.
+
 Anyone with the stock page can look at the counts. Add stock and Take stock ask for the PIN once on that phone, then remember it.
 
 To add another office later, add its name to the LOCATIONS list at the top of the script. Then click Deploy, Manage deployments, edit the web app, and choose New version.

@@ -52,6 +52,7 @@
     }
     .notice { background: var(--more-bg); border-color: var(--more); }
     .notice strong { display: block; margin-bottom: 4px; }
+    a.notice { display: block; color: var(--navy); font-weight: 700; text-decoration: none; margin-bottom: 12px; }
     .notice a { color: var(--navy); font-weight: 700; }
     .error { display: none; background: var(--less-bg); border-color: var(--less); color: var(--less); white-space: pre-line; }
     .error.show { display: block; }
@@ -179,6 +180,8 @@
     const API_URL = "https://script.google.com/macros/s/AKfycbzmF5ifybYu5rBY5BpRdhgDS22-wLWB-l_vK2sW47ThvBbQ4jTyoo0qnPDZGOqwPE8t2A/exec";
     const ACCESS_ERROR = "Can't reach the stock sheet. In Apps Script, set Deploy, Manage deployments, Who has access to Anyone.";
     const LOCATIONS = ["Power Brooklyn", "Power HQ"];
+    const BACKFILL_URLS = ["backfill/2026-11-19-XSJJ22.json"];
+    const PARAM_VAN = (new URLSearchParams(location.search).get("van") || "").trim();
     const PIN_KEY = "pr-office-stock-pin";
     const PERSON_KEY = "pr-office-stock-person";
     const VAN_KEY = "pr-office-stock-van";
@@ -277,8 +280,10 @@
         item: String(row.item || ""),
         section: String(row.section || ""),
         listed: row.listed == null || row.listed === "" ? null : Number(row.listed),
-        actual: row.actual == null || row.actual === "" ? null : Number(row.actual)
-      })).filter((row) => row.item && row.van && /^\d{4}-\d{2}-\d{2}$/.test(row.date) && row.actual != null && isFinite(row.actual));
+        actual: row.actual == null || row.actual === "" ? null : Number(row.actual),
+        status: String(row.status || ""),
+        note: String(row.note || "")
+      })).filter((row) => row.item && row.van && /^\d{4}-\d{2}-\d{2}$/.test(row.date) && (row.actual == null || isFinite(row.actual)));
     }
     function onHandMap(log, location) {
       const map = new Map();
@@ -405,6 +410,167 @@
         return true;
       }).slice().sort((a, b) => timeValue(b.timestamp) - timeValue(a.timestamp));
     }
+    function officeStock(log, section, item, locations) {
+      const totals = {};
+      (locations || []).forEach((name) => { totals[name] = 0; });
+      log.forEach((row) => {
+        if (itemKey(row.section, row.item) !== itemKey(section, item)) return;
+        if (row.action !== "ADD" && row.action !== "TAKE") return;
+        if (!isFinite(row.qty)) return;
+        const delta = row.action === "ADD" ? row.qty : -row.qty;
+        const name = row.location || "";
+        totals[name] = (totals[name] || 0) + delta;
+      });
+      return totals;
+    }
+    function suggestSource(need, brooklyn, hq) {
+      const b = brooklyn || 0;
+      const h = hq || 0;
+      if (b >= need && h >= need) return b >= h ? "Brooklyn" : "HQ";
+      if (b >= need) return "Brooklyn";
+      if (h >= need) return "HQ";
+      if (b + h >= need) return "Split";
+      return "Order";
+    }
+    function isBigMissing(row) {
+      if (row.actual !== 0) return false;
+      if (Number(row.listed) === 1) return true;
+      return /machine|camera|locator|drill|grinder|pipe cutter|bolt cutter/i.test(row.item || "");
+    }
+    function inferStatus(row) {
+      if (row.status) return row.status;
+      if (row.actual == null || !isFinite(Number(row.actual)) || !isFinite(Number(row.listed))) return "";
+      const actual = Number(row.actual);
+      const listed = Number(row.listed);
+      if (actual < listed) return "Less";
+      if (actual > listed) return "More";
+      return "Exact";
+    }
+    function reportDates(vanCounts, plate) {
+      const key = normPlate(plate);
+      const dates = [];
+      vanCounts.forEach((row) => {
+        if (normPlate(row.van) === key && row.date && dates.indexOf(row.date) === -1) dates.push(row.date);
+      });
+      dates.sort();
+      return dates;
+    }
+    function rowsForDate(vanCounts, plate, date) {
+      const key = normPlate(plate);
+      const map = new Map();
+      vanCounts.forEach((row) => {
+        if (normPlate(row.van) === key && row.date === date) map.set(itemKey(row.section, row.item), row);
+      });
+      return Array.from(map.values());
+    }
+    function takesBetween(log, plate, afterDate, throughDate) {
+      const key = normPlate(plate);
+      const map = new Map();
+      log.forEach((row) => {
+        if (row.action !== "TAKE" || normPlate(row.van) !== key || !isFinite(row.qty)) return;
+        const day = nyDateKey(row.timestamp);
+        if (!day || day <= afterDate || (throughDate && day > throughDate)) return;
+        const id = itemKey(row.section, row.item);
+        map.set(id, (map.get(id) || 0) + row.qty);
+      });
+      return map;
+    }
+    function assessVan(vanCounts, log, plate, locations, notices) {
+      const dates = reportDates(vanCounts, plate);
+      if (!dates.length) return null;
+      const date = dates[dates.length - 1];
+      const previous = dates.length > 1 ? dates[dates.length - 2] : "";
+      const rows = rowsForDate(vanCounts, plate, date);
+      const prevBy = new Map();
+      if (previous) rowsForDate(vanCounts, plate, previous).forEach((row) => prevBy.set(itemKey(row.section, row.item), row));
+      const taken = previous ? takesBetween(log, plate, previous, date) : new Map();
+      const mechanic = (rows.find((row) => row.mechanic) || {}).mechanic || "";
+      const displayPlate = (rows.find((row) => row.van) || {}).van || plate;
+      const needs = [];
+      const recount = [];
+      const discrepancies = [];
+      const registration = [];
+      const notes = [];
+      rows.forEach((row) => {
+        const status = inferStatus(row);
+        const actual = row.actual == null || !isFinite(Number(row.actual)) ? null : Number(row.actual);
+        const listed = row.listed == null || !isFinite(Number(row.listed)) ? null : Number(row.listed);
+        if (row.note) notes.push({ section: row.section, item: row.item, note: row.note });
+        if (row.section === "Registration & Insurance" && status !== "Exact" && (actual === 0 || actual == null || status === "Less")) {
+          registration.push({ section: row.section, item: row.item, actual, status });
+        }
+        if (status === "Less" && actual == null) {
+          recount.push({ section: row.section, item: row.item, listed, note: row.note || "" });
+        } else if (status === "Less" && actual != null && listed != null && listed - actual > 0) {
+          const stock = officeStock(log, row.section, row.item, locations);
+          const brooklyn = stock["Power Brooklyn"] || 0;
+          const hq = stock["Power HQ"] || 0;
+          const need = listed - actual;
+          needs.push({
+            section: row.section, item: row.item, listed, actual, need, brooklyn, hq,
+            source: suggestSource(need, brooklyn, hq),
+            big: isBigMissing({ item: row.item, listed, actual }),
+            note: row.note || ""
+          });
+        }
+        if (previous && actual != null) {
+          const prev = prevBy.get(itemKey(row.section, row.item));
+          const prevActual = prev && prev.actual != null && isFinite(Number(prev.actual)) ? Number(prev.actual) : null;
+          if (prevActual != null) {
+            const took = taken.get(itemKey(row.section, row.item)) || 0;
+            const expected = prevActual + took;
+            if (actual !== expected) {
+              discrepancies.push({
+                section: row.section, item: row.item, previous: prevActual, taken: took, expected, actual,
+                direction: actual < expected ? "below" : "above"
+              });
+            }
+          }
+        }
+      });
+      needs.sort((a, b) => Number(b.big) - Number(a.big) || b.need - a.need || a.item.localeCompare(b.item));
+      const noticeKey = normPlate(displayPlate) + "|" + date;
+      return {
+        plate: displayPlate, date, mechanic, baseline: !previous,
+        notice: (notices && notices[noticeKey]) || "",
+        needs, recount, discrepancies, registration, notes,
+        big: needs.filter((row) => row.big)
+      };
+    }
+    function mergeBackfill(vanCounts, reports) {
+      const counts = vanCounts.slice();
+      const notices = {};
+      (reports || []).forEach((report) => {
+        if (!report || !report.van || !report.date || !Array.isArray(report.items)) return;
+        const key = normPlate(report.van) + "|" + report.date;
+        if (report.notice) notices[key] = String(report.notice);
+        const exists = vanCounts.some((row) => normPlate(row.van) === normPlate(report.van) && row.date === report.date);
+        if (exists) return;
+        report.items.forEach((item) => {
+          if (!item || !item.item) return;
+          const actual = item.actual == null || item.actual === "" ? null : Number(item.actual);
+          counts.push({
+            date: report.date,
+            van: report.van,
+            mechanic: report.mechanic || "",
+            section: item.section || "",
+            item: item.item,
+            listed: item.listed == null || item.listed === "" ? null : Number(item.listed),
+            actual: actual != null && isFinite(actual) ? actual : null,
+            status: item.status || "",
+            note: item.note || ""
+          });
+        });
+      });
+      return { counts, notices };
+    }
+    function monthDay(iso) {
+      const s = String(iso || "");
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(s)) return formatNy(s);
+      const bits = s.split("-").map(Number);
+      const noon = new Date(Date.UTC(bits[0], bits[1] - 1, bits[2], 17, 0, 0));
+      return new Intl.DateTimeFormat("en-US", { timeZone: "America/New_York", month: "short", day: "numeric" }).format(noon);
+    }
     function plateChoices(log, counts) {
       const map = new Map();
       function add(raw, time) {
@@ -434,7 +600,8 @@
       logAction: "",
       logFrom: "",
       logTo: "",
-      vanPlate: "",
+      vanPlate: PARAM_VAN,
+      notices: {},
       shortOnly: false,
       status: ""
     };
@@ -474,6 +641,9 @@
     function shell() {
       const root = $("app");
       root.textContent = "";
+      const alerts = el("div");
+      alerts.id = "alerts";
+      root.appendChild(alerts);
       const pin = el("div", "meta");
       pin.id = "pinBar";
       root.appendChild(pin);
@@ -550,6 +720,9 @@
       logList.id = "logList";
       root.appendChild(logList);
 
+      const fleet = el("div");
+      fleet.id = "fleet";
+      root.appendChild(fleet);
       const vanHead = el("h2");
       vanHead.appendChild(el("span", null, "Stock per van"));
       root.appendChild(vanHead);
@@ -563,6 +736,7 @@
       vanPick.autocomplete = "off";
       vanPick.spellcheck = false;
       vanPick.setAttribute("list", "vanPicks");
+      if (state.vanPlate) vanPick.value = state.vanPlate;
       root.appendChild(vanPick);
       const vans = document.createElement("datalist");
       vans.id = "vanPicks";
@@ -579,6 +753,9 @@
       const vanSummary = el("div");
       vanSummary.id = "vanSummary";
       root.appendChild(vanSummary);
+      const vanNeeds = el("div");
+      vanNeeds.id = "vanNeeds";
+      root.appendChild(vanNeeds);
       const vanList = el("div");
       vanList.id = "vanList";
       root.appendChild(vanList);
@@ -796,16 +973,151 @@
       });
     }
 
+    function renderAlerts() {
+      const root = $("alerts");
+      if (!root) return;
+      root.textContent = "";
+      const fleet = fleetReports();
+      fleet.forEach((report) => {
+        if (!report.needs.length) return;
+        const link = document.createElement("a");
+        link.className = "notice";
+        link.href = "?van=" + encodeURIComponent(report.plate);
+        link.textContent = "Van " + report.plate + ": needs " + report.needs.length + " items (latest checklist " + monthDay(report.date) + ", " + (report.mechanic || "unknown mechanic") + ")";
+        root.appendChild(link);
+      });
+    }
+
+    function fleetReports() {
+      const seen = [];
+      state.vanCounts.forEach((row) => {
+        const key = normPlate(row.van);
+        if (!key || seen.indexOf(key) !== -1) return;
+        seen.push(key);
+      });
+      return seen.map((key) => assessVan(state.vanCounts, state.log, key, state.locations, state.notices)).filter(Boolean);
+    }
+
+    function renderFleet() {
+      const root = $("fleet");
+      if (!root) return;
+      root.textContent = "";
+      const reports = fleetReports();
+      if (!reports.length) return;
+      root.appendChild(el("h2", null, "Vans"));
+      reports.forEach((report) => {
+        const btn = el("button", null, report.plate + " — " + formatNy(report.date) + " — " + (report.mechanic || "No name") + " — " + report.needs.length + " to bring, " + report.recount.length + " to recount");
+        btn.type = "button";
+        btn.style.display = "block";
+        btn.style.width = "100%";
+        btn.style.textAlign = "left";
+        btn.style.borderRadius = "12px";
+        btn.style.marginBottom = "8px";
+        if (normPlate(state.vanPlate) === normPlate(report.plate)) btn.classList.add("active");
+        btn.addEventListener("click", () => {
+          state.vanPlate = report.plate;
+          const input = $("vanPick");
+          if (input) input.value = report.plate;
+          const url = new URL(location.href);
+          url.searchParams.set("van", report.plate);
+          history.replaceState(null, "", url.toString());
+          renderVan();
+          const needs = $("vanNeeds");
+          if (needs) needs.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+        root.appendChild(btn);
+      });
+    }
+
+    function renderNeeds(report) {
+      const root = $("vanNeeds");
+      root.textContent = "";
+      if (!report) return;
+      if (report.registration.length) {
+        const box = el("div", "error show");
+        box.textContent = "Registration or insurance card is missing: " + report.registration.map((row) => row.item).join(", ") + ".";
+        root.appendChild(box);
+      }
+      if (report.notice) {
+        const note = el("div", "notice");
+        note.textContent = report.notice;
+        root.appendChild(note);
+      }
+      if (report.baseline) {
+        root.appendChild(el("p", "hint", "First checklist for this van. This count is the baseline, so nothing is flagged as lost or extra yet."));
+      }
+      if (report.big.length) {
+        root.appendChild(el("h3", "section", "Big missing items"));
+        const card = el("div", "item negative");
+        card.appendChild(el("p", null, "Listed as 1 and counted at 0, or a main tool. Please confirm these are really missing."));
+        report.big.forEach((row) => {
+          card.appendChild(el("div", null, row.item + " — need " + row.need));
+        });
+        root.appendChild(card);
+      }
+      root.appendChild(el("h3", "section", "What this van needs"));
+      if (!report.needs.length) {
+        root.appendChild(el("p", "hint", "Nothing short with a known count."));
+      }
+      let last = "";
+      report.needs.forEach((row) => {
+        if (row.section !== last) {
+          last = row.section;
+          root.appendChild(el("h3", "section", row.section || "Other"));
+        }
+        const card = el("div", "item" + (row.source === "Order" ? " low" : ""));
+        const title = el("h3", null, row.item);
+        title.appendChild(el("span", "badge" + (row.source === "Order" ? "" : " added"), row.source));
+        card.appendChild(title);
+        card.appendChild(line("Need", String(row.need) + " (has " + row.actual + " of " + row.listed + ")"));
+        card.appendChild(line("Brooklyn on hand", String(row.brooklyn)));
+        card.appendChild(line("HQ on hand", String(row.hq)));
+        card.appendChild(line("Bring from", row.source));
+        if (row.note) card.appendChild(el("div", "muted", row.note));
+        root.appendChild(card);
+      });
+      const orders = report.needs.filter((row) => row.source === "Order");
+      if (orders.length) {
+        root.appendChild(el("h3", "section", "Order"));
+        root.appendChild(el("p", "hint", "Not enough at Power Brooklyn and Power HQ combined."));
+        orders.forEach((row) => {
+          const have = row.brooklyn + row.hq;
+          root.appendChild(el("div", "item low", row.item + ": order " + (row.need - have) + " more (offices have " + have + ", van needs " + row.need + ")"));
+        });
+      }
+      root.appendChild(el("h3", "section", "Recount"));
+      if (!report.recount.length) root.appendChild(el("p", "hint", "Every short item has a count."));
+      report.recount.forEach((row) => {
+        root.appendChild(el("div", "item", row.item + ": count missing, recount (listed " + (row.listed == null ? "?" : row.listed) + ")" + (row.note ? " — " + row.note : "")));
+      });
+      if (!report.baseline) {
+        root.appendChild(el("h3", "section", "Discrepancies"));
+        if (!report.discrepancies.length) root.appendChild(el("p", "hint", "The new count matches the last checklist plus what this van took from the office."));
+        report.discrepancies.forEach((row) => {
+          const why = row.direction === "below"
+            ? "Has " + row.actual + ", expected " + row.expected + " (last count " + row.previous + " plus " + row.taken + " taken). Lost, used, or not logged."
+            : "Has " + row.actual + ", expected " + row.expected + " (last count " + row.previous + " plus " + row.taken + " taken). More than the office logged.";
+          root.appendChild(el("div", "item" + (row.direction === "below" ? " negative" : ""), row.item + " — " + why));
+        });
+      }
+    }
+
     function renderVan() {
+      renderAlerts();
+      renderFleet();
       const summary = $("vanSummary");
       const list = $("vanList");
+      const needs = $("vanNeeds");
       summary.textContent = "";
       list.textContent = "";
+      if (needs) needs.textContent = "";
       const plate = state.vanPlate.trim();
       if (!normPlate(plate)) {
         summary.appendChild(el("p", "hint", "Type a license plate to see that van."));
         return;
       }
+      const report = assessVan(state.vanCounts, state.log, plate, state.locations, state.notices);
+      if (report) renderNeeds(report);
       const result = vanRows(state.catalog, state.log, state.vanCounts, plate);
       const shown = state.shortOnly ? result.rows.filter((row) => row.short) : result.rows;
       const short = result.rows.filter((row) => row.short).length;
@@ -1094,39 +1406,61 @@
       return readResponse(response);
     }
 
+    let didScrollVan = false;
+    function maybeScrollVan() {
+      if (didScrollVan || !PARAM_VAN) return;
+      const node = $("vanNeeds") || $("vanPick");
+      if (!node) return;
+      didScrollVan = true;
+      node.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+    async function loadBackfill() {
+      const reports = [];
+      for (const url of BACKFILL_URLS) {
+        try {
+          const response = await fetch(url, { cache: "no-store" });
+          if (!response.ok) continue;
+          const data = await response.json();
+          if (Array.isArray(data)) reports.push.apply(reports, data);
+          else if (data) reports.push(data);
+        } catch (err) { /* the sheet copy is enough when the file is missing */ }
+      }
+      return reports;
+    }
     async function load(manual) {
       state.status = "Loading office stock…";
       const line = $("statusLine");
       if (line) line.textContent = state.status;
       showError("");
-      let response;
+      let data = null;
       try {
         const join = API_URL.indexOf("?") === -1 ? "?" : "&";
-        response = await fetch(API_URL + join + "t=" + Date.now(), { method: "GET", redirect: "follow", cache: "no-store" });
+        const response = await fetch(API_URL + join + "t=" + Date.now(), { method: "GET", redirect: "follow", cache: "no-store" });
+        data = await readResponse(response);
       } catch (err) {
-        showError(ACCESS_ERROR);
-        if (line) line.textContent = "";
-        return;
+        showError(err.message || ACCESS_ERROR);
       }
-      try {
-        const data = await readResponse(response);
+      if (data) {
         if (Array.isArray(data.locations) && data.locations.length) state.locations = data.locations.slice();
         state.catalog = catalogFrom(data.items, ITEMS);
         state.log = normalizeLog(data.log);
         state.vanCounts = normalizeCounts(data.vanCounts);
         if (state.view && state.locations.indexOf(state.view) === -1) state.view = "";
-        state.status = manual ? "Updated " + formatNy(new Date().toISOString()) + "." : "Updated " + formatNy(new Date().toISOString()) + ".";
-        renderLocationSwitch();
-        renderFilters();
-        renderFormLocs();
-        renderOffice();
-        renderLog();
-        renderVan();
-        if (line) line.textContent = state.status;
-      } catch (err) {
-        showError(err.message || "Couldn't read the spreadsheet.");
-        if (line) line.textContent = "";
+        state.status = "Updated " + formatNy(new Date().toISOString()) + ".";
       }
+      try {
+        const merged = mergeBackfill(state.vanCounts, await loadBackfill());
+        state.vanCounts = merged.counts;
+        state.notices = merged.notices;
+      } catch (err) { /* keep the sheet counts */ }
+      renderLocationSwitch();
+      renderFilters();
+      renderFormLocs();
+      renderOffice();
+      renderLog();
+      renderVan();
+      if (line) line.textContent = state.status;
+      maybeScrollVan();
     }
 
     async function readResponse(response) {

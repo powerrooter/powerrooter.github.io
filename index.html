@@ -668,6 +668,14 @@
         return;
       }
       btn.textContent = "Sending…";
+      const lessLines = [];
+      const moreLines = [];
+      ITEMS.forEach(function (it, i) {
+        const phrase = needPhrase(it, state.rows[i] || {});
+        if (!phrase) return;
+        if ((state.rows[i] || {}).status === "Less") lessLines.push(phrase);
+        if ((state.rows[i] || {}).status === "More") moreLines.push(phrase);
+      });
       const payload = {
         _subject: "Weekly Van Inventory — " + name + " — " + van + " — " + date,
         _template: "table",
@@ -675,11 +683,9 @@
         Mechanic: name,
         Date: date,
         "Van license plate": van,
-        Summary: "Checked " + c.checked + "/" + c.total + "; Exact " + c.exact + "; Less " + c.less + "; More " + c.more,
-        Short_items: problemLines("Less"),
-        Extra_items: problemLines("More"),
-        Full_report: reportText(),
-        Photos: PHOTO_SLOTS.map(function (s) { return slotTitle(s) + ": " + s.id + ".jpg"; }).join("\n")
+        Summary: name + ", van " + van + ", " + date + ". " + lessLines.length + " items short. " + moreLines.length + " over the listed amount.",
+        "What this van needs": lessLines.length ? lessLines.join("\n") : "Nothing short.",
+        "More than listed": moreLines.length ? moreLines.join("\n") : "None"
       };
       if (/^https?:$/.test(location.protocol)) {
         const back = new URL(location.href);
@@ -714,7 +720,56 @@
       document.body.appendChild(form);
       window.__lastSubmitForm = form; // for testing
       if (window.__PR_TEST_NO_SUBMIT) { btn.disabled = false; btn.textContent = oldLabel; return form; }
+      postChecklist(name, date, van);
       form.submit();
+    }
+
+    const STOCK_API_URL = "https://script.google.com/macros/s/AKfycbzmF5ifybYu5rBY5BpRdhgDS22-wLWB-l_vK2sW47ThvBbQ4jTyoo0qnPDZGOqwPE8t2A/exec";
+    const CHECKLIST_KEY = "pr-checklist-2026";
+
+    function needPhrase(it, row) {
+      const listed = it.qty;
+      const note = row.note ? " — " + row.note : "";
+      const missing = row.actual === "" || row.actual == null || !isFinite(Number(row.actual));
+      if (row.status === "Less" && missing) return it.item + ": count missing, recount (listed " + listed + ")" + note;
+      if (row.status === "Less") {
+        const have = Number(row.actual);
+        return it.item + ": need " + (listed - have) + " (has " + have + " of " + listed + ")" + note;
+      }
+      if (row.status === "More" && missing) return it.item + ": count missing, recount (listed " + listed + ")" + note;
+      if (row.status === "More") return it.item + ": have " + Number(row.actual) + ", listed " + listed + note;
+      return "";
+    }
+
+    function postChecklist(name, date, van) {
+      try {
+        const items = ITEMS.map(function (it, i) {
+          const row = state.rows[i] || {};
+          const missing = row.actual === "" || row.actual == null || !isFinite(Number(row.actual));
+          return {
+            section: it.section,
+            item: it.item,
+            listed: it.qty,
+            status: row.status || "",
+            actual: missing ? null : Number(row.actual),
+            note: row.note || ""
+          };
+        });
+        fetch(STOCK_API_URL, {
+          method: "POST",
+          mode: "no-cors",
+          keepalive: true,
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({
+            action: "CHECKLIST",
+            key: CHECKLIST_KEY,
+            mechanic: name,
+            date: date,
+            van: van,
+            items: items
+          })
+        }).catch(function () {});
+      } catch (e) {}
     }
 
     buildSlots();
