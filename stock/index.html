@@ -175,8 +175,9 @@
   </div>
   <div id="toast" role="status"></div>
   <script>
-    // Paste the web app URL (the one that ends in /exec) between the quotes.
-    const API_URL = "";
+    // Deployed Apps Script web app. Who has access must be Anyone, or the page cannot read it.
+    const API_URL = "https://script.google.com/macros/s/AKfycbzmF5ifybYu5rBY5BpRdhgDS22-wLWB-l_vK2sW47ThvBbQ4jTyoo0qnPDZGOqwPE8t2A/exec";
+    const ACCESS_ERROR = "Can't reach the stock sheet. In Apps Script, set Deploy, Manage deployments, Who has access to Anyone.";
     const LOCATIONS = ["Power Brooklyn", "Power HQ"];
     const PIN_KEY = "pr-office-stock-pin";
     const PERSON_KEY = "pr-office-stock-person";
@@ -467,6 +468,7 @@
       if (!message) { node.classList.remove("show"); node.textContent = ""; return; }
       node.textContent = message;
       node.classList.add("show");
+      node.scrollIntoView({ block: "nearest" });
     }
 
     function shell() {
@@ -601,9 +603,6 @@
       renderPin();
       renderLocationSwitch();
       renderFilters();
-      renderOffice();
-      renderLog();
-      renderVan();
     }
 
     function selectBox(id, label) {
@@ -1090,7 +1089,7 @@
           body: JSON.stringify(payload)
         });
       } catch (err) {
-        throw new Error("Couldn't reach the spreadsheet. Check the web app address, and that Who has access is set to Anyone.");
+        throw new Error(ACCESS_ERROR);
       }
       return readResponse(response);
     }
@@ -1105,7 +1104,7 @@
         const join = API_URL.indexOf("?") === -1 ? "?" : "&";
         response = await fetch(API_URL + join + "t=" + Date.now(), { method: "GET", redirect: "follow", cache: "no-store" });
       } catch (err) {
-        showError("Couldn't reach the spreadsheet. Check the web app address, and that Who has access is set to Anyone.");
+        showError(ACCESS_ERROR);
         if (line) line.textContent = "";
         return;
       }
@@ -1132,13 +1131,13 @@
 
     async function readResponse(response) {
       const text = await response.text();
-      let data;
-      try { data = JSON.parse(text); }
-      catch (err) {
-        throw new Error("The spreadsheet didn't answer with stock data. Deploy the web app as Execute as me, and set Who has access to Anyone.");
+      let data = null;
+      try { data = JSON.parse(text); } catch (err) { data = null; }
+      if (data && typeof data === "object" && !Array.isArray(data)) {
+        if (data.ok === false) throw new Error(data.error || "Couldn't read the spreadsheet.");
+        if (response.ok || data.ok === true || Array.isArray(data.items) || Array.isArray(data.log)) return data;
       }
-      if (!data || data.ok === false) throw new Error((data && data.error) || "Couldn't read the spreadsheet.");
-      return data;
+      throw new Error(ACCESS_ERROR);
     }
 
     function boot() {
