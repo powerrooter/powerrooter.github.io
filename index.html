@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Power Rooter Weekly Van Inventory Checklist</title>
+  <style>
+    :root {
+      --navy: #1b3a4b;
+      --orange: #c45c26;
+      --paper: #f6f3ee;
+      --card: #ffffff;
+      --line: #d8d2c8;
+      --muted: #5c6b73;
+      --exact: #1f7a4d;
+      --exact-bg: #e7f6ee;
+      --less: #b42318;
+      --less-bg: #fdeceb;
+      --more: #b54708;
+      --more-bg: #fff4e5;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--paper);
+      color: var(--navy);
+      line-height: 1.4;
+    }
+    header {
+      background: var(--navy);
+      color: #fff;
+      padding: 18px 16px 16px;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      box-shadow: 0 2px 8px rgba(0,0,0,.15);
+    }
+    header h1 {
+      margin: 0 0 4px;
+      font-size: 1.15rem;
+    }
+    header p {
+      margin: 0;
+      font-size: .9rem;
+      color: #d7e2e8;
+    }
+    .wrap { max-width: 760px; margin: 0 auto; padding: 16px; }
+    .meta, .item, .summary {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+    label { display: block; font-size: .8rem; font-weight: 600; margin-bottom: 4px; color: var(--muted); }
+    input[type="text"], input[type="date"], input[type="number"], textarea, select {
+      width: 100%;
+      font: inherit;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fffaf4;
+      color: var(--navy);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    @media (min-width: 560px) {
+      .grid { grid-template-columns: 1fr 1fr 1fr; }
+    }
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      text-align: center;
+    }
+    @media (max-width: 520px) {
+      .summary { grid-template-columns: repeat(2, 1fr); }
+    }
+    .summary div strong { display: block; font-size: 1.35rem; }
+    .summary .s-less strong { color: var(--less); }
+    .summary .s-more strong { color: var(--more); }
+    .summary .s-exact strong { color: var(--exact); }
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 8px 0 16px;
+    }
+    button {
+      font: inherit;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--navy);
+      border-radius: 999px;
+      padding: 8px 14px;
+      cursor: pointer;
+    }
+    button.primary {
+      background: var(--orange);
+      border-color: var(--orange);
+      color: #fff;
+      font-weight: 600;
+    }
+    button.active { background: var(--navy); color: #fff; border-color: var(--navy); }
+    h2 {
+      font-size: 1rem;
+      margin: 20px 0 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+    h2 button { font-size: .8rem; padding: 6px 10px; }
+    .item h3 { margin: 0 0 4px; font-size: 1rem; }
+    .listed { color: var(--muted); font-size: .9rem; margin-bottom: 10px; }
+    .choices {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .choices button { flex: 1; min-width: 88px; }
+    .choices button[data-val="Exact"].on { background: var(--exact-bg); border-color: var(--exact); color: var(--exact); font-weight: 700; }
+    .choices button[data-val="Less"].on { background: var(--less-bg); border-color: var(--less); color: var(--less); font-weight: 700; }
+    .choices button[data-val="More"].on { background: var(--more-bg); border-color: var(--more); color: var(--more); font-weight: 700; }
+    .qty-row { display: none; gap: 10px; align-items: end; }
+    .qty-row.show { display: grid; grid-template-columns: 1fr; }
+    .item.less { border-color: #f2b8b5; }
+    .item.more { border-color: #f5c88a; }
+    .item.exact { border-color: #9fd4b3; }
+    .hidden { display: none !important; }
+    .req { color: var(--orange); }
+    footer { color: var(--muted); font-size: .85rem; margin: 8px 0 40px; }
+    .photos { scroll-margin-top: 96px; background: var(--card); border: 2px solid var(--orange); border-radius: 12px; padding: 14px; margin: 24px 0 12px; }
+    .photos h2 { margin-top: 0; }
+    .photos p.hint { margin: 0 0 12px; color: var(--muted); font-size: .9rem; }
+    .photos h4 { margin: 14px 0 8px; font-size: .9rem; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+    .slots { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    @media (min-width: 560px) { .slots { grid-template-columns: 1fr 1fr 1fr; } }
+    .slot { border: 1px dashed var(--line); border-radius: 10px; padding: 8px; background: #fffaf4; display: flex; flex-direction: column; gap: 6px; }
+    .slot.done { border: 1px solid #9fd4b3; background: var(--exact-bg); }
+    .slot.missing { border: 2px solid var(--less); background: var(--less-bg); }
+    .slot .slot-title { font-weight: 700; font-size: .9rem; }
+    .slot .thumb { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 8px; background: #ece6dc; display: block; }
+    .slot .thumb-empty { width: 100%; aspect-ratio: 4 / 3; border-radius: 8px; background: #ece6dc; display: flex; align-items: center; justify-content: center; color: var(--muted); font-size: .8rem; text-align: center; padding: 4px; }
+    .slot .slot-status { font-size: .75rem; color: var(--muted); min-height: 1em; }
+    .slot .slot-btns { display: flex; flex-wrap: wrap; gap: 6px; }
+    .slot .slot-btns label { flex: 1; margin: 0; text-align: center; border: 1px solid var(--line); border-radius: 999px; padding: 7px 8px; background: #fff; color: var(--navy); font-size: .8rem; cursor: pointer; }
+    .slot .slot-btns label.cam { background: var(--navy); color: #fff; border-color: var(--navy); }
+    .slot input[type="file"] { position: absolute; width: 1px; height: 1px; opacity: 0; overflow: hidden; }
+    .submit-box { margin: 12px 0 8px; }
+    .submit-box button.primary { width: 100%; padding: 14px; font-size: 1.05rem; }
+    .submit-box button:disabled { opacity: .6; }
+    #formError { display: none; background: var(--less-bg); border: 1px solid var(--less); color: var(--less); border-radius: 10px; padding: 10px 12px; margin-bottom: 10px; font-size: .9rem; white-space: pre-line; }
+    #sentBanner { display: none; background: var(--exact-bg); border: 1px solid var(--exact); color: var(--exact); border-radius: 10px; padding: 10px 12px; margin-bottom: 12px; font-weight: 600; }
+    input[readonly] { background: #eef1f3; }
+    #toast {
+      display: none;
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--navy);
+      color: #fff;
+      padding: 10px 16px;
+      border-radius: 999px;
+      z-index: 10;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Weekly Van Inventory &amp; Maintenance</h1>
+    <p>Note which van and which mechanic, then mark Exact, Less, or More than the listed amount</p>
+  </header>
+  <div class="wrap">
+    <div id="sentBanner">Checklist and photos sent to the office. Thank you!</div>
+    <div class="meta">
+      <div class="grid">
+        <div>
+          <label for="name">Which mechanic <span class="req">*</span></label>
+          <input id="name" type="text" autocomplete="name" placeholder="Mechanic's full name" required />
+        </div>
+        <div>
+          <label for="date">Date <span class="req">*</span></label>
+          <input id="date" type="date" required />
+        </div>
+        <div>
+          <label for="van">Which van <span class="req">*</span></label>
+          <input id="van" type="text" placeholder="Van name or number" required />
+        </div>
+      </div>
+    </div>
+    <div class="summary" id="summary"></div>
+    <div class="toolbar">
+      <button class="active" data-filter="all" type="button">All items</button>
+      <button data-filter="unchecked" type="button">Not checked</button>
+      <button data-filter="Less" type="button">Less only</button>
+      <button data-filter="More" type="button">More only</button>
+      <button id="jumpBtn" class="primary" type="button">Photos &amp; submit &darr;</button>
+      <button id="copyBtn" type="button">Copy report</button>
+      <button id="printBtn" type="button">Print</button>
+      <button id="clearBtn" type="button">Clear form</button>
+    </div>
+    <div id="list"></div>
+    <section class="photos" id="photos">
+      <h2><span>Van photos <span class="req">*</span></span></h2>
+      <p class="hint">All 6 photos are required. Tap <strong>Camera</strong> to take one now, or <strong>Library</strong> to pick one you already took. Tap again to retake.</p>
+      <h4>Exterior</h4>
+      <div class="slots" id="slots-exterior"></div>
+      <h4>Interior</h4>
+      <div class="slots" id="slots-interior"></div>
+    </section>
+    <div class="submit-box">
+      <div id="formError" role="alert"></div>
+      <button id="submitBtn" class="primary" type="button">Submit checklist &amp; photos</button>
+    </div>
+    <footer>Submit every Sunday before 9:00 AM. Submit sends the report and the 6 van photos to office@powerrooter.com, and it is passed to Inventory &amp; Parts.</footer>
+  </div>
+  <div id="toast">Report copied.</div>
+  <script>
+    const ITEMS = [{"section": "300 Machine & Tools", "item": "Maintained 300 Machine with 75 Ft of cable", "qty": 1}, {"section": "300 Machine & Tools", "item": "Extra 25 Ft of cable", "qty": 2}, {"section": "300 Machine & Tools", "item": "Extra Pins", "qty": 5}, {"section": "300 Machine & Tools", "item": "Pairs of yellow gloves", "qty": 2}, {"section": "300 Machine & Tools", "item": "Whip", "qty": 1}, {"section": "300 Machine & Tools", "item": "U Blade 3\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Half Blade 3\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "U Blade 4\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Half Blade 4\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Saw blade", "qty": 1}, {"section": "300 Machine & Tools", "item": "Puncher & Stand", "qty": 1}, {"section": "300 Machine & Tools", "item": "Hammer", "qty": 1}, {"section": "300 Machine & Tools", "item": "Channel Lock 10\" or 12\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Channel Lock 6.5\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Pipe Wrench", "qty": 1}, {"section": "300 Machine & Tools", "item": "PB Blaster / WD-40", "qty": 1}, {"section": "300 Machine & Tools", "item": "Extension wire 25 ft", "qty": 1}, {"section": "300 Machine & Tools", "item": "Duct Tape", "qty": 2}, {"section": "300 Machine & Tools", "item": "Long gloves", "qty": 1}, {"section": "300 Machine & Tools", "item": "Philip screw driver", "qty": 1}, {"section": "300 Machine & Tools", "item": "Flat screw driver", "qty": 1}, {"section": "300 Machine & Tools", "item": "Nut Driver", "qty": 1}, {"section": "300 Machine & Tools", "item": "Screw driver 4 in 1", "qty": 1}, {"section": "300 Machine & Tools", "item": "Outlet adapters 2-3", "qty": 1}, {"section": "300 Machine & Tools", "item": "PVC pipe with elbow for trap out sewer 2\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Repair plates 4\"", "qty": 2}, {"section": "Hand Machine & Tools", "item": "Hand Machine with 25 ft cable", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Extra 25 ft cable", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Drop head 25 ft cable", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Construction gloves", "qty": 3}, {"section": "Hand Machine & Tools", "item": "Channel lock 10\" or 12\"", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Channel lock 6.5\"", "qty": 1}, {"section": "Hand Machine & Tools", "item": "PVC channel lock", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Vise grip", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Flat Screw driver", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Philip screw driver", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Nut driver", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Screw driver 4 in 1", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Teflon Tape", "qty": 5}, {"section": "Hand Machine & Tools", "item": "Electric Tape", "qty": 5}, {"section": "Hand Machine & Tools", "item": "Epoxy", "qty": 2}, {"section": "Hand Machine & Tools", "item": "Plumbers putty", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Outlet adapters 2-3", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Extension wire 25 ft", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Wheeling Case", "qty": 1}, {"section": "100 Machine", "item": "Maintained 100 machine with 75 ft cable", "qty": 1}, {"section": "100 Machine", "item": "Construction gloves", "qty": 3}, {"section": "100 Machine", "item": "Boiler plugs", "qty": 10}, {"section": "Toilet", "item": "Toilet auger", "qty": 1}, {"section": "Toilet", "item": "Wax Rings", "qty": 10}, {"section": "Toilet", "item": "Johnny bolts", "qty": 10}, {"section": "Toilet", "item": "Silicone gun", "qty": 1}, {"section": "Toilet", "item": "Silicone", "qty": 2}, {"section": "Toilet", "item": "Plaster", "qty": 1}, {"section": "Toilet", "item": "Foam spray", "qty": 1}, {"section": "Toilet", "item": "Fill valves (Fluidmaster)", "qty": 3}, {"section": "Toilet", "item": "Flappers", "qty": 5}, {"section": "Toilet", "item": "Ratchet wrench set", "qty": 1}, {"section": "Toilet", "item": "Lock wrench for johnny bolts", "qty": 1}, {"section": "Camera & Tools", "item": "Camera", "qty": 1}, {"section": "Camera & Tools", "item": "Locator", "qty": 1}, {"section": "Camera & Tools", "item": "Rags", "qty": 2}, {"section": "Air Tank", "item": "Maintained Air tank", "qty": 2}, {"section": "Air Tank", "item": "Hose", "qty": 1}, {"section": "Air Tank", "item": "Hose Adapter", "qty": 1}, {"section": "Air Tank", "item": "Flush bag 2\"", "qty": 1}, {"section": "Air Tank", "item": "Flush bag 1/2\"–3\"", "qty": 1}, {"section": "Air Tank", "item": "Flush bag 3\"–4\"", "qty": 1}, {"section": "Air Tank", "item": "Flush bag 3\"–6\"", "qty": 1}, {"section": "Water Testing", "item": "Water hose 150 Ft", "qty": 1}, {"section": "Water Testing", "item": "Speedy with adapter to sink / toilet", "qty": 1}, {"section": "Water Testing", "item": "Nozzle", "qty": 1}, {"section": "Drill", "item": "Electric Drill", "qty": 1}, {"section": "Drill", "item": "Carbide hole saw bit 7/8\"", "qty": 1}, {"section": "Drill", "item": "Center bits", "qty": 2}, {"section": "Drill", "item": "PVC saw hole bit 7/8\"", "qty": 2}, {"section": "Drill", "item": "Plugs 7/8\"", "qty": 5}, {"section": "Tubular Piping", "item": "Pipe Cutter", "qty": 1}, {"section": "Tubular Piping", "item": "Brass Sink traps", "qty": 2}, {"section": "Tubular Piping", "item": "P trap set 1 1/2\"", "qty": 2}, {"section": "Tubular Piping", "item": "Elbows 1 1/2\"", "qty": 5}, {"section": "Tubular Piping", "item": "Offsets 1 1/2\"", "qty": 2}, {"section": "Tubular Piping", "item": "Tail Ends 1 1/2\"", "qty": 2}, {"section": "Tubular Piping", "item": "Slip nuts & washers 1 1/2\"", "qty": 5}, {"section": "Tubular Piping", "item": "P Trap sets 1 1/4\"", "qty": 3}, {"section": "Tubular Piping", "item": "Elbows 1 1/4\"", "qty": 5}, {"section": "Tubular Piping", "item": "Offsets 1 1/4\"", "qty": 2}, {"section": "Tubular Piping", "item": "Tail ends 1 1/4\"", "qty": 2}, {"section": "Tubular Piping", "item": "Slip nuts & washers 1 1/4\"", "qty": 5}, {"section": "Caps", "item": "Caps 3\"", "qty": 5}, {"section": "Caps", "item": "Caps 3 1/2\"", "qty": 5}, {"section": "Caps", "item": "Caps 4\"", "qty": 10}, {"section": "Caps", "item": "Caps 4 1/2\"", "qty": 5}, {"section": "Caps", "item": "Jim Cap 3\"", "qty": 5}, {"section": "Caps", "item": "Jim Cap 4\"", "qty": 5}, {"section": "Caps", "item": "Jim Cap 5\"", "qty": 5}, {"section": "Caps", "item": "Test Plugs 3\"", "qty": 4}, {"section": "Caps", "item": "Test Plugs 4\"", "qty": 4}, {"section": "Couplings & Elbows", "item": "Couplings 4\"", "qty": 5}, {"section": "Couplings & Elbows", "item": "Couplings 3\"", "qty": 5}, {"section": "Couplings & Elbows", "item": "Couplings 2\"", "qty": 5}, {"section": "Couplings & Elbows", "item": "Couplings 2–1 1/2\"", "qty": 2}, {"section": "Miscellaneous", "item": "Grinder with blades", "qty": 1}, {"section": "Miscellaneous", "item": "Shop Vac", "qty": 1}, {"section": "Miscellaneous", "item": "Pump Vac", "qty": 1}, {"section": "Miscellaneous", "item": "Pump with hose", "qty": 1}, {"section": "Miscellaneous", "item": "Set of L keys", "qty": 1}, {"section": "Miscellaneous", "item": "Sledgehammer", "qty": 1}, {"section": "Miscellaneous", "item": "Chisel", "qty": 1}, {"section": "Miscellaneous", "item": "Suction cups", "qty": 2}, {"section": "Miscellaneous", "item": "Extra extension wire 25 ft", "qty": 1}, {"section": "Miscellaneous", "item": "Extra extension wire 50 ft", "qty": 1}, {"section": "Miscellaneous", "item": "Goggles", "qty": 2}, {"section": "Miscellaneous", "item": "Boxes latex gloves", "qty": 6}, {"section": "Miscellaneous", "item": "Bulb outlet adapter", "qty": 1}, {"section": "Miscellaneous", "item": "Regular / Rechargeable flashlight", "qty": 1}, {"section": "Miscellaneous", "item": "Rubber boots", "qty": 1}, {"section": "Miscellaneous", "item": "Disposable boots", "qty": 1}, {"section": "Miscellaneous", "item": "Raincoat", "qty": 1}, {"section": "Miscellaneous", "item": "Grabber", "qty": 1}, {"section": "Miscellaneous", "item": "Bolt Cutter", "qty": 1}, {"section": "Miscellaneous", "item": "Razor blade", "qty": 1}, {"section": "Miscellaneous", "item": "Head Flash light", "qty": 1}, {"section": "Miscellaneous", "item": "Crow Bar", "qty": 1}, {"section": "Miscellaneous", "item": "Long Bar", "qty": 1}, {"section": "Miscellaneous", "item": "Pump", "qty": 1}, {"section": "Miscellaneous", "item": "Degreasing Wipes", "qty": 1}, {"section": "Miscellaneous", "item": "Degrease Spray", "qty": 1}, {"section": "Miscellaneous", "item": "Shoe Covers", "qty": 10}, {"section": "Registration & Insurance", "item": "Registration in the van", "qty": 1}, {"section": "Registration & Insurance", "item": "Insurance card in the van", "qty": 1}];
+    const $ = (id) => document.getElementById(id);
+    const PARAMS = new URLSearchParams(location.search);
+    const PARAM_MECHANIC = (PARAMS.get("mechanic") || PARAMS.get("name") || "").trim().slice(0, 80);
+    const PARAM_VAN = (PARAMS.get("van") || "").trim().slice(0, 80);
+    const JUST_SENT = PARAMS.get("sent") === "1";
+    function slug(v) { return String(v || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, ""); }
+    // One storage key per mechanic so two mechanics on a shared phone don't overwrite each other.
+    // ?mechanic=Chris -> "pr-van-checklist-chris-v1" (same key the old Chris-only copy used).
+    const KEY = PARAM_MECHANIC && slug(PARAM_MECHANIC) ? "pr-van-checklist-" + slug(PARAM_MECHANIC) + "-v1" : "pr-van-checklist-v1";
+    function localISODate(d) {
+      const z = (n) => String(n).padStart(2, "0");
+      return d.getFullYear() + "-" + z(d.getMonth() + 1) + "-" + z(d.getDate());
+    }
+
+    function load() {
+      try { return JSON.parse(localStorage.getItem(KEY) || "{}"); } catch (e) { return {}; }
+    }
+    function save(state) { localStorage.setItem(KEY, JSON.stringify(state)); }
+
+    function defaultState() {
+      const iso = localISODate(new Date());
+      return {
+        name: PARAM_MECHANIC || "",
+        date: iso,
+        van: PARAM_VAN || "",
+        rows: ITEMS.map(() => ({ status: "", actual: "", note: "" }))
+      };
+    }
+
+    let state = Object.assign(defaultState(), load());
+    if (!state.rows || state.rows.length !== ITEMS.length) {
+      const fresh = defaultState();
+      state.rows = fresh.rows.map((row, i) => state.rows && state.rows[i] ? state.rows[i] : row);
+    }
+    if (!state.date) state.date = defaultState().date;
+    if (PARAM_MECHANIC) state.name = PARAM_MECHANIC;
+    if (PARAM_VAN) state.van = PARAM_VAN;
+    // After a successful send, start fresh next time (keep the van so it doesn't need retyping).
+    if (JUST_SENT) {
+      const keptVan = state.van;
+      state = defaultState();
+      if (keptVan) state.van = keptVan;
+      save(state);
+    }
+
+    function persist() {
+      state.name = PARAM_MECHANIC || $("name").value;
+      state.date = $("date").value;
+      state.van = $("van").value;
+      save(state);
+      renderSummary();
+    }
+
+    function setStatus(i, status) {
+      const listed = ITEMS[i].qty;
+      state.rows[i].status = status;
+      if (status === "Exact") state.rows[i].actual = String(listed);
+      if (status === "Less" && (state.rows[i].actual === "" || Number(state.rows[i].actual) >= listed)) {
+        state.rows[i].actual = "";
+      }
+      if (status === "More" && (state.rows[i].actual === "" || Number(state.rows[i].actual) <= listed)) {
+        state.rows[i].actual = "";
+      }
+      save(state);
+      renderList();
+    }
+
+    function setActual(i, value) {
+      state.rows[i].actual = value;
+      const n = Number(value);
+      const listed = ITEMS[i].qty;
+      if (value !== "" && !Number.isNaN(n)) {
+        if (n === listed) state.rows[i].status = "Exact";
+        else if (n < listed) state.rows[i].status = "Less";
+        else state.rows[i].status = "More";
+      }
+      save(state);
+      renderSummary();
+      const card = document.querySelector('[data-index="' + i + '"]');
+      if (card) {
+        card.classList.remove("exact", "less", "more");
+        if (state.rows[i].status) card.classList.add(state.rows[i].status.toLowerCase());
+        card.querySelectorAll(".choices button").forEach((b) => {
+          b.classList.toggle("on", b.dataset.val === state.rows[i].status);
+        });
+      }
+    }
+
+    function markSectionExact(section) {
+      ITEMS.forEach((it, i) => {
+        if (it.section === section) {
+          state.rows[i].status = "Exact";
+          state.rows[i].actual = String(it.qty);
+        }
+      });
+      save(state);
+      renderList();
+    }
+
+    function counts() {
+      let exact = 0, less = 0, more = 0, checked = 0;
+      state.rows.forEach((r) => {
+        if (r.status) checked += 1;
+        if (r.status === "Exact") exact += 1;
+        if (r.status === "Less") less += 1;
+        if (r.status === "More") more += 1;
+      });
+      return { exact, less, more, checked, total: ITEMS.length };
+    }
+
+    function renderSummary() {
+      const c = counts();
+      $("summary").innerHTML = `
+        <div><strong>${c.checked}/${c.total}</strong>checked</div>
+        <div class="s-exact"><strong>${c.exact}</strong>exact</div>
+        <div class="s-less"><strong>${c.less}</strong>less</div>
+        <div class="s-more"><strong>${c.more}</strong>more</div>`;
+    }
+
+    let filter = "all";
+
+    function renderList() {
+      $("name").value = state.name || "";
+      if (PARAM_MECHANIC) { $("name").readOnly = true; $("name").title = "Set by your personal checklist link"; }
+      $("date").value = state.date || "";
+      $("van").value = state.van || "";
+      renderSummary();
+      const root = $("list");
+      root.innerHTML = "";
+      let last = "";
+      ITEMS.forEach((it, i) => {
+        const row = state.rows[i];
+        const show =
+          filter === "all" ||
+          (filter === "unchecked" && !row.status) ||
+          row.status === filter;
+        if (it.section !== last) {
+          last = it.section;
+          const h = document.createElement("h2");
+          h.innerHTML = `<span></span>`;
+          h.querySelector("span").textContent = it.section;
+          const b = document.createElement("button");
+          b.type = "button";
+          b.textContent = "Mark section exact";
+          b.addEventListener("click", () => markSectionExact(it.section));
+          h.appendChild(b);
+          root.appendChild(h);
+        }
+        const card = document.createElement("div");
+        card.className = "item" + (row.status ? " " + row.status.toLowerCase() : "") + (show ? "" : " hidden");
+        card.dataset.index = String(i);
+        card.innerHTML = `
+          <h3></h3>
+          <div class="listed"></div>
+          <div class="choices">
+            <button type="button" data-val="Exact">Exact</button>
+            <button type="button" data-val="Less">Less</button>
+            <button type="button" data-val="More">More</button>
+          </div>
+          <div class="qty-row">
+            <div>
+              <label>How many do you actually have?</label>
+              <input type="number" min="0" step="1" inputmode="numeric" class="actual" />
+            </div>
+            <div>
+              <label>Note (optional)</label>
+              <input type="text" class="note" placeholder="Damaged, borrowed, extra, etc." />
+            </div>
+          </div>`;
+        card.querySelector("h3").textContent = it.item;
+        card.querySelector(".listed").textContent = "Listed amount: " + it.qty;
+        const qtyRow = card.querySelector(".qty-row");
+        if (row.status === "Less" || row.status === "More") qtyRow.classList.add("show");
+        card.querySelectorAll(".choices button").forEach((btn) => {
+          if (btn.dataset.val === row.status) btn.classList.add("on");
+          btn.addEventListener("click", () => setStatus(i, btn.dataset.val));
+        });
+        const actual = card.querySelector(".actual");
+        actual.value = row.actual || "";
+        actual.addEventListener("input", (e) => setActual(i, e.target.value));
+        const note = card.querySelector(".note");
+        note.value = row.note || "";
+        note.addEventListener("input", (e) => {
+          state.rows[i].note = e.target.value;
+          save(state);
+        });
+        root.appendChild(card);
+      });
+    }
+
+    function reportText() {
+      const c = counts();
+      const lines = [];
+      lines.push("Power Rooter Weekly Van Inventory & Maintenance Checklist");
+      lines.push("Mechanic: " + (state.name || "(not filled)"));
+      lines.push("Date: " + (state.date || "(not filled)"));
+      lines.push("Van / truck: " + (state.van || "(not filled)"));
+      lines.push("Checked: " + c.checked + "/" + c.total + " · Exact: " + c.exact + " · Less: " + c.less + " · More: " + c.more);
+      lines.push("");
+      const problems = [];
+      ITEMS.forEach((it, i) => {
+        const row = state.rows[i];
+        if (row.status === "Less" || row.status === "More") {
+          const have = row.actual === "" ? "?" : row.actual;
+          const extra = row.note ? " — " + row.note : "";
+          problems.push(row.status.toUpperCase() + " — " + it.section + ": " + it.item + " (listed " + it.qty + ", have " + have + ")" + extra);
+        }
+      });
+      if (problems.length) {
+        lines.push("Items that are less or more than listed:");
+        lines.push(...problems);
+      } else {
+        lines.push("No less/more items recorded.");
+      }
+      return lines.join("\n");
+    }
+
+    $("name").addEventListener("input", persist);
+    $("date").addEventListener("input", persist);
+    $("van").addEventListener("input", persist);
+    document.querySelectorAll("[data-filter]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        filter = btn.dataset.filter;
+        document.querySelectorAll("[data-filter]").forEach((b) => b.classList.toggle("active", b === btn));
+        renderList();
+      });
+    });
+    function problemLines(status) {
+      const lines = [];
+      ITEMS.forEach((it, i) => {
+        const row = state.rows[i];
+        if (row.status === status) {
+          const have = row.actual === "" ? "?" : row.actual;
+          const extra = row.note ? " — " + row.note : "";
+          lines.push(it.section + ": " + it.item + " (listed " + it.qty + ", have " + have + ")" + extra);
+        }
+      });
+      return lines.length ? lines.join("\n") : "None";
+    }
+
+    // ---------- Van photos ----------
+    const PHOTO_SLOTS = [
+      { id: "exterior-front", group: "exterior", label: "Front" },
+      { id: "exterior-back", group: "exterior", label: "Back" },
+      { id: "exterior-driver-side", group: "exterior", label: "Driver side" },
+      { id: "exterior-passenger-side", group: "exterior", label: "Passenger side" },
+      { id: "interior-cab-dashboard", group: "interior", label: "Cab / dashboard" },
+      { id: "interior-cargo-shelves", group: "interior", label: "Cargo area / shelves" }
+    ];
+    const MAX_TOTAL_BYTES = 9 * 1024 * 1024; // FormSubmit caps all attachments together at 10 MB
+    const photos = {}; // slot id -> { original: File, blob: Blob, url: string }
+
+    function slotTitle(s) { return (s.group === "exterior" ? "Exterior — " : "Interior — ") + s.label; }
+
+    function loadImage(file) {
+      return new Promise(function (resolve, reject) {
+        const url = URL.createObjectURL(file);
+        const img = new Image();
+        img.onload = function () { resolve({ img: img, url: url }); };
+        img.onerror = function () { URL.revokeObjectURL(url); reject(new Error("decode failed")); };
+        img.src = url;
+      });
+    }
+
+    async function compressImage(file, maxSide, quality) {
+      let source = null, w = 0, h = 0, revoke = null;
+      try {
+        // createImageBitmap honours EXIF rotation where supported
+        source = await createImageBitmap(file, { imageOrientation: "from-image" });
+        w = source.width; h = source.height;
+      } catch (e) {
+        const r = await loadImage(file); // <img> also honours EXIF orientation in current Safari/Chrome
+        source = r.img; w = r.img.naturalWidth; h = r.img.naturalHeight; revoke = r.url;
+      }
+      try {
+        if (!w || !h) throw new Error("empty image");
+        const scale = Math.min(1, maxSide / Math.max(w, h));
+        const cw = Math.max(1, Math.round(w * scale)), ch = Math.max(1, Math.round(h * scale));
+        const canvas = document.createElement("canvas");
+        canvas.width = cw; canvas.height = ch;
+        const ctx = canvas.getContext("2d");
+        ctx.fillStyle = "#fff";
+        ctx.fillRect(0, 0, cw, ch);
+        ctx.drawImage(source, 0, 0, cw, ch);
+        const blob = await new Promise(function (res) { canvas.toBlob(res, "image/jpeg", quality); });
+        if (!blob) throw new Error("encode failed");
+        return blob;
+      } finally {
+        if (source && source.close) source.close();
+        if (revoke) URL.revokeObjectURL(revoke);
+      }
+    }
+
+    function fmtKB(n) { return n > 1024 * 1024 ? (n / 1024 / 1024).toFixed(1) + " MB" : Math.round(n / 1024) + " KB"; }
+
+    function renderSlot(s) {
+      const el = document.querySelector('[data-slot="' + s.id + '"]');
+      if (!el) return;
+      const p = photos[s.id];
+      el.classList.toggle("done", !!p);
+      if (p) el.classList.remove("missing");
+      const box = el.querySelector(".thumb-wrap");
+      box.innerHTML = "";
+      if (p) {
+        const img = document.createElement("img");
+        img.className = "thumb";
+        img.alt = slotTitle(s);
+        img.src = p.url;
+        box.appendChild(img);
+      } else {
+        const d = document.createElement("div");
+        d.className = "thumb-empty";
+        d.textContent = "No photo yet";
+        box.appendChild(d);
+      }
+      el.querySelector(".cam").firstChild.nodeValue = p ? "Retake" : "Camera";
+      el.querySelector(".slot-status").textContent = p ? "Ready · " + fmtKB(p.blob.size) : "";
+    }
+
+    async function handlePhoto(s, input) {
+      const file = input.files && input.files[0];
+      input.value = ""; // allow picking the same file again (retake)
+      if (!file) return;
+      const el = document.querySelector('[data-slot="' + s.id + '"]');
+      const status = el.querySelector(".slot-status");
+      status.textContent = "Processing…";
+      let blob = null;
+      try {
+        blob = await compressImage(file, 1600, 0.7);
+      } catch (e) {
+        // Browser can't decode it (e.g. HEIC on a non-Apple browser). Use the original only if it's a small JPEG/PNG.
+        if (/^image\/(jpeg|png)$/i.test(file.type) && file.size < 1.5 * 1024 * 1024) {
+          blob = file;
+        } else {
+          status.textContent = "";
+          alert("Couldn't read that photo for " + slotTitle(s) + ". Please take it with the Camera button, or choose a JPEG photo.");
+          return;
+        }
+      }
+      if (photos[s.id] && photos[s.id].url) URL.revokeObjectURL(photos[s.id].url);
+      photos[s.id] = { original: file, blob: blob, url: URL.createObjectURL(blob) };
+      renderSlot(s);
+      hideError();
+    }
+
+    function buildSlots() {
+      PHOTO_SLOTS.forEach(function (s) {
+        const el = document.createElement("div");
+        el.className = "slot";
+        el.dataset.slot = s.id;
+        el.innerHTML =
+          '<div class="slot-title"></div>' +
+          '<div class="thumb-wrap"></div>' +
+          '<div class="slot-btns">' +
+            '<label class="cam">Camera<input type="file" accept="image/*" capture="environment" /></label>' +
+            '<label class="lib">Library<input type="file" accept="image/*" /></label>' +
+          '</div>' +
+          '<div class="slot-status"></div>';
+        el.querySelector(".slot-title").textContent = s.label;
+        el.querySelectorAll('input[type="file"]').forEach(function (inp) {
+          inp.setAttribute("aria-label", slotTitle(s));
+          inp.addEventListener("change", function () { handlePhoto(s, inp); });
+        });
+        $("slots-" + s.group).appendChild(el);
+        renderSlot(s);
+      });
+    }
+
+    function hideError() { const e = $("formError"); e.style.display = "none"; e.textContent = ""; }
+    function showError(msg) { const e = $("formError"); e.textContent = msg; e.style.display = "block"; }
+
+    function missingFields() {
+      const missing = [];
+      if (!(state.name || "").trim()) missing.push("Which mechanic");
+      if (!(state.van || "").trim()) missing.push("Which van");
+      if (!(state.date || "").trim()) missing.push("Date");
+      PHOTO_SLOTS.forEach(function (s) { if (!photos[s.id]) missing.push("Photo: " + slotTitle(s)); });
+      return missing;
+    }
+
+    function totalPhotoBytes() {
+      return PHOTO_SLOTS.reduce(function (n, s) { return n + (photos[s.id] ? photos[s.id].blob.size : 0); }, 0);
+    }
+
+    async function shrinkPhotosIfNeeded() {
+      const steps = [[1280, 0.6], [1024, 0.55], [800, 0.5]];
+      for (let i = 0; i < steps.length && totalPhotoBytes() > MAX_TOTAL_BYTES; i++) {
+        for (const s of PHOTO_SLOTS) {
+          const p = photos[s.id];
+          try { p.blob = await compressImage(p.original, steps[i][0], steps[i][1]); } catch (e) {}
+        }
+      }
+      return totalPhotoBytes() <= MAX_TOTAL_BYTES;
+    }
+
+    function canSetFileInputs() {
+      try {
+        const dt = new DataTransfer();
+        dt.items.add(new File(["x"], "t.txt", { type: "text/plain" }));
+        const inp = document.createElement("input");
+        inp.type = "file";
+        inp.files = dt.files;
+        return inp.files && inp.files.length === 1;
+      } catch (e) { return false; }
+    }
+
+    async function submitReport() {
+      persist();
+      const name = (state.name || "").trim();
+      const date = (state.date || "").trim();
+      const van = (state.van || "").trim();
+      const missing = missingFields();
+      PHOTO_SLOTS.forEach(function (s) {
+        const el = document.querySelector('[data-slot="' + s.id + '"]');
+        if (el) el.classList.toggle("missing", !photos[s.id]);
+      });
+      if (missing.length) {
+        const msg = "Can't submit yet. Still missing:\n• " + missing.join("\n• ");
+        showError(msg);
+        alert(msg);
+        const first = missing[0];
+        if (first.indexOf("Photo:") === 0) $("photos").scrollIntoView({ behavior: "smooth", block: "start" });
+        else window.scrollTo({ top: 0, behavior: "smooth" });
+        return;
+      }
+      hideError();
+      const c = counts();
+      if (c.checked < c.total && !confirm("You still have " + (c.total - c.checked) + " items not checked. Submit anyway?")) return;
+      const btn = $("submitBtn");
+      const oldLabel = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = "Preparing photos…";
+      if (!(await shrinkPhotosIfNeeded())) {
+        btn.disabled = false; btn.textContent = oldLabel;
+        showError("The photos are too large to send together (limit 10 MB). Please retake them with the Camera button.");
+        return;
+      }
+      if (!canSetFileInputs()) {
+        btn.disabled = false; btn.textContent = oldLabel;
+        showError("This browser is too old to attach the photos. Please update your phone (Safari or Chrome) and try again, or use Copy report and text the photos to the office.");
+        return;
+      }
+      btn.textContent = "Sending…";
+      const payload = {
+        _subject: "Weekly Van Inventory — " + name + " — " + van + " — " + date,
+        _template: "table",
+        _captcha: "false",
+        Mechanic: name,
+        Date: date,
+        Van: van,
+        Summary: "Checked " + c.checked + "/" + c.total + "; Exact " + c.exact + "; Less " + c.less + "; More " + c.more,
+        Short_items: problemLines("Less"),
+        Extra_items: problemLines("More"),
+        Full_report: reportText(),
+        Photos: PHOTO_SLOTS.map(function (s) { return slotTitle(s) + ": " + s.id + ".jpg"; }).join("\n")
+      };
+      if (/^https?:$/.test(location.protocol)) {
+        const back = new URL(location.href);
+        back.hash = "";
+        back.searchParams.set("sent", "1");
+        payload._next = back.toString();
+      }
+      // FormSubmit only documents file attachments for a normal multipart form POST
+      // (its AJAX examples are JSON, which can't carry files), so post a real form.
+      const form = document.createElement("form");
+      form.method = "POST";
+      form.action = "https://formsubmit.co/office@powerrooter.com";
+      form.enctype = "multipart/form-data";
+      form.acceptCharset = "UTF-8";
+      form.style.display = "none";
+      Object.keys(payload).forEach(function (k) {
+        const t = document.createElement("textarea");
+        t.name = k;
+        t.value = payload[k];
+        form.appendChild(t);
+      });
+      PHOTO_SLOTS.forEach(function (s) {
+        const p = photos[s.id];
+        const input = document.createElement("input");
+        input.type = "file";
+        input.name = s.id;
+        const dt = new DataTransfer();
+        dt.items.add(new File([p.blob], s.id + ".jpg", { type: "image/jpeg" }));
+        input.files = dt.files;
+        form.appendChild(input);
+      });
+      document.body.appendChild(form);
+      window.__lastSubmitForm = form; // for testing
+      if (window.__PR_TEST_NO_SUBMIT) { btn.disabled = false; btn.textContent = oldLabel; return form; }
+      form.submit();
+    }
+
+    buildSlots();
+    $("jumpBtn").addEventListener("click", function () { $("photos").scrollIntoView({ behavior: "smooth", block: "start" }); });
+    if (JUST_SENT) {
+      $("sentBanner").style.display = "block";
+      try {
+        const u = new URL(location.href);
+        u.searchParams.delete("sent");
+        history.replaceState(null, "", u.toString());
+      } catch (e) {}
+    }
+
+    $("submitBtn").addEventListener("click", submitReport);
+    $("copyBtn").addEventListener("click", async () => {
+      const text = reportText();
+      try {
+        await navigator.clipboard.writeText(text);
+      } catch (e) {
+        window.prompt("Copy this report:", text);
+      }
+      const toast = $("toast");
+      toast.style.display = "block";
+      setTimeout(() => { toast.style.display = "none"; }, 2200);
+    });
+    $("printBtn").addEventListener("click", () => window.print());
+    $("clearBtn").addEventListener("click", () => {
+      if (!confirm("Clear everything on this form?")) return;
+      state = defaultState();
+      save(state);
+      PHOTO_SLOTS.forEach(function (s) {
+        if (photos[s.id] && photos[s.id].url) URL.revokeObjectURL(photos[s.id].url);
+        delete photos[s.id];
+        renderSlot(s);
+      });
+      hideError();
+      renderList();
+    });
+    renderList();
+  </script>
+</body>
+</html>
