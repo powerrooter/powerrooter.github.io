@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#1b3a4b" />
+  <title>Power Rooter Office Stock</title>
+  <style>
+    :root {
+      --navy: #1b3a4b;
+      --orange: #c45c26;
+      --paper: #f6f3ee;
+      --card: #ffffff;
+      --line: #d8d2c8;
+      --muted: #5c6b73;
+      --exact: #1f7a4d;
+      --exact-bg: #e7f6ee;
+      --less: #b42318;
+      --less-bg: #fdeceb;
+      --more: #b54708;
+      --more-bg: #fff4e5;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--paper);
+      color: var(--navy);
+      line-height: 1.4;
+      -webkit-text-size-adjust: 100%;
+    }
+    header {
+      background: var(--navy);
+      color: #fff;
+      padding: calc(18px + env(safe-area-inset-top)) 16px 16px;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      box-shadow: 0 2px 8px rgba(0,0,0,.15);
+    }
+    header h1 { margin: 0 0 4px; font-size: 1.15rem; }
+    header p { margin: 0; font-size: .9rem; color: #d7e2e8; }
+    header .subnav { margin: 8px 0 0; }
+    header a { color: #fff; }
+    .wrap { max-width: 760px; margin: 0 auto; padding: 16px; }
+    .notice, .meta, .item, .summary, .error {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+    .notice { background: var(--more-bg); border-color: var(--more); }
+    .notice strong { display: block; margin-bottom: 4px; }
+    .notice a { color: var(--navy); font-weight: 700; }
+    .error { display: none; background: var(--less-bg); border-color: var(--less); color: var(--less); white-space: pre-line; }
+    .error.show { display: block; }
+    label { display: block; font-size: .8rem; font-weight: 600; margin-bottom: 4px; color: var(--muted); }
+    input[type="text"], input[type="search"], input[type="password"], input[type="number"], select {
+      width: 100%;
+      font: inherit;
+      font-size: 16px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fffaf4;
+      color: var(--navy);
+      min-height: 48px;
+    }
+    .hint { color: var(--muted); font-size: .9rem; margin: 6px 0 0; }
+    .toolbar, .actions, .filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 12px; }
+    .filters { display: grid; grid-template-columns: 1fr; }
+    @media (min-width: 560px) { .filters { grid-template-columns: 1fr 1fr 1fr; } }
+    button {
+      font: inherit;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--navy);
+      border-radius: 999px;
+      padding: 8px 14px;
+      cursor: pointer;
+      min-height: 44px;
+    }
+    button.primary { background: var(--orange); border-color: var(--orange); color: #fff; font-weight: 700; }
+    button.take { background: var(--navy); border-color: var(--navy); color: #fff; font-weight: 700; }
+    button.active { background: var(--navy); color: #fff; border-color: var(--navy); }
+    button:disabled { opacity: .6; }
+    .actions { display: grid; grid-template-columns: 1fr 1fr; }
+    .actions button { border-radius: 12px; min-height: 56px; font-size: 1.05rem; }
+    h2 {
+      font-size: 1rem;
+      margin: 22px 0 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+    h2 button { font-size: .8rem; padding: 6px 10px; min-height: 36px; }
+    h3.section { margin: 18px 0 8px; font-size: .95rem; }
+    .item h3 { margin: 0 0 4px; font-size: 1rem; }
+    .item.low { border-color: #f2b8b5; }
+    .item.negative { border-color: #f2b8b5; background: var(--less-bg); }
+    .onhand { font-size: 1.55rem; font-weight: 800; line-height: 1.1; }
+    .item.low .onhand, .item.negative .onhand { color: var(--less); }
+    .muted { color: var(--muted); font-size: .85rem; }
+    .split .neg { color: var(--less); font-weight: 700; }
+    .badge {
+      display: inline-block;
+      margin-left: 6px;
+      background: var(--less-bg);
+      color: var(--less);
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-size: .75rem;
+      font-weight: 700;
+    }
+    .summary { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; text-align: center; }
+    .summary div strong { display: block; font-size: 1.35rem; }
+    .summary .s-less strong { color: var(--less); }
+    .pin-row, .field { margin-bottom: 10px; }
+    .pin-row { display: flex; gap: 8px; align-items: center; }
+    .pin-row input { flex: 1; }
+    button.pick {
+      display: block;
+      width: 100%;
+      text-align: left;
+      border-radius: 12px;
+      margin-top: 8px;
+      background: #fff;
+    }
+    button.pick span { display: block; color: var(--muted); font-weight: 500; font-size: .8rem; }
+    .chip { background: var(--exact-bg); border: 1px solid #9fd4b3; border-radius: 10px; padding: 10px 12px; margin-top: 8px; }
+    .loc-choices { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .loc-choices button { border-radius: 12px; min-height: 52px; font-weight: 700; }
+    .submit-box button.primary { width: 100%; padding: 14px; font-size: 1.05rem; border-radius: 12px; }
+    #formCard { scroll-margin-top: 96px; }
+    .req { color: var(--orange); }
+    [hidden] { display: none !important; }
+    footer { color: var(--muted); font-size: .85rem; margin: 8px 0 40px; }
+    footer a { color: var(--navy); font-weight: 600; }
+    #toast {
+      display: none;
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--navy);
+      color: #fff;
+      padding: 10px 16px;
+      border-radius: 999px;
+      z-index: 10;
+      max-width: 90%;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Office stock</h1>
+    <p>Power Brooklyn and Power HQ</p>
+    <p class="subnav"><a href="/">Weekly van checklist</a></p>
+  </header>
+  <div class="wrap">
+    <div id="setup" class="notice">
+      <strong>Setup needed.</strong>
+      This page is not connected to the office spreadsheet yet, so Add stock and Take stock stay off.
+      Deploy the Apps Script, then paste the web app address that ends in /exec into API_URL at the top of this page.
+      <p class="hint"><a href="SETUP.md">Setup steps</a></p>
+    </div>
+    <div id="app"></div>
+    <footer>Power Rooter office stock for Power Brooklyn and Power HQ. <a href="/">Back to the weekly checklist</a></footer>
+  </div>
+  <div id="toast" role="status"></div>
+  <script>
+    // Paste the web app URL (the one that ends in /exec) between the quotes.
+    const API_URL = "";
+    const LOCATIONS = ["Power Brooklyn", "Power HQ"];
+    const PIN_KEY = "pr-office-stock-pin";
+    const PERSON_KEY = "pr-office-stock-person";
+    const VAN_KEY = "pr-office-stock-van";
+    const ITEMS = [{"section": "300 Machine & Tools", "item": "Maintained 300 Machine with 75 Ft of cable", "qty": 1}, {"section": "300 Machine & Tools", "item": "Extra 25 Ft of cable", "qty": 2}, {"section": "300 Machine & Tools", "item": "Extra Pins", "qty": 5}, {"section": "300 Machine & Tools", "item": "Pairs of yellow gloves", "qty": 2}, {"section": "300 Machine & Tools", "item": "Whip", "qty": 1}, {"section": "300 Machine & Tools", "item": "U Blade 3\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Half Blade 3\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "U Blade 4\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Half Blade 4\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Saw blade", "qty": 1}, {"section": "300 Machine & Tools", "item": "Puncher & Stand", "qty": 1}, {"section": "300 Machine & Tools", "item": "Hammer", "qty": 1}, {"section": "300 Machine & Tools", "item": "Channel Lock 10\" or 12\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Channel Lock 6.5\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Pipe Wrench", "qty": 1}, {"section": "300 Machine & Tools", "item": "PB Blaster / WD-40", "qty": 1}, {"section": "300 Machine & Tools", "item": "Extension wire 25 ft", "qty": 1}, {"section": "300 Machine & Tools", "item": "Duct Tape", "qty": 2}, {"section": "300 Machine & Tools", "item": "Long gloves", "qty": 1}, {"section": "300 Machine & Tools", "item": "Philip screw driver", "qty": 1}, {"section": "300 Machine & Tools", "item": "Flat screw driver", "qty": 1}, {"section": "300 Machine & Tools", "item": "Nut Driver", "qty": 1}, {"section": "300 Machine & Tools", "item": "Screw driver 4 in 1", "qty": 1}, {"section": "300 Machine & Tools", "item": "Outlet adapters 2-3", "qty": 1}, {"section": "300 Machine & Tools", "item": "PVC pipe with elbow for trap out sewer 2\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Repair plates 4\"", "qty": 2}, {"section": "Hand Machine & Tools", "item": "Hand Machine with 25 ft cable", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Extra 25 ft cable", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Drop head 25 ft cable", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Construction gloves", "qty": 3}, {"section": "Hand Machine & Tools", "item": "Channel lock 10\" or 12\"", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Channel lock 6.5\"", "qty": 1}, {"section": "Hand Machine & Tools", "item": "PVC channel lock", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Vise grip", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Flat Screw driver", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Philip screw driver", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Nut driver", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Screw driver 4 in 1", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Teflon Tape", "qty": 5}, {"section": "Hand Machine & Tools", "item": "Electric Tape", "qty": 5}, {"section": "Hand Machine & Tools", "item": "Epoxy", "qty": 2}, {"section": "Hand Machine & Tools", "item": "Plumbers putty", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Outlet adapters 2-3", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Extension wire 25 ft", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Wheeling Case", "qty": 1}, {"section": "100 Machine", "item": "Maintained 100 machine with 75 ft cable", "qty": 1}, {"section": "100 Machine", "item": "Construction gloves", "qty": 3}, {"section": "100 Machine", "item": "Boiler plugs", "qty": 10}, {"section": "Toilet", "item": "Toilet auger", "qty": 1}, {"section": "Toilet", "item": "Wax Rings", "qty": 10}, {"section": "Toilet", "item": "Johnny bolts", "qty": 10}, {"section": "Toilet", "item": "Silicone gun", "qty": 1}, {"section": "Toilet", "item": "Silicone", "qty": 2}, {"section": "Toilet", "item": "Plaster", "qty": 1}, {"section": "Toilet", "item": "Foam spray", "qty": 1}, {"section": "Toilet", "item": "Fill valves (Fluidmaster)", "qty": 3}, {"section": "Toilet", "item": "Flappers", "qty": 5}, {"section": "Toilet", "item": "Ratchet wrench set", "qty": 1}, {"section": "Toilet", "item": "Lock wrench for johnny bolts", "qty": 1}, {"section": "Camera & Tools", "item": "Camera", "qty": 1}, {"section": "Camera & Tools", "item": "Locator", "qty": 1}, {"section": "Camera & Tools", "item": "Rags", "qty": 2}, {"section": "Air Tank", "item": "Maintained Air tank", "qty": 2}, {"section": "Air Tank", "item": "Hose", "qty": 1}, {"section": "Air Tank", "item": "Hose Adapter", "qty": 1}, {"section": "Air Tank", "item": "Flush bag 2\"", "qty": 1}, {"section": "Air Tank", "item": "Flush bag 1/2\"–3\"", "qty": 1}, {"section": "Air Tank", "item": "Flush bag 3\"–4\"", "qty": 1}, {"section": "Air Tank", "item": "Flush bag 3\"–6\"", "qty": 1}, {"section": "Water Testing", "item": "Water hose 150 Ft", "qty": 1}, {"section": "Water Testing", "item": "Speedy with adapter to sink / toilet", "qty": 1}, {"section": "Water Testing", "item": "Nozzle", "qty": 1}, {"section": "Drill", "item": "Electric Drill", "qty": 1}, {"section": "Drill", "item": "Carbide hole saw bit 7/8\"", "qty": 1}, {"section": "Drill", "item": "Center bits", "qty": 2}, {"section": "Drill", "item": "PVC saw hole bit 7/8\"", "qty": 2}, {"section": "Drill", "item": "Plugs 7/8\"", "qty": 5}, {"section": "Tubular Piping", "item": "Pipe Cutter", "qty": 1}, {"section": "Tubular Piping", "item": "Brass Sink traps", "qty": 2}, {"section": "Tubular Piping", "item": "P trap set 1 1/2\"", "qty": 2}, {"section": "Tubular Piping", "item": "Elbows 1 1/2\"", "qty": 5}, {"section": "Tubular Piping", "item": "Offsets 1 1/2\"", "qty": 2}, {"section": "Tubular Piping", "item": "Tail Ends 1 1/2\"", "qty": 2}, {"section": "Tubular Piping", "item": "Slip nuts & washers 1 1/2\"", "qty": 5}, {"section": "Tubular Piping", "item": "P Trap sets 1 1/4\"", "qty": 3}, {"section": "Tubular Piping", "item": "Elbows 1 1/4\"", "qty": 5}, {"section": "Tubular Piping", "item": "Offsets 1 1/4\"", "qty": 2}, {"section": "Tubular Piping", "item": "Tail ends 1 1/4\"", "qty": 2}, {"section": "Tubular Piping", "item": "Slip nuts & washers 1 1/4\"", "qty": 5}, {"section": "Caps", "item": "Caps 3\"", "qty": 5}, {"section": "Caps", "item": "Caps 3 1/2\"", "qty": 5}, {"section": "Caps", "item": "Caps 4\"", "qty": 10}, {"section": "Caps", "item": "Caps 4 1/2\"", "qty": 5}, {"section": "Caps", "item": "Jim Cap 3\"", "qty": 5}, {"section": "Caps", "item": "Jim Cap 4\"", "qty": 5}, {"section": "Caps", "item": "Jim Cap 5\"", "qty": 5}, {"section": "Caps", "item": "Test Plugs 3\"", "qty": 4}, {"section": "Caps", "item": "Test Plugs 4\"", "qty": 4}, {"section": "Couplings & Elbows", "item": "Couplings 4\"", "qty": 5}, {"section": "Couplings & Elbows", "item": "Couplings 3\"", "qty": 5}, {"section": "Couplings & Elbows", "item": "Couplings 2\"", "qty": 5}, {"section": "Couplings & Elbows", "item": "Couplings 2–1 1/2\"", "qty": 2}, {"section": "Miscellaneous", "item": "Grinder with blades", "qty": 1}, {"section": "Miscellaneous", "item": "Shop Vac", "qty": 1}, {"section": "Miscellaneous", "item": "Pump Vac", "qty": 1}, {"section": "Miscellaneous", "item": "Pump with hose", "qty": 1}, {"section": "Miscellaneous", "item": "Set of L keys", "qty": 1}, {"section": "Miscellaneous", "item": "Sledgehammer", "qty": 1}, {"section": "Miscellaneous", "item": "Chisel", "qty": 1}, {"section": "Miscellaneous", "item": "Suction cups", "qty": 2}, {"section": "Miscellaneous", "item": "Extra extension wire 25 ft", "qty": 1}, {"section": "Miscellaneous", "item": "Extra extension wire 50 ft", "qty": 1}, {"section": "Miscellaneous", "item": "Goggles", "qty": 2}, {"section": "Miscellaneous", "item": "Boxes latex gloves", "qty": 6}, {"section": "Miscellaneous", "item": "Bulb outlet adapter", "qty": 1}, {"section": "Miscellaneous", "item": "Regular / Rechargeable flashlight", "qty": 1}, {"section": "Miscellaneous", "item": "Rubber boots", "qty": 1}, {"section": "Miscellaneous", "item": "Disposable boots", "qty": 1}, {"section": "Miscellaneous", "item": "Raincoat", "qty": 1}, {"section": "Miscellaneous", "item": "Grabber", "qty": 1}, {"section": "Miscellaneous", "item": "Bolt Cutter", "qty": 1}, {"section": "Miscellaneous", "item": "Razor blade", "qty": 1}, {"section": "Miscellaneous", "item": "Head Flash light", "qty": 1}, {"section": "Miscellaneous", "item": "Crow Bar", "qty": 1}, {"section": "Miscellaneous", "item": "Long Bar", "qty": 1}, {"section": "Miscellaneous", "item": "Pump", "qty": 1}, {"section": "Miscellaneous", "item": "Degreasing Wipes", "qty": 1}, {"section": "Miscellaneous", "item": "Degrease Spray", "qty": 1}, {"section": "Miscellaneous", "item": "Shoe Covers", "qty": 10}, {"section": "Registration & Insurance", "item": "Registration in the van", "qty": 1}, {"section": "Registration & Insurance", "item": "Insurance card in the van", "qty": 1}];
+
+    // PURE START
+    function itemKey(section, item) {
+      return String(section || "") + "\n" + String(item || "");
+    }
+    function normPlate(value) {
+      return String(value || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+    }
+    function isPositiveInt(value) {
+      if (typeof value === "number") {
+        return isFinite(value) && value > 0 && Math.floor(value) === value && value <= 100000;
+      }
+      const s = String(value == null ? "" : value).trim();
+      if (!/^\d+$/.test(s)) return false;
+      const n = Number(s);
+      return n > 0 && n <= 100000;
+    }
+    function nyDateKey(value) {
+      const s = String(value == null ? "" : value).trim();
+      if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+      const d = new Date(s);
+      if (isNaN(d.getTime())) return "";
+      const parts = new Intl.DateTimeFormat("en-US", {
+        timeZone: "America/New_York",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit"
+      }).formatToParts(d);
+      const get = (type) => parts.find((p) => p.type === type).value;
+      return get("year") + "-" + get("month") + "-" + get("day");
+    }
+    function formatNy(value) {
+      const s = String(value == null ? "" : value).trim();
+      if (!s) return "";
+      if (/^\d{4}-\d{2}-\d{2}$/.test(s)) {
+        const bits = s.split("-").map(Number);
+        const noon = new Date(Date.UTC(bits[0], bits[1] - 1, bits[2], 17, 0, 0));
+        return new Intl.DateTimeFormat("en-US", {
+          timeZone: "America/New_York",
+          month: "short",
+          day: "numeric",
+          year: "numeric"
+        }).format(noon);
+      }
+      const d = new Date(s);
+      if (isNaN(d.getTime())) return s;
+      return new Intl.DateTimeFormat("en-US", {
+        timeZone: "America/New_York",
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+        hour: "numeric",
+        minute: "2-digit"
+      }).format(d);
+    }
+    function timeValue(value) {
+      const t = new Date(value).getTime();
+      return isNaN(t) ? 0 : t;
+    }
+    function normalizeItems(rows) {
+      if (!Array.isArray(rows)) return [];
+      return rows.map((row) => ({
+        section: String(row.section || ""),
+        item: String(row.item || ""),
+        qty: row.qty == null ? (row.listed == null ? null : Number(row.listed)) : Number(row.qty)
+      })).filter((row) => row.item);
+    }
+    function catalogFrom(items, fallback) {
+      const rows = normalizeItems(items);
+      return rows.length ? rows : normalizeItems(fallback);
+    }
+    function normalizeLog(rows) {
+      if (!Array.isArray(rows)) return [];
+      return rows.map((row) => ({
+        timestamp: row.timestamp || "",
+        action: String(row.action || "").toUpperCase(),
+        item: String(row.item || ""),
+        section: String(row.section || ""),
+        qty: Number(row.qty),
+        person: String(row.person || ""),
+        van: String(row.van || ""),
+        note: String(row.note || ""),
+        location: String(row.location || "")
+      })).filter((row) => row.action === "ADD" || row.action === "TAKE");
+    }
+    function normalizeCounts(rows) {
+      if (!Array.isArray(rows)) return [];
+      return rows.map((row) => ({
+        date: String(row.date || ""),
+        van: String(row.van || ""),
+        mechanic: String(row.mechanic || ""),
+        item: String(row.item || ""),
+        section: String(row.section || ""),
+        listed: row.listed == null || row.listed === "" ? null : Number(row.listed),
+        actual: row.actual == null || row.actual === "" ? null : Number(row.actual)
+      })).filter((row) => row.item && row.van && /^\d{4}-\d{2}-\d{2}$/.test(row.date) && row.actual != null && isFinite(row.actual));
+    }
+    function onHandMap(log, location) {
+      const map = new Map();
+      log.forEach((row) => {
+        if (location && row.location !== location) return;
+        if (row.action !== "ADD" && row.action !== "TAKE") return;
+        if (!isFinite(row.qty)) return;
+        const delta = row.action === "ADD" ? row.qty : -row.qty;
+        const key = itemKey(row.section, row.item);
+        map.set(key, (map.get(key) || 0) + delta);
+      });
+      return map;
+    }
+    function breakdown(log, section, item, locs) {
+      const key = itemKey(section, item);
+      const map = new Map();
+      (locs || []).forEach((name) => map.set(name, 0));
+      log.forEach((row) => {
+        if (itemKey(row.section, row.item) !== key) return;
+        if (row.action !== "ADD" && row.action !== "TAKE") return;
+        if (!isFinite(row.qty)) return;
+        const delta = row.action === "ADD" ? row.qty : -row.qty;
+        map.set(row.location, (map.get(row.location) || 0) + delta);
+      });
+      return Array.from(map.entries());
+    }
+    function officeRows(catalog, log, view, sectionFilter, query) {
+      const q = String(query || "").trim().toLowerCase();
+      const totals = onHandMap(log, view || "");
+      const seen = new Set();
+      const rows = [];
+      function consider(section, item, listed) {
+        const key = itemKey(section, item);
+        if (seen.has(key)) return;
+        if (sectionFilter && section !== sectionFilter) return;
+        if (q && (item + " " + section).toLowerCase().indexOf(q) === -1) return;
+        seen.add(key);
+        const onHand = totals.get(key) || 0;
+        rows.push({ section, item, listed, onHand, low: onHand <= 0, negative: onHand < 0 });
+      }
+      catalog.forEach((it) => consider(it.section, it.item, it.qty));
+      log.forEach((row) => consider(row.section, row.item, null));
+      return rows;
+    }
+    function latestReport(vanCounts, plate) {
+      const key = normPlate(plate);
+      if (!key) return null;
+      const rows = vanCounts.filter((row) => normPlate(row.van) === key && row.date);
+      if (!rows.length) return null;
+      let date = "";
+      rows.forEach((row) => { if (row.date > date) date = row.date; });
+      const latest = rows.filter((row) => row.date === date);
+      const byItem = new Map();
+      latest.forEach((row) => byItem.set(itemKey(row.section, row.item), row));
+      const names = [];
+      latest.forEach((row) => {
+        if (row.mechanic && names.indexOf(row.mechanic) === -1) names.push(row.mechanic);
+      });
+      return { date, mechanic: names.join(", "), rows: Array.from(byItem.values()) };
+    }
+    function takenSinceMap(log, plate, sinceDate) {
+      const key = normPlate(plate);
+      const map = new Map();
+      if (!key) return map;
+      log.forEach((row) => {
+        if (row.action !== "TAKE") return;
+        if (normPlate(row.van) !== key) return;
+        if (!isFinite(row.qty)) return;
+        if (sinceDate) {
+          const day = nyDateKey(row.timestamp);
+          if (!day || day < sinceDate) return;
+        }
+        const id = itemKey(row.section, row.item);
+        map.set(id, (map.get(id) || 0) + row.qty);
+      });
+      return map;
+    }
+    function vanRows(catalog, log, vanCounts, plate) {
+      const report = latestReport(vanCounts, plate);
+      const taken = takenSinceMap(log, plate, report ? report.date : null);
+      const countByKey = new Map();
+      if (report) report.rows.forEach((row) => countByKey.set(itemKey(row.section, row.item), row));
+      const seen = new Set();
+      const rows = [];
+      function push(section, item, listed) {
+        const key = itemKey(section, item);
+        if (seen.has(key)) return;
+        seen.add(key);
+        const count = countByKey.get(key);
+        const lastActual = count && count.actual != null && isFinite(Number(count.actual)) ? Number(count.actual) : null;
+        const took = taken.get(key) || 0;
+        const estimated = lastActual == null ? null : lastActual + took;
+        const listedNum = listed == null || listed === "" || !isFinite(Number(listed)) ? null : Number(listed);
+        const short = estimated != null && listedNum != null && estimated < listedNum;
+        rows.push({
+          section, item, listed: listedNum, lastActual,
+          lastDate: report ? report.date : "",
+          mechanic: report ? report.mechanic : "",
+          taken: took, estimated, short
+        });
+      }
+      catalog.forEach((it) => push(it.section, it.item, it.qty));
+      countByKey.forEach((row) => push(row.section, row.item, row.listed));
+      taken.forEach((qty, key) => {
+        const parts = key.split("\n");
+        push(parts[0], parts.slice(1).join("\n"), null);
+      });
+      rows.sort((a, b) => Number(b.short) - Number(a.short));
+      return { report, rows };
+    }
+    function takenRows(log, person, van, office) {
+      return log.filter((row) => {
+        if (row.action !== "TAKE") return false;
+        if (person && row.person !== person) return false;
+        if (van && normPlate(row.van) !== normPlate(van)) return false;
+        if (office && row.location !== office) return false;
+        return true;
+      }).slice().sort((a, b) => timeValue(b.timestamp) - timeValue(a.timestamp));
+    }
+    function plateChoices(log, counts) {
+      const map = new Map();
+      function add(raw, time) {
+        const key = normPlate(raw);
+        if (!key) return;
+        const prev = map.get(key);
+        if (!prev || time >= prev.time) map.set(key, { key, label: String(raw).trim(), time });
+      }
+      log.forEach((row) => { if (row.action === "TAKE") add(row.van, timeValue(row.timestamp)); });
+      counts.forEach((row) => add(row.van, Date.parse(row.date + "T00:00:00Z") || 0));
+      return Array.from(map.values()).sort((a, b) => a.label.localeCompare(b.label));
+    }
+    // PURE END
+
+    const $ = (id) => document.getElementById(id);
+    const state = {
+      locations: LOCATIONS.slice(),
+      catalog: catalogFrom(null, ITEMS),
+      log: [],
+      vanCounts: [],
+      view: "",
+      section: "",
+      query: "",
+      logPerson: "",
+      logVan: "",
+      logOffice: "",
+      vanPlate: "",
+      shortOnly: false,
+      status: ""
+    };
+    const draft = { mode: "", location: "", chosen: null, query: "" };
+
+    function el(tag, cls, text) {
+      const node = document.createElement(tag);
+      if (cls) node.className = cls;
+      if (text != null) node.textContent = text;
+      return node;
+    }
+    function stored(key) {
+      try { return localStorage.getItem(key) || ""; } catch (err) { return ""; }
+    }
+    function store(key, value) {
+      try {
+        if (value) localStorage.setItem(key, value);
+        else localStorage.removeItem(key);
+      } catch (err) { /* private mode */ }
+    }
+    function toast(message) {
+      const node = $("toast");
+      node.textContent = message;
+      node.style.display = "block";
+      clearTimeout(toast.timer);
+      toast.timer = setTimeout(() => { node.style.display = "none"; }, 2400);
+    }
+    function showError(message) {
+      const node = $("loadError");
+      if (!node) return;
+      if (!message) { node.classList.remove("show"); node.textContent = ""; return; }
+      node.textContent = message;
+      node.classList.add("show");
+    }
+
+    function shell() {
+      const root = $("app");
+      root.textContent = "";
+      const pin = el("div", "meta");
+      pin.id = "pinBar";
+      root.appendChild(pin);
+
+      const err = el("div", "error");
+      err.id = "loadError";
+      err.setAttribute("role", "alert");
+      root.appendChild(err);
+
+      const actions = el("div", "actions");
+      const add = el("button", "primary", "Add stock");
+      add.type = "button";
+      add.id = "addBtn";
+      const take = el("button", "take", "Take stock");
+      take.type = "button";
+      take.id = "takeBtn";
+      actions.appendChild(add);
+      actions.appendChild(take);
+      root.appendChild(actions);
+
+      const form = el("div", "meta");
+      form.id = "formCard";
+      form.hidden = true;
+      root.appendChild(form);
+
+      const officeHead = el("h2");
+      officeHead.appendChild(el("span", null, "Office stock"));
+      const refresh = el("button", null, "Refresh");
+      refresh.type = "button";
+      refresh.id = "refreshBtn";
+      officeHead.appendChild(refresh);
+      root.appendChild(officeHead);
+      const status = el("p", "hint");
+      status.id = "statusLine";
+      root.appendChild(status);
+
+      const locSwitch = el("div", "toolbar");
+      locSwitch.id = "locSwitch";
+      root.appendChild(locSwitch);
+
+      const search = document.createElement("input");
+      search.id = "search";
+      search.type = "search";
+      search.placeholder = "Search items";
+      search.setAttribute("aria-label", "Search items");
+      search.autocomplete = "off";
+      root.appendChild(search);
+
+      const section = document.createElement("select");
+      section.id = "sectionFilter";
+      section.setAttribute("aria-label", "Section");
+      section.style.margin = "8px 0 12px";
+      root.appendChild(section);
+
+      const summary = el("div", "summary");
+      summary.id = "officeSummary";
+      root.appendChild(summary);
+      const officeList = el("div");
+      officeList.id = "officeList";
+      root.appendChild(officeList);
+
+      const logHead = el("h2");
+      logHead.appendChild(el("span", null, "Taken from the office"));
+      root.appendChild(logHead);
+      const filters = el("div", "filters");
+      filters.appendChild(selectBox("logPerson", "Filter by person"));
+      filters.appendChild(selectBox("logVan", "Filter by van"));
+      filters.appendChild(selectBox("logOffice", "Filter by office"));
+      root.appendChild(filters);
+      const logList = el("div");
+      logList.id = "logList";
+      root.appendChild(logList);
+
+      const vanHead = el("h2");
+      vanHead.appendChild(el("span", null, "Stock per van"));
+      root.appendChild(vanHead);
+      root.appendChild(el("p", "hint", "Pick a plate. Estimated count is the last checklist count plus what that van has taken from either office since that checklist date, including that day."));
+      const vanPick = document.createElement("input");
+      vanPick.id = "vanPick";
+      vanPick.type = "text";
+      vanPick.placeholder = "Van license plate";
+      vanPick.setAttribute("aria-label", "Van license plate");
+      vanPick.autocapitalize = "characters";
+      vanPick.autocomplete = "off";
+      vanPick.spellcheck = false;
+      vanPick.setAttribute("list", "vanPicks");
+      root.appendChild(vanPick);
+      const vans = document.createElement("datalist");
+      vans.id = "vanPicks";
+      root.appendChild(vans);
+      const people = document.createElement("datalist");
+      people.id = "peopleList";
+      root.appendChild(people);
+      const shortBtn = el("button", null, "Short only");
+      shortBtn.type = "button";
+      shortBtn.id = "shortOnly";
+      const shortBar = el("div", "toolbar");
+      shortBar.appendChild(shortBtn);
+      root.appendChild(shortBar);
+      const vanSummary = el("div");
+      vanSummary.id = "vanSummary";
+      root.appendChild(vanSummary);
+      const vanList = el("div");
+      vanList.id = "vanList";
+      root.appendChild(vanList);
+
+      add.addEventListener("click", () => openForm("ADD"));
+      take.addEventListener("click", () => openForm("TAKE"));
+      refresh.addEventListener("click", () => load(true));
+      search.addEventListener("input", () => { state.query = search.value; renderOffice(); });
+      section.addEventListener("change", () => { state.section = section.value; renderOffice(); });
+      $("logPerson").addEventListener("change", () => { state.logPerson = $("logPerson").value; renderLog(); });
+      $("logVan").addEventListener("change", () => { state.logVan = $("logVan").value; renderLog(); });
+      $("logOffice").addEventListener("change", () => { state.logOffice = $("logOffice").value; renderLog(); });
+      vanPick.addEventListener("input", () => { state.vanPlate = vanPick.value; renderVan(); });
+      shortBtn.addEventListener("click", () => {
+        state.shortOnly = !state.shortOnly;
+        shortBtn.classList.toggle("active", state.shortOnly);
+        renderVan();
+      });
+      renderPin();
+      renderLocationSwitch();
+      renderFilters();
+      renderOffice();
+      renderLog();
+      renderVan();
+    }
+
+    function selectBox(id, label) {
+      const node = document.createElement("select");
+      node.id = id;
+      if (label) node.setAttribute("aria-label", label);
+      return node;
+    }
+
+    function renderPin() {
+      const bar = $("pinBar");
+      bar.textContent = "";
+      const saved = stored(PIN_KEY);
+      if (saved) {
+        bar.appendChild(el("strong", null, "PIN saved on this phone."));
+        const change = el("button", null, "Change PIN");
+        change.type = "button";
+        change.style.marginLeft = "8px";
+        change.addEventListener("click", () => { store(PIN_KEY, ""); renderPin(); });
+        bar.appendChild(change);
+        bar.appendChild(el("p", "hint", "Anyone can look at stock. The PIN is only for Add and Take."));
+        return;
+      }
+      const label = el("label", null, "Office PIN");
+      label.htmlFor = "pin";
+      bar.appendChild(label);
+      const row = el("div", "pin-row");
+      const input = document.createElement("input");
+      input.id = "pin";
+      input.type = "password";
+      input.autocomplete = "current-password";
+      input.placeholder = "Shared office PIN";
+      const save = el("button", "primary", "Save");
+      save.type = "button";
+      row.appendChild(input);
+      row.appendChild(save);
+      bar.appendChild(row);
+      bar.appendChild(el("p", "hint", "Enter it once. This phone remembers it for Add and Take."));
+      const commit = () => {
+        const value = input.value.trim();
+        if (!value) { input.focus(); return; }
+        store(PIN_KEY, value);
+        renderPin();
+        toast("PIN saved on this phone.");
+      };
+      save.addEventListener("click", commit);
+      input.addEventListener("keydown", (event) => { if (event.key === "Enter") commit(); });
+    }
+
+    function renderLocationSwitch() {
+      const bar = $("locSwitch");
+      bar.textContent = "";
+      const options = state.locations.map((name) => ({ value: name, label: name }));
+      options.push({ value: "", label: "Both offices" });
+      options.forEach((opt) => {
+        const btn = el("button", state.view === opt.value ? "active" : "", opt.label);
+        btn.type = "button";
+        btn.setAttribute("aria-pressed", state.view === opt.value ? "true" : "false");
+        btn.addEventListener("click", () => {
+          state.view = opt.value;
+          renderLocationSwitch();
+          renderOffice();
+        });
+        bar.appendChild(btn);
+      });
+    }
+
+    function fillSelect(id, options, current, allLabel) {
+      const select = $(id);
+      select.textContent = "";
+      const all = el("option", null, allLabel);
+      all.value = "";
+      select.appendChild(all);
+      options.forEach((opt) => {
+        const node = el("option", null, opt.label);
+        node.value = opt.value;
+        select.appendChild(node);
+      });
+      select.value = current;
+      if (select.value !== current) select.value = "";
+    }
+
+    function renderFilters() {
+      const sections = [];
+      state.catalog.forEach((it) => { if (sections.indexOf(it.section) === -1) sections.push(it.section); });
+      fillSelect("sectionFilter", sections.map((name) => ({ value: name, label: name })), state.section, "All sections");
+      const people = [];
+      state.log.forEach((row) => { if (row.person && people.indexOf(row.person) === -1) people.push(row.person); });
+      people.sort((a, b) => a.localeCompare(b));
+      fillSelect("logPerson", people.map((name) => ({ value: name, label: name })), state.logPerson, "All people");
+      const plates = plateChoices(state.log, state.vanCounts);
+      fillSelect("logVan", plates.map((plate) => ({ value: plate.label, label: plate.label })), state.logVan, "All vans");
+      fillSelect("logOffice", state.locations.map((name) => ({ value: name, label: name })), state.logOffice, "All offices");
+      const list = $("vanPicks");
+      list.textContent = "";
+      plates.forEach((plate) => {
+        const opt = document.createElement("option");
+        opt.value = plate.label;
+        list.appendChild(opt);
+      });
+      const peopleList = $("peopleList");
+      peopleList.textContent = "";
+      people.forEach((name) => {
+        const opt = document.createElement("option");
+        opt.value = name;
+        peopleList.appendChild(opt);
+      });
+    }
+
+    function renderOffice() {
+      const rows = officeRows(state.catalog, state.log, state.view, state.section, state.query);
+      const low = rows.filter((row) => row.low).length;
+      const summary = $("officeSummary");
+      summary.textContent = "";
+      const total = el("div");
+      total.appendChild(el("strong", null, String(rows.length)));
+      total.appendChild(document.createTextNode("showing"));
+      const zero = el("div", "s-less");
+      zero.appendChild(el("strong", null, String(low)));
+      zero.appendChild(document.createTextNode("at zero or below"));
+      summary.appendChild(total);
+      summary.appendChild(zero);
+
+      const list = $("officeList");
+      list.textContent = "";
+      if (!rows.length) {
+        list.appendChild(el("p", "hint", "No items match."));
+        return;
+      }
+      let last = "";
+      rows.forEach((row) => {
+        if (row.section !== last) {
+          last = row.section;
+          list.appendChild(el("h3", "section", row.section || "Other"));
+        }
+        const card = el("div", "item" + (row.negative ? " negative" : row.low ? " low" : ""));
+        card.appendChild(el("h3", null, row.item));
+        const count = el("div", "onhand", String(row.onHand));
+        card.appendChild(count);
+        const where = state.view ? state.view : "both offices";
+        card.appendChild(el("div", "muted", "On hand, " + where));
+        if (!state.view) {
+          const parts = breakdown(state.log, row.section, row.item, state.locations);
+          const line = el("div", "split muted");
+          parts.forEach((part, index) => {
+            if (index) line.appendChild(document.createTextNode(" · "));
+            const bit = el("span", part[1] < 0 ? "neg" : "", part[0] + " " + part[1]);
+            line.appendChild(bit);
+          });
+          card.appendChild(line);
+        }
+        list.appendChild(card);
+      });
+    }
+
+    function renderLog() {
+      const rows = takenRows(state.log, state.logPerson, state.logVan, state.logOffice);
+      const list = $("logList");
+      list.textContent = "";
+      if (!rows.length) {
+        list.appendChild(el("p", "hint", "Nothing taken from the office yet."));
+        return;
+      }
+      rows.forEach((row) => {
+        const card = el("div", "item");
+        const title = el("h3", null, row.item);
+        const badge = el("span", "badge", "Took " + (isFinite(row.qty) ? row.qty : "?"));
+        title.appendChild(badge);
+        card.appendChild(title);
+        card.appendChild(el("div", "muted", row.section));
+        const bits = [formatNy(row.timestamp) || "Unknown time", row.person || "No name", row.van || "No plate", row.location || "No office"];
+        card.appendChild(el("div", null, bits.join(" · ")));
+        if (row.note) card.appendChild(el("div", "muted", row.note));
+        list.appendChild(card);
+      });
+    }
+
+    function renderVan() {
+      const summary = $("vanSummary");
+      const list = $("vanList");
+      summary.textContent = "";
+      list.textContent = "";
+      const plate = state.vanPlate.trim();
+      if (!normPlate(plate)) {
+        summary.appendChild(el("p", "hint", "Type a license plate to see that van."));
+        return;
+      }
+      const result = vanRows(state.catalog, state.log, state.vanCounts, plate);
+      const shown = state.shortOnly ? result.rows.filter((row) => row.short) : result.rows;
+      const short = result.rows.filter((row) => row.short).length;
+      const intro = el("div", "summary");
+      const a = el("div");
+      a.appendChild(el("strong", null, plate.toUpperCase()));
+      a.appendChild(document.createTextNode(result.report ? formatNy(result.report.date) : "No checklist yet"));
+      const b = el("div", "s-less");
+      b.appendChild(el("strong", null, String(short)));
+      b.appendChild(document.createTextNode("short"));
+      intro.appendChild(a);
+      intro.appendChild(b);
+      summary.appendChild(intro);
+      if (result.report && result.report.mechanic) {
+        summary.appendChild(el("p", "hint", "Last checklist by " + result.report.mechanic + "."));
+      }
+      if (!result.report) {
+        summary.appendChild(el("p", "hint", "No weekly checklist yet for this plate. Taken amounts are everything recorded for this van. There is no estimated count until a checklist is in Van Counts."));
+      }
+      if (!shown.length) {
+        list.appendChild(el("p", "hint", state.shortOnly ? "Nothing is short on this van." : "No items."));
+        return;
+      }
+      shown.forEach((row) => {
+        const card = el("div", "item" + (row.short ? " negative" : ""));
+        const title = el("h3", null, row.item);
+        if (row.short) title.appendChild(el("span", "badge", "Short"));
+        card.appendChild(title);
+        card.appendChild(el("div", "muted", row.section));
+        card.appendChild(line("Listed", row.listed == null ? "—" : String(row.listed)));
+        const last = row.lastActual == null ? "No count on the last checklist" : String(row.lastActual) + " on " + formatNy(row.lastDate);
+        card.appendChild(line("Last checklist", last));
+        card.appendChild(line(result.report ? "Taken since checklist" : "Taken from the office", String(row.taken)));
+        card.appendChild(line("Estimated now", row.estimated == null ? "—" : String(row.estimated)));
+        list.appendChild(card);
+      });
+    }
+
+    function line(label, value) {
+      const node = el("div");
+      node.appendChild(el("span", "muted", label + ": "));
+      node.appendChild(document.createTextNode(value));
+      return node;
+    }
+
+    function openForm(mode) {
+      draft.mode = mode;
+      draft.location = "";
+      draft.chosen = null;
+      draft.query = "";
+      const card = $("formCard");
+      card.hidden = false;
+      card.textContent = "";
+      const form = document.createElement("form");
+      form.autocomplete = "off";
+      form.appendChild(el("h2", null, mode === "ADD" ? "Add stock" : "Take stock"));
+      form.appendChild(el("label", null, "Office"));
+      const locs = el("div", "loc-choices");
+      locs.id = "formLocs";
+      form.appendChild(locs);
+      const itemLabel = el("label", null, "Item");
+      itemLabel.htmlFor = "itemSearch";
+      itemLabel.style.marginTop = "10px";
+      form.appendChild(itemLabel);
+      const search = document.createElement("input");
+      search.id = "itemSearch";
+      search.type = "text";
+      search.placeholder = "Type to find an item";
+      search.autocomplete = "off";
+      form.appendChild(search);
+      const results = el("div");
+      results.id = "itemResults";
+      form.appendChild(results);
+      const chosen = el("div");
+      chosen.id = "itemChosen";
+      form.appendChild(chosen);
+      form.appendChild(field("qty", "Quantity", "number", "1"));
+      form.appendChild(field("person", mode === "TAKE" ? "Who is taking it" : "Person", "text", "Name"));
+      if (mode === "TAKE") form.appendChild(field("van", "Van license plate", "text", "License plate"));
+      form.appendChild(field("note", "Note (optional)", "text", "Delivery, job, or reason"));
+      const error = el("div", "error");
+      error.id = "formError";
+      form.appendChild(error);
+      const box = el("div", "submit-box");
+      const save = el("button", "primary", mode === "ADD" ? "Add to office" : "Take from office");
+      save.type = "submit";
+      save.id = "saveMove";
+      const cancel = el("button", null, "Cancel");
+      cancel.type = "button";
+      cancel.style.width = "100%";
+      cancel.style.marginTop = "8px";
+      box.appendChild(save);
+      box.appendChild(cancel);
+      form.appendChild(box);
+      card.appendChild(form);
+      renderFormLocs();
+      const person = $("person");
+      person.setAttribute("list", "peopleList");
+      person.value = stored(PERSON_KEY);
+      if (mode === "TAKE") {
+        const van = $("van");
+        van.setAttribute("list", "vanPicks");
+        van.autocapitalize = "characters";
+        van.spellcheck = false;
+        van.value = stored(VAN_KEY);
+      }
+      search.addEventListener("input", () => {
+        draft.query = search.value;
+        draft.chosen = null;
+        renderChosen();
+        renderItemResults();
+      });
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        submitForm();
+      });
+      cancel.addEventListener("click", closeForm);
+      card.scrollIntoView({ behavior: "smooth", block: "start" });
+      search.focus();
+    }
+
+    function field(id, label, type, placeholder) {
+      const wrap = el("div", "field");
+      const lab = el("label", null, label);
+      lab.htmlFor = id;
+      const input = document.createElement("input");
+      input.id = id;
+      input.type = type;
+      input.placeholder = placeholder;
+      if (type === "number") { input.min = "1"; input.step = "1"; input.inputMode = "numeric"; }
+      wrap.appendChild(lab);
+      wrap.appendChild(input);
+      return wrap;
+    }
+
+    function renderFormLocs() {
+      const locs = $("formLocs");
+      if (!locs) return;
+      locs.textContent = "";
+      state.locations.forEach((name) => {
+        const btn = el("button", draft.location === name ? "active" : "", name);
+        btn.type = "button";
+        btn.addEventListener("click", () => {
+          draft.location = name;
+          renderFormLocs();
+        });
+        locs.appendChild(btn);
+      });
+    }
+
+    function renderItemResults() {
+      const box = $("itemResults");
+      if (!box) return;
+      box.textContent = "";
+      const q = draft.query.trim().toLowerCase();
+      if (!q || draft.chosen) return;
+      const matches = state.catalog.filter((it) => (it.item + " " + it.section).toLowerCase().indexOf(q) !== -1);
+      matches.slice(0, 20).forEach((it) => {
+        const btn = el("button", "pick", it.item);
+        btn.type = "button";
+        btn.appendChild(el("span", null, it.section));
+        btn.addEventListener("click", () => {
+          draft.chosen = it;
+          $("itemSearch").value = it.item;
+          draft.query = it.item;
+          renderChosen();
+          renderItemResults();
+        });
+        box.appendChild(btn);
+      });
+      if (!matches.length) box.appendChild(el("p", "hint", "No matching item."));
+      else if (matches.length > 20) box.appendChild(el("p", "hint", "Keep typing to narrow the list."));
+    }
+
+    function renderChosen() {
+      const box = $("itemChosen");
+      if (!box) return;
+      box.textContent = "";
+      if (!draft.chosen) return;
+      const chip = el("div", "chip");
+      chip.appendChild(el("strong", null, draft.chosen.item));
+      chip.appendChild(el("div", "muted", draft.chosen.section));
+      const clear = el("button", null, "Choose a different item");
+      clear.type = "button";
+      clear.style.marginTop = "8px";
+      clear.addEventListener("click", () => {
+        draft.chosen = null;
+        $("itemSearch").value = "";
+        draft.query = "";
+        renderChosen();
+        $("itemSearch").focus();
+      });
+      chip.appendChild(clear);
+      box.appendChild(chip);
+    }
+
+    function resolveChosen() {
+      if (draft.chosen) return draft.chosen;
+      const q = draft.query.trim().toLowerCase();
+      if (!q) return null;
+      const exact = state.catalog.filter((it) => it.item.toLowerCase() === q);
+      return exact.length === 1 ? exact[0] : null;
+    }
+
+    function formError(message) {
+      const node = $("formError");
+      if (!message) { node.classList.remove("show"); node.textContent = ""; return; }
+      node.textContent = message;
+      node.classList.add("show");
+    }
+
+    async function submitForm() {
+      formError("");
+      const item = resolveChosen();
+      const qty = $("qty").value;
+      const person = $("person").value.trim();
+      const note = $("note").value.trim();
+      const van = draft.mode === "TAKE" ? $("van").value.trim() : "";
+      if (!draft.location) return formError("Choose Power Brooklyn or Power HQ.");
+      if (state.locations.indexOf(draft.location) === -1) return formError("Choose an office.");
+      if (!item) return formError("Choose an item from the list. If the name is in two sections, tap the right one.");
+      if (!isPositiveInt(qty)) return formError("Quantity has to be a whole number greater than zero.");
+      if (!person) return formError("Enter the person's name.");
+      if (draft.mode === "TAKE" && !van) return formError("Enter the van license plate.");
+      const pin = stored(PIN_KEY);
+      if (!pin) {
+        renderPin();
+        const pinInput = $("pin");
+        if (pinInput) pinInput.focus();
+        return formError("Enter the office PIN and save it on this phone.");
+      }
+      const button = $("saveMove");
+      button.disabled = true;
+      button.textContent = "Saving…";
+      try {
+        await postMovement({
+          action: draft.mode,
+          item: item.item,
+          section: item.section,
+          qty: Number(qty),
+          person,
+          van,
+          note,
+          location: draft.location,
+          pin
+        });
+        store(PERSON_KEY, person);
+        if (van) store(VAN_KEY, van);
+        toast(draft.mode === "ADD" ? "Added to " + draft.location + "." : "Taken from " + draft.location + ".");
+        closeForm();
+        await load(false);
+      } catch (err) {
+        const message = err.message || "Couldn't save.";
+        if (/pin/i.test(message)) {
+          store(PIN_KEY, "");
+          renderPin();
+          const pinInput = $("pin");
+          if (pinInput) pinInput.focus();
+        }
+        formError(message);
+        button.disabled = false;
+        button.textContent = draft.mode === "ADD" ? "Add to office" : "Take from office";
+      }
+    }
+
+    function closeForm() {
+      draft.mode = "";
+      const card = $("formCard");
+      card.hidden = true;
+      card.textContent = "";
+    }
+
+    async function postMovement(payload) {
+      let response;
+      try {
+        response = await fetch(API_URL, {
+          method: "POST",
+          redirect: "follow",
+          cache: "no-store",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(payload)
+        });
+      } catch (err) {
+        throw new Error("Couldn't reach the spreadsheet. Check the web app address, and that Who has access is set to Anyone.");
+      }
+      return readResponse(response);
+    }
+
+    async function load(manual) {
+      state.status = "Loading office stock…";
+      const line = $("statusLine");
+      if (line) line.textContent = state.status;
+      showError("");
+      let response;
+      try {
+        const join = API_URL.indexOf("?") === -1 ? "?" : "&";
+        response = await fetch(API_URL + join + "t=" + Date.now(), { method: "GET", redirect: "follow", cache: "no-store" });
+      } catch (err) {
+        showError("Couldn't reach the spreadsheet. Check the web app address, and that Who has access is set to Anyone.");
+        if (line) line.textContent = "";
+        return;
+      }
+      try {
+        const data = await readResponse(response);
+        if (Array.isArray(data.locations) && data.locations.length) state.locations = data.locations.slice();
+        state.catalog = catalogFrom(data.items, ITEMS);
+        state.log = normalizeLog(data.log);
+        state.vanCounts = normalizeCounts(data.vanCounts);
+        if (state.view && state.locations.indexOf(state.view) === -1) state.view = "";
+        state.status = manual ? "Updated " + formatNy(new Date().toISOString()) + "." : "Updated " + formatNy(new Date().toISOString()) + ".";
+        renderLocationSwitch();
+        renderFilters();
+        renderFormLocs();
+        renderOffice();
+        renderLog();
+        renderVan();
+        if (line) line.textContent = state.status;
+      } catch (err) {
+        showError(err.message || "Couldn't read the spreadsheet.");
+        if (line) line.textContent = "";
+      }
+    }
+
+    async function readResponse(response) {
+      const text = await response.text();
+      let data;
+      try { data = JSON.parse(text); }
+      catch (err) {
+        throw new Error("The spreadsheet didn't answer with stock data. Deploy the web app as Execute as me, and set Who has access to Anyone.");
+      }
+      if (!data || data.ok === false) throw new Error((data && data.error) || "Couldn't read the spreadsheet.");
+      return data;
+    }
+
+    function boot() {
+      if (!String(API_URL).trim()) return;
+      $("setup").hidden = true;
+      shell();
+      load(false);
+    }
+    try { boot(); }
+    catch (err) {
+      const extra = document.createElement("p");
+      extra.textContent = "This page hit an error: " + (err && err.message ? err.message : err);
+      $("setup").hidden = false;
+      $("setup").appendChild(extra);
+    }
+  </script>
+</body>
+</html>
