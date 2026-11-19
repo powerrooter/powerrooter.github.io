@@ -175,7 +175,7 @@
 <body>
   <header>
     <h1>Weekly Van Inventory &amp; Maintenance</h1>
-    <p>Note which van and which mechanic, then mark Exact, Less, or More than the listed amount</p>
+    <p>Note your name and the van's license plate, then mark Exact, Less, or More than the listed amount</p>
   </header>
   <div class="wrap">
     <div id="sentBanner">Checklist and photos sent to the office. Thank you!</div>
@@ -190,8 +190,8 @@
           <input id="date" type="date" required />
         </div>
         <div>
-          <label for="van">Which van <span class="req">*</span></label>
-          <input id="van" type="text" placeholder="Van name or number" required />
+          <label for="van">Van license plate <span class="req">*</span></label>
+          <input id="van" type="text" placeholder="License plate (e.g. ABC1234)" autocapitalize="characters" required />
         </div>
       </div>
     </div>
@@ -598,7 +598,7 @@
     function missingFields() {
       const missing = [];
       if (!(state.name || "").trim()) missing.push("Which mechanic");
-      if (!(state.van || "").trim()) missing.push("Which van");
+      if (!(state.van || "").trim()) missing.push("Van license plate");
       if (!(state.date || "").trim()) missing.push("Date");
       PHOTO_SLOTS.forEach(function (s) { if (!photos[s.id]) missing.push("Photo: " + slotTitle(s)); });
       return missing;
@@ -673,7 +673,7 @@
         _captcha: "false",
         Mechanic: name,
         Date: date,
-        Van: van,
+        "Van license plate": van,
         Summary: "Checked " + c.checked + "/" + c.total + "; Exact " + c.exact + "; Less " + c.less + "; More " + c.more,
         Short_items: problemLines("Less"),
         Extra_items: problemLines("More"),
