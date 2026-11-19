@@ -127,12 +127,39 @@
     .choices button[data-val="Exact"].on { background: var(--exact-bg); border-color: var(--exact); color: var(--exact); font-weight: 700; }
     .choices button[data-val="Less"].on { background: var(--less-bg); border-color: var(--less); color: var(--less); font-weight: 700; }
     .choices button[data-val="More"].on { background: var(--more-bg); border-color: var(--more); color: var(--more); font-weight: 700; }
+    button.none-btn {
+      width: 100%;
+      min-height: 52px;
+      margin: 0 0 10px;
+      border-radius: 12px;
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+    button.none-btn.on { background: var(--less); border-color: var(--less); color: #fff; }
+    .item.need-count { border: 2px solid var(--less); background: var(--less-bg); }
+    .need-msg { display: none; color: var(--less); font-weight: 700; font-size: .95rem; margin: 0 0 8px; }
+    .item.need-count .need-msg { display: block; }
+    .item.need-count .actual { border: 2px solid var(--less); }
     .qty-row { display: none; gap: 10px; align-items: end; }
     .qty-row.show { display: grid; grid-template-columns: 1fr; }
     .item.less { border-color: #f2b8b5; }
     .item.more { border-color: #f5c88a; }
     .item.exact { border-color: #9fd4b3; }
     .hidden { display: none !important; }
+    details.cat { margin: 8px 0 14px; }
+    details.cat > summary {
+      cursor: pointer;
+      font-weight: 700;
+      padding: 12px 14px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      list-style: none;
+    }
+    details.cat > summary::-webkit-details-marker { display: none; }
+    details.cat.short > summary { border-color: var(--less); background: var(--less-bg); }
+    details.cat[open] > summary { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+    details.cat .cat-body { padding: 8px 0 0; }
     .req { color: var(--orange); }
     footer { color: var(--muted); font-size: .85rem; margin: 8px 0 40px; }
     footer a { color: var(--navy); font-weight: 600; }
@@ -206,6 +233,8 @@
       <button id="copyBtn" type="button">Copy report</button>
       <button id="printBtn" type="button">Print</button>
       <button id="clearBtn" type="button">Clear form</button>
+      <button id="expandAll" type="button">Expand all</button>
+      <button id="collapseAll" type="button">Collapse all</button>
     </div>
     <div id="list"></div>
     <section class="photos" id="photos">
@@ -278,6 +307,17 @@
       renderSummary();
     }
 
+    function countMissing(row) {
+      return (row.status === "Less" || row.status === "More") && (row.actual === "" || row.actual == null || !isFinite(Number(row.actual)));
+    }
+
+    function markNone(i) {
+      state.rows[i].status = "Less";
+      state.rows[i].actual = "0";
+      save(state);
+      renderList();
+    }
+
     function setStatus(i, status) {
       const listed = ITEMS[i].qty;
       state.rows[i].status = status;
@@ -310,6 +350,9 @@
         card.querySelectorAll(".choices button").forEach((b) => {
           b.classList.toggle("on", b.dataset.val === state.rows[i].status);
         });
+        const noneBtn = card.querySelector(".none-btn");
+        if (noneBtn) noneBtn.classList.toggle("on", state.rows[i].status === "Less" && String(state.rows[i].actual) === "0");
+        card.classList.toggle("need-count", showCountErrors && countMissing(state.rows[i]));
       }
     }
 
@@ -345,6 +388,36 @@
     }
 
     let filter = "all";
+    let showCountErrors = false;
+    const catOpen = new Map();
+
+    function sectionVisible(row) {
+      return filter === "all" || (filter === "unchecked" && !row.status) || row.status === filter;
+    }
+    function sectionDetails(section, shortCount, pcs) {
+      const key = section;
+      if (!catOpen.has(key)) catOpen.set(key, shortCount > 0);
+      const det = document.createElement("details");
+      det.className = "cat" + (shortCount > 0 ? " short" : "");
+      det.dataset.key = key;
+      det.open = !!catOpen.get(key);
+      det.addEventListener("toggle", () => { catOpen.set(key, det.open); });
+      const sum = document.createElement("summary");
+      sum.textContent = section + ": " + shortCount + " short, " + pcs + " pcs";
+      det.appendChild(sum);
+      const mark = document.createElement("button");
+      mark.type = "button";
+      mark.textContent = "Mark section exact";
+      mark.addEventListener("click", () => markSectionExact(section));
+      det.appendChild(mark);
+      return det;
+    }
+    function setAllSections(open) {
+      document.querySelectorAll("details.cat").forEach((det) => {
+        det.open = open;
+        if (det.dataset.key) catOpen.set(det.dataset.key, open);
+      });
+    }
 
     function renderList() {
       $("name").value = state.name || "";
@@ -354,27 +427,38 @@
       renderSummary();
       const root = $("list");
       root.innerHTML = "";
-      let last = "";
+      const groups = [];
+      let current = null;
       ITEMS.forEach((it, i) => {
-        const row = state.rows[i];
-        const show =
-          filter === "all" ||
-          (filter === "unchecked" && !row.status) ||
-          row.status === filter;
-        if (it.section !== last) {
-          last = it.section;
-          const h = document.createElement("h2");
-          h.innerHTML = `<span></span>`;
-          h.querySelector("span").textContent = it.section;
-          const b = document.createElement("button");
-          b.type = "button";
-          b.textContent = "Mark section exact";
-          b.addEventListener("click", () => markSectionExact(it.section));
-          h.appendChild(b);
-          root.appendChild(h);
+        if (!sectionVisible(state.rows[i])) return;
+        if (!current || current.section !== it.section) {
+          current = { section: it.section, indexes: [] };
+          groups.push(current);
         }
+        current.indexes.push(i);
+      });
+      groups.forEach((group) => {
+        let short = 0;
+        let pcs = 0;
+        group.indexes.forEach((i) => {
+          const row = state.rows[i];
+          if (row.status !== "Less") return;
+          short += 1;
+          const actual = row.actual === "" || row.actual == null ? 0 : Number(row.actual);
+          if (isFinite(actual)) pcs += Math.max(0, ITEMS[i].qty - actual);
+        });
+        const det = sectionDetails(group.section, short, pcs);
+        group.indexes.forEach((i) => det.appendChild(itemCard(i)));
+        root.appendChild(det);
+      });
+    }
+
+    function itemCard(i) {
+        const it = ITEMS[i];
+        const row = state.rows[i];
         const card = document.createElement("div");
-        card.className = "item" + (row.status ? " " + row.status.toLowerCase() : "") + (show ? "" : " hidden");
+        const needsCount = showCountErrors && countMissing(row);
+        card.className = "item" + (row.status ? " " + row.status.toLowerCase() : "") + (needsCount ? " need-count" : "");
         card.dataset.index = String(i);
         card.innerHTML = `
           <h3></h3>
@@ -384,6 +468,8 @@
             <button type="button" data-val="Less">Less</button>
             <button type="button" data-val="More">More</button>
           </div>
+          <button type="button" class="none-btn">None / missing</button>
+          <p class="need-msg">Enter how many you have, or tap None / missing.</p>
           <div class="qty-row">
             <div>
               <label>How many do you actually have?</label>
@@ -402,6 +488,9 @@
           if (btn.dataset.val === row.status) btn.classList.add("on");
           btn.addEventListener("click", () => setStatus(i, btn.dataset.val));
         });
+        const noneBtn = card.querySelector(".none-btn");
+        if (row.status === "Less" && String(row.actual) === "0") noneBtn.classList.add("on");
+        noneBtn.addEventListener("click", () => markNone(i));
         const actual = card.querySelector(".actual");
         actual.value = row.actual || "";
         actual.addEventListener("input", (e) => setActual(i, e.target.value));
@@ -411,8 +500,7 @@
           state.rows[i].note = e.target.value;
           save(state);
         });
-        root.appendChild(card);
-      });
+        return card;
     }
 
     function reportText() {
@@ -428,9 +516,7 @@
       ITEMS.forEach((it, i) => {
         const row = state.rows[i];
         if (row.status === "Less" || row.status === "More") {
-          const have = row.actual === "" ? "?" : row.actual;
-          const extra = row.note ? " — " + row.note : "";
-          problems.push(row.status.toUpperCase() + " — " + it.section + ": " + it.item + " (listed " + it.qty + ", have " + have + ")" + extra);
+          problems.push(it.section + ": " + needPhrase(it, row));
         }
       });
       if (problems.length) {
@@ -452,6 +538,8 @@
         renderList();
       });
     });
+    $("expandAll").addEventListener("click", () => setAllSections(true));
+    $("collapseAll").addEventListener("click", () => setAllSections(false));
     function problemLines(status) {
       const lines = [];
       ITEMS.forEach((it, i) => {
@@ -641,15 +729,31 @@
         const el = document.querySelector('[data-slot="' + s.id + '"]');
         if (el) el.classList.toggle("missing", !photos[s.id]);
       });
-      if (missing.length) {
-        const msg = "Can't submit yet. Still missing:\n• " + missing.join("\n• ");
+      const blankCounts = [];
+      ITEMS.forEach(function (it, i) { if (countMissing(state.rows[i])) blankCounts.push(i); });
+      if (missing.length || blankCounts.length) {
+        showCountErrors = blankCounts.length > 0;
+        if (showCountErrors && filter !== "all") {
+          filter = "all";
+          document.querySelectorAll("[data-filter]").forEach((b) => b.classList.toggle("active", b.dataset.filter === "all"));
+        }
+        renderList();
+        const lines = missing.slice();
+        if (blankCounts.length) lines.push("How many you have for: " + blankCounts.map((i) => ITEMS[i].item).join(", "));
+        const msg = "Can't submit yet. Still missing:\n• " + lines.join("\n• ") + (blankCounts.length ? "\n\nTap None / missing if the van has zero." : "");
         showError(msg);
         alert(msg);
-        const first = missing[0];
-        if (first.indexOf("Photo:") === 0) $("photos").scrollIntoView({ behavior: "smooth", block: "start" });
-        else window.scrollTo({ top: 0, behavior: "smooth" });
+        if (blankCounts.length) {
+          const card = document.querySelector('[data-index="' + blankCounts[0] + '"]');
+          if (card) card.scrollIntoView({ behavior: "smooth", block: "center" });
+        } else if (missing[0].indexOf("Photo:") === 0) {
+          $("photos").scrollIntoView({ behavior: "smooth", block: "start" });
+        } else {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
         return;
       }
+      showCountErrors = false;
       hideError();
       const c = counts();
       if (c.checked < c.total && !confirm("You still have " + (c.total - c.checked) + " items not checked. Submit anyway?")) return;

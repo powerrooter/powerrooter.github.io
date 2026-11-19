@@ -236,7 +236,7 @@
       "item": "Drop head 25 ft cable",
       "listed": 1,
       "status": "Less",
-      "actual": null,
+      "actual": 0,
       "note": ""
     },
     {
@@ -244,7 +244,7 @@
       "item": "Construction gloves",
       "listed": 3,
       "status": "Less",
-      "actual": null,
+      "actual": 0,
       "note": ""
     },
     {
@@ -468,7 +468,7 @@
       "item": "Ratchet wrench set",
       "listed": 1,
       "status": "Less",
-      "actual": null,
+      "actual": 0,
       "note": ""
     },
     {
@@ -476,7 +476,7 @@
       "item": "Lock wrench for johnny bolts",
       "listed": 1,
       "status": "Less",
-      "actual": null,
+      "actual": 0,
       "note": ""
     },
     {
@@ -716,7 +716,7 @@
       "item": "Slip nuts & washers 1 1/4\"",
       "listed": 5,
       "status": "Less",
-      "actual": null,
+      "actual": 0,
       "note": ""
     },
     {
@@ -780,7 +780,7 @@
       "item": "Test Plugs 3\"",
       "listed": 4,
       "status": "Less",
-      "actual": null,
+      "actual": 0,
       "note": ""
     },
     {
@@ -956,7 +956,7 @@
       "item": "Raincoat",
       "listed": 1,
       "status": "Less",
-      "actual": null,
+      "actual": 0,
       "note": ""
     },
     {

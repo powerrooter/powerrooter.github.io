@@ -22,6 +22,6 @@ curl -sS -L \
   "https://script.google.com/macros/s/AKfycbzmF5ifybYu5rBY5BpRdhgDS22-wLWB-l_vK2sW47ThvBbQ4jTyoo0qnPDZGOqwPE8t2A/exec"
 ```
 
-The answer should say `"ok": true` and `"emailed": false`. After that, the stock page reads XSJJ22 from the sheet instead of the file.
+The answer should say `"ok": true` and `"emailed": false`. Sending this file again replaces the same van and date, including the seven counts now saved as 0, and it does not email the office. After that, the stock page reads XSJJ22 from the sheet.
 
 Resubmitting the weekly form also writes the checklist, and that one does email the office.

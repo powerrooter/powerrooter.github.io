@@ -98,6 +98,20 @@
     }
     h2 button { font-size: .8rem; padding: 6px 10px; min-height: 36px; }
     h3.section { margin: 18px 0 8px; font-size: .95rem; }
+    details.cat { margin: 10px 0 14px; }
+    details.cat > summary {
+      cursor: pointer;
+      font-weight: 700;
+      padding: 12px 14px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      list-style: none;
+    }
+    details.cat > summary::-webkit-details-marker { display: none; }
+    details.cat.short > summary { border-color: var(--less); background: var(--less-bg); }
+    details.cat[open] > summary { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+    details.cat .cat-body { padding: 8px 0 0; }
     .item h3 { margin: 0 0 4px; font-size: 1rem; }
     .item.low { border-color: #f2b8b5; }
     .item.negative { border-color: #f2b8b5; background: var(--less-bg); }
@@ -544,8 +558,18 @@
         if (!report || !report.van || !report.date || !Array.isArray(report.items)) return;
         const key = normPlate(report.van) + "|" + report.date;
         if (report.notice) notices[key] = String(report.notice);
-        const exists = vanCounts.some((row) => normPlate(row.van) === normPlate(report.van) && row.date === report.date);
-        if (exists) return;
+        const exists = counts.some((row) => normPlate(row.van) === normPlate(report.van) && row.date === report.date);
+        if (exists) {
+          report.items.forEach((item) => {
+            if (!item || item.actual == null || item.actual === "" || !isFinite(Number(item.actual))) return;
+            const row = counts.find((entry) => normPlate(entry.van) === normPlate(report.van) && entry.date === report.date && itemKey(entry.section, entry.item) === itemKey(item.section || "", item.item));
+            if (row && (row.actual == null || row.actual === "")) {
+              row.actual = Number(item.actual);
+              if (item.status) row.status = item.status;
+            }
+          });
+          return;
+        }
         report.items.forEach((item) => {
           if (!item || !item.item) return;
           const actual = item.actual == null || item.actual === "" ? null : Number(item.actual);
@@ -603,14 +627,17 @@
     }
     function groupBySection(rows) {
       const order = ["300 Machine & Tools", "Hand Machine & Tools", "100 Machine", "Toilet", "Camera & Tools", "Air Tank", "Water Testing", "Drill", "Tubular Piping", "Caps", "Couplings & Elbows", "Miscellaneous", "Registration & Insurance"];
-      return rows.slice().sort((a, b) => {
-        const as = order.indexOf(a.section);
-        const bs = order.indexOf(b.section);
-        const ai = as === -1 ? 99 : as;
-        const bi = bs === -1 ? 99 : bs;
-        if (ai !== bi) return ai - bi;
-        return a.item.localeCompare(b.item);
+      const buckets = new Map();
+      (rows || []).forEach((row) => {
+        const section = row.section || "Other";
+        if (!buckets.has(section)) buckets.set(section, []);
+        buckets.get(section).push(row);
       });
+      return Array.from(buckets.keys()).sort((a, b) => {
+        const ai = order.indexOf(a);
+        const bi = order.indexOf(b);
+        return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
+      }).map((section) => ({ section, rows: buckets.get(section) }));
     }
     function monthDay(iso) {
       const s = String(iso || "");
@@ -654,7 +681,27 @@
       status: ""
     };
     const draft = { mode: "", location: "", chosen: null, query: "" };
+    const catOpen = new Map();
 
+    function sectionDetails(scope, section, shortCount, label) {
+      const key = scope + "\n" + section;
+      if (!catOpen.has(key)) catOpen.set(key, shortCount > 0);
+      const det = document.createElement("details");
+      det.className = "cat" + (shortCount > 0 ? " short" : "");
+      det.dataset.key = key;
+      det.open = !!catOpen.get(key);
+      det.addEventListener("toggle", () => { catOpen.set(key, det.open); });
+      const sum = document.createElement("summary");
+      sum.textContent = label;
+      det.appendChild(sum);
+      return det;
+    }
+    function setAllSections(open) {
+      document.querySelectorAll("details.cat").forEach((det) => {
+        det.open = open;
+        if (det.dataset.key) catOpen.set(det.dataset.key, open);
+      });
+    }
     function el(tag, cls, text) {
       const node = document.createElement(tag);
       if (cls) node.className = cls;
@@ -692,6 +739,18 @@
       const alerts = el("div");
       alerts.id = "alerts";
       root.appendChild(alerts);
+      const catTools = el("div", "toolbar");
+      const expandAll = el("button", null, "Expand all");
+      expandAll.type = "button";
+      expandAll.id = "expandAll";
+      const collapseAll = el("button", null, "Collapse all");
+      collapseAll.type = "button";
+      collapseAll.id = "collapseAll";
+      catTools.appendChild(expandAll);
+      catTools.appendChild(collapseAll);
+      root.appendChild(catTools);
+      expandAll.addEventListener("click", () => setAllSections(true));
+      collapseAll.addEventListener("click", () => setAllSections(false));
       const pin = el("div", "meta");
       pin.id = "pinBar";
       root.appendChild(pin);
@@ -969,29 +1028,32 @@
         list.appendChild(el("p", "hint", "No items match."));
         return;
       }
-      let last = "";
-      rows.forEach((row) => {
-        if (row.section !== last) {
-          last = row.section;
-          list.appendChild(el("h3", "section", row.section || "Other"));
-        }
-        const card = el("div", "item" + (row.negative ? " negative" : row.low ? " low" : ""));
-        card.appendChild(el("h3", null, row.item));
-        const count = el("div", "onhand", String(row.onHand));
-        card.appendChild(count);
-        const where = state.view ? state.view : "both offices";
-        card.appendChild(el("div", "muted", "On hand, " + where));
-        if (!state.view) {
-          const parts = breakdown(state.log, row.section, row.item, state.locations);
-          const line = el("div", "split muted");
-          parts.forEach((part, index) => {
-            if (index) line.appendChild(document.createTextNode(" · "));
-            const bit = el("span", part[1] < 0 ? "neg" : "", part[0] + " " + part[1]);
-            line.appendChild(bit);
-          });
-          card.appendChild(line);
-        }
-        list.appendChild(card);
+      groupBySection(rows).forEach((group) => {
+        const shorts = group.rows.filter((row) => row.low);
+        const pcs = shorts.reduce((sum, row) => {
+          if (row.onHand < 0) return sum + (-row.onHand);
+          const listed = Number(row.listed);
+          return sum + (isFinite(listed) ? listed : 0);
+        }, 0);
+        const det = sectionDetails("office", group.section, shorts.length, group.section + ": " + shorts.length + " short, " + pcs + " pcs");
+        group.rows.forEach((row) => {
+          const card = el("div", "item" + (row.negative ? " negative" : row.low ? " low" : ""));
+          card.appendChild(el("h3", null, row.item));
+          card.appendChild(el("div", "onhand", String(row.onHand)));
+          const where = state.view ? state.view : "both offices";
+          card.appendChild(el("div", "muted", "On hand, " + where));
+          if (!state.view) {
+            const parts = breakdown(state.log, row.section, row.item, state.locations);
+            const split = el("div", "split muted");
+            parts.forEach((part, index) => {
+              if (index) split.appendChild(document.createTextNode(" · "));
+              split.appendChild(el("span", part[1] < 0 ? "neg" : "", part[0] + " " + part[1]));
+            });
+            card.appendChild(split);
+          }
+          det.appendChild(card);
+        });
+        list.appendChild(det);
       });
     }
 
@@ -1100,27 +1162,15 @@
       root.appendChild(el("h3", "section", "Has none at all — " + split.noneItems + " items, " + split.nonePieces + " pieces"));
       if (!split.none.length) root.appendChild(el("p", "hint", "No item is completely gone."));
       if (split.tools.length) {
-        root.appendChild(el("h3", "section", "Big tools"));
-        split.tools.forEach((row) => root.appendChild(needCard(row, "none")));
+        const toolPcs = split.tools.reduce((sum, row) => sum + (Number(row.need) || 0), 0);
+        const tools = sectionDetails("needs-tools", "Big tools", split.tools.length, "Big tools: " + split.tools.length + " short, " + toolPcs + " pcs");
+        split.tools.forEach((row) => tools.appendChild(needCard(row, "none")));
+        root.appendChild(tools);
       }
-      let lastSection = "";
-      groupBySection(split.rest).forEach((row) => {
-        if (row.section !== lastSection) {
-          lastSection = row.section;
-          root.appendChild(el("h3", "section", row.section || "Other"));
-        }
-        root.appendChild(needCard(row, "none"));
-      });
+      appendNeedGroups(root, "needs-none", split.rest, "none");
       root.appendChild(el("h3", "section", "Has some, but not enough — " + split.someItems + " items, " + split.somePieces + " pieces"));
       if (!split.some.length) root.appendChild(el("p", "hint", "No partial counts."));
-      lastSection = "";
-      groupBySection(split.some).forEach((row) => {
-        if (row.section !== lastSection) {
-          lastSection = row.section;
-          root.appendChild(el("h3", "section", row.section || "Other"));
-        }
-        root.appendChild(needCard(row, "some"));
-      });
+      appendNeedGroups(root, "needs-some", split.some, "some");
       root.appendChild(el("h3", "section", "No count entered, recount"));
       if (!report.recount.length) root.appendChild(el("p", "hint", "Every short item has a count."));
       report.recount.forEach((row) => {
@@ -1177,18 +1227,34 @@
         list.appendChild(el("p", "hint", state.shortOnly ? "Nothing is short on this van." : "No items."));
         return;
       }
-      shown.forEach((row) => {
-        const card = el("div", "item" + (row.short ? " negative" : ""));
-        const title = el("h3", null, row.item);
-        if (row.short) title.appendChild(el("span", "badge", "Short"));
-        card.appendChild(title);
-        card.appendChild(el("div", "muted", row.section));
-        card.appendChild(line("Listed", row.listed == null ? "—" : String(row.listed)));
-        const last = row.lastActual == null ? "No count on the last checklist" : String(row.lastActual) + " on " + formatNy(row.lastDate);
-        card.appendChild(line("Last checklist", last));
-        card.appendChild(line(result.report ? "Taken since checklist" : "Taken from the office", String(row.taken)));
-        card.appendChild(line("Estimated now", row.estimated == null ? "—" : String(row.estimated)));
-        list.appendChild(card);
+      groupBySection(shown).forEach((group) => {
+        const shorts = group.rows.filter((row) => row.short);
+        const pcs = shorts.reduce((sum, row) => {
+          if (row.estimated == null || row.listed == null || !isFinite(Number(row.estimated)) || !isFinite(Number(row.listed))) return sum;
+          return sum + Math.max(0, Number(row.listed) - Number(row.estimated));
+        }, 0);
+        const det = sectionDetails("van", group.section, shorts.length, group.section + ": " + shorts.length + " short, " + pcs + " pcs");
+        group.rows.forEach((row) => {
+          const card = el("div", "item" + (row.short ? " negative" : ""));
+          const title = el("h3", null, row.item);
+          if (row.short) title.appendChild(el("span", "badge", "Short"));
+          card.appendChild(title);
+          card.appendChild(line("Listed", row.listed == null ? "—" : String(row.listed)));
+          const last = row.lastActual == null ? "No count on the last checklist" : String(row.lastActual) + " on " + formatNy(row.lastDate);
+          card.appendChild(line("Last checklist", last));
+          card.appendChild(line(result.report ? "Taken since checklist" : "Taken from the office", String(row.taken)));
+          card.appendChild(line("Estimated now", row.estimated == null ? "—" : String(row.estimated)));
+          det.appendChild(card);
+        });
+        list.appendChild(det);
+      });
+    }
+    function appendNeedGroups(parent, scope, rows, mode) {
+      groupBySection(rows).forEach((group) => {
+        const pcs = group.rows.reduce((sum, row) => sum + (Number(row.need) || 0), 0);
+        const det = sectionDetails(scope, group.section, group.rows.length, group.section + ": " + group.rows.length + " short, " + pcs + " pcs");
+        group.rows.forEach((row) => det.appendChild(needCard(row, mode)));
+        parent.appendChild(det);
       });
     }
 
