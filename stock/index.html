@@ -564,6 +564,54 @@
       });
       return { counts, notices };
     }
+    function isBigTool(row) {
+      if (Number(row.listed) !== 1 || row.actual !== 0) return false;
+      return /machine|camera|locator|drill|grinder|cutter|sledgehammer|chisel|\bbar\b/i.test(row.item || "");
+    }
+    function needsBreakdown(needs) {
+      const rows = needs || [];
+      const none = rows.filter((row) => row.actual === 0);
+      const some = rows.filter((row) => row.actual > 0 && row.listed != null && row.actual < row.listed);
+      const pieces = rows.reduce((sum, row) => sum + (Number(row.need) || 0), 0);
+      const tools = none.filter(isBigTool).slice().sort((a, b) => toolRank(a.item) - toolRank(b.item) || a.item.localeCompare(b.item));
+      const rest = none.filter((row) => !isBigTool(row));
+      return {
+        items: rows.length,
+        pieces,
+        none,
+        some,
+        tools,
+        rest,
+        noneItems: none.length,
+        nonePieces: none.reduce((sum, row) => sum + (Number(row.need) || 0), 0),
+        someItems: some.length,
+        somePieces: some.reduce((sum, row) => sum + (Number(row.need) || 0), 0)
+      };
+    }
+    function toolRank(item) {
+      const name = String(item || "").toLowerCase();
+      if (name.indexOf("machine") !== -1) return 0;
+      if (name.indexOf("camera") !== -1) return 1;
+      if (name.indexOf("locator") !== -1) return 2;
+      if (name.indexOf("drill") !== -1) return 3;
+      if (name.indexOf("grinder") !== -1) return 4;
+      if (name.indexOf("cutter") !== -1) return 5;
+      if (/\bbar\b/.test(name)) return 6;
+      if (name.indexOf("sledgehammer") !== -1) return 7;
+      if (name.indexOf("chisel") !== -1) return 8;
+      return 9;
+    }
+    function groupBySection(rows) {
+      const order = ["300 Machine & Tools", "Hand Machine & Tools", "100 Machine", "Toilet", "Camera & Tools", "Air Tank", "Water Testing", "Drill", "Tubular Piping", "Caps", "Couplings & Elbows", "Miscellaneous", "Registration & Insurance"];
+      return rows.slice().sort((a, b) => {
+        const as = order.indexOf(a.section);
+        const bs = order.indexOf(b.section);
+        const ai = as === -1 ? 99 : as;
+        const bi = bs === -1 ? 99 : bs;
+        if (ai !== bi) return ai - bi;
+        return a.item.localeCompare(b.item);
+      });
+    }
     function monthDay(iso) {
       const s = String(iso || "");
       if (!/^\d{4}-\d{2}-\d{2}$/.test(s)) return formatNy(s);
@@ -1046,46 +1094,34 @@
       if (report.baseline) {
         root.appendChild(el("p", "hint", "First checklist for this van. This count is the baseline, so nothing is flagged as lost or extra yet."));
       }
-      if (report.big.length) {
-        root.appendChild(el("h3", "section", "Big missing items"));
-        const card = el("div", "item negative");
-        card.appendChild(el("p", null, "Listed as 1 and counted at 0, or a main tool. Please confirm these are really missing."));
-        report.big.forEach((row) => {
-          card.appendChild(el("div", null, row.item + " — need " + row.need));
-        });
-        root.appendChild(card);
-      }
       root.appendChild(el("h3", "section", "What this van needs"));
-      if (!report.needs.length) {
-        root.appendChild(el("p", "hint", "Nothing short with a known count."));
+      const split = needsBreakdown(report.needs);
+      root.appendChild(countLine("Short ", split.items, " items, ", split.pieces, " pieces total; another ", report.recount.length, " items need a recount."));
+      root.appendChild(el("h3", "section", "Has none at all — " + split.noneItems + " items, " + split.nonePieces + " pieces"));
+      if (!split.none.length) root.appendChild(el("p", "hint", "No item is completely gone."));
+      if (split.tools.length) {
+        root.appendChild(el("h3", "section", "Big tools"));
+        split.tools.forEach((row) => root.appendChild(needCard(row, "none")));
       }
-      let last = "";
-      report.needs.forEach((row) => {
-        if (row.section !== last) {
-          last = row.section;
+      let lastSection = "";
+      groupBySection(split.rest).forEach((row) => {
+        if (row.section !== lastSection) {
+          lastSection = row.section;
           root.appendChild(el("h3", "section", row.section || "Other"));
         }
-        const card = el("div", "item" + (row.source === "Order" ? " low" : ""));
-        const title = el("h3", null, row.item);
-        title.appendChild(el("span", "badge" + (row.source === "Order" ? "" : " added"), row.source));
-        card.appendChild(title);
-        card.appendChild(line("Need", String(row.need) + " (has " + row.actual + " of " + row.listed + ")"));
-        card.appendChild(line("Brooklyn on hand", String(row.brooklyn)));
-        card.appendChild(line("HQ on hand", String(row.hq)));
-        card.appendChild(line("Bring from", row.source));
-        if (row.note) card.appendChild(el("div", "muted", row.note));
-        root.appendChild(card);
+        root.appendChild(needCard(row, "none"));
       });
-      const orders = report.needs.filter((row) => row.source === "Order");
-      if (orders.length) {
-        root.appendChild(el("h3", "section", "Order"));
-        root.appendChild(el("p", "hint", "Not enough at Power Brooklyn and Power HQ combined."));
-        orders.forEach((row) => {
-          const have = row.brooklyn + row.hq;
-          root.appendChild(el("div", "item low", row.item + ": order " + (row.need - have) + " more (offices have " + have + ", van needs " + row.need + ")"));
-        });
-      }
-      root.appendChild(el("h3", "section", "Recount"));
+      root.appendChild(el("h3", "section", "Has some, but not enough — " + split.someItems + " items, " + split.somePieces + " pieces"));
+      if (!split.some.length) root.appendChild(el("p", "hint", "No partial counts."));
+      lastSection = "";
+      groupBySection(split.some).forEach((row) => {
+        if (row.section !== lastSection) {
+          lastSection = row.section;
+          root.appendChild(el("h3", "section", row.section || "Other"));
+        }
+        root.appendChild(needCard(row, "some"));
+      });
+      root.appendChild(el("h3", "section", "No count entered, recount"));
       if (!report.recount.length) root.appendChild(el("p", "hint", "Every short item has a count."));
       report.recount.forEach((row) => {
         root.appendChild(el("div", "item", row.item + ": count missing, recount (listed " + (row.listed == null ? "?" : row.listed) + ")" + (row.note ? " — " + row.note : "")));
@@ -1156,6 +1192,31 @@
       });
     }
 
+    function countLine(lead, a, mid, b, tail, c, end) {
+      const node = el("p");
+      node.appendChild(document.createTextNode(lead));
+      node.appendChild(el("strong", null, String(a)));
+      node.appendChild(document.createTextNode(mid));
+      node.appendChild(el("strong", null, String(b)));
+      node.appendChild(document.createTextNode(tail));
+      node.appendChild(el("strong", null, String(c)));
+      node.appendChild(document.createTextNode(end));
+      return node;
+    }
+    function needCard(row, mode) {
+      const card = el("div", "item" + (row.source === "Order" ? " low" : ""));
+      const title = el("h3", null, row.item);
+      title.appendChild(el("span", "badge" + (row.source === "Order" ? "" : " added"), row.source));
+      card.appendChild(title);
+      if (mode === "some") {
+        card.appendChild(el("div", null, "has " + row.actual + " of " + row.listed + ", needs " + row.need));
+      } else {
+        card.appendChild(el("div", null, "Need " + row.need));
+      }
+      card.appendChild(el("div", "muted", "Brooklyn " + row.brooklyn + " · HQ " + row.hq));
+      if (row.note) card.appendChild(el("div", "muted", row.note));
+      return card;
+    }
     function line(label, value) {
       const node = el("div");
       node.appendChild(el("span", "muted", label + ": "));

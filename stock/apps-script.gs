@@ -660,34 +660,24 @@ function sendChecklistEmail_(report) {
   var html = [];
   html.push('<div style="font-family:sans-serif;color:#1b3a4b;font-size:16px;line-height:1.4;max-width:640px">');
   html.push("<p><b>" + esc_(report.mechanic) + "</b> checked van <b>" + esc_(report.van) + "</b> on " + esc_(when) + ".</p>");
-  html.push("<p>" + report.needs.length + " items to bring or order. " + report.recount.length + " counts are missing and need a recount.</p>");
+  var split = splitNeeds_(report.needs);
+  html.push("<p>Short " + split.items + " items, " + split.pieces + " pieces total; another " + report.recount.length + " items need a recount.</p>");
   if (report.registration.length) {
     html.push('<p style="background:#fdeceb;padding:12px;border-radius:8px"><b>Registration or insurance card is missing:</b> ' +
       esc_(report.registration.map(function (row) { return row.item; }).join(", ")) + ".</p>");
   }
   if (report.notice) html.push('<p style="background:#fff4e5;padding:12px;border-radius:8px">' + esc_(report.notice) + "</p>");
   if (report.baseline) html.push("<p>First checklist for this van. This count is the baseline.</p>");
-  if (report.big.length) {
-    html.push("<h2>Big missing items</h2><ul>");
-    report.big.forEach(function (row) {
-      html.push("<li>" + esc_(row.item) + " — need " + row.need + "</li>");
-    });
+  html.push("<h2>Has none at all — " + split.noneItems + " items, " + split.nonePieces + " pieces</h2>");
+  if (split.tools.length) {
+    html.push("<h3>Big tools</h3><ul>");
+    split.tools.forEach(function (row) { html.push("<li>" + needLine_(row, "none") + "</li>"); });
     html.push("</ul>");
   }
-  html.push("<h2>Bring to the van</h2>");
-  html.push(needsTable_(report.needs));
-  var orders = report.needs.filter(function (row) { return row.source === "Order"; });
-  html.push("<h2>Order</h2>");
-  if (!orders.length) html.push("<p>The offices can cover every short item.</p>");
-  else {
-    html.push("<ul>");
-    orders.forEach(function (row) {
-      var have = row.brooklyn + row.hq;
-      html.push("<li>" + esc_(row.item) + ": order " + (row.need - have) + " (offices have " + have + ", van needs " + row.need + ")</li>");
-    });
-    html.push("</ul>");
-  }
-  html.push("<h2>Recount</h2>");
+  html.push(groupedNeeds_(split.rest, "none"));
+  html.push("<h2>Has some, but not enough — " + split.someItems + " items, " + split.somePieces + " pieces</h2>");
+  html.push(groupedNeeds_(split.some, "some"));
+  html.push("<h2>No count entered, recount</h2>");
   if (!report.recount.length) html.push("<p>Every short item has a count.</p>");
   else {
     html.push("<ul>");
@@ -721,13 +711,12 @@ function sendChecklistEmail_(report) {
   html.push("</div>");
   var plain = [
     report.mechanic + " checked van " + report.van + " on " + when + ".",
-    report.needs.length + " items to bring or order. " + report.recount.length + " to recount.",
-    report.baseline ? "First checklist for this van. This count is the baseline." : "",
-    "",
-    "Bring to the van:"
+    "Short " + split.items + " items, " + split.pieces + " pieces total; another " + report.recount.length + " items need a recount.",
+    "Has none at all — " + split.noneItems + " items, " + split.nonePieces + " pieces.",
+    "Has some, but not enough — " + split.someItems + " items, " + split.somePieces + " pieces."
   ];
-  report.needs.forEach(function (row) {
-    plain.push(row.section + ": " + row.item + " — need " + row.need + " (has " + row.actual + " of " + row.listed + "), Brooklyn " + row.brooklyn + ", HQ " + row.hq + ", " + row.source);
+  split.some.forEach(function (row) {
+    plain.push(row.item + ": has " + row.actual + " of " + row.listed + ", needs " + row.need);
   });
   plain.push("", "Stock page: " + link);
   MailApp.sendEmail({
@@ -736,6 +725,87 @@ function sendChecklistEmail_(report) {
     htmlBody: html.join(""),
     body: plain.filter(function (line) { return line != null; }).join("\n")
   });
+}
+
+function splitNeeds_(needs) {
+  var none = [];
+  var some = [];
+  var pieces = 0;
+  (needs || []).forEach(function (row) {
+    pieces += Number(row.need) || 0;
+    if (row.actual === 0) none.push(row);
+    else if (row.actual > 0 && row.listed != null && row.actual < row.listed) some.push(row);
+  });
+  var tools = none.filter(isBigTool_).sort(function (a, b) { return toolRank_(a.item) - toolRank_(b.item); });
+  var rest = none.filter(function (row) { return !isBigTool_(row); });
+  return {
+    items: (needs || []).length,
+    pieces: pieces,
+    none: none,
+    some: some,
+    tools: tools,
+    rest: rest,
+    noneItems: none.length,
+    nonePieces: pieceSum_(none),
+    someItems: some.length,
+    somePieces: pieceSum_(some)
+  };
+}
+
+function pieceSum_(rows) {
+  var total = 0;
+  rows.forEach(function (row) { total += Number(row.need) || 0; });
+  return total;
+}
+
+function isBigTool_(row) {
+  if (Number(row.listed) !== 1 || row.actual !== 0) return false;
+  return /machine|camera|locator|drill|grinder|cutter|sledgehammer|chisel|\bbar\b/i.test(row.item || "");
+}
+
+function toolRank_(item) {
+  var name = String(item || "").toLowerCase();
+  if (name.indexOf("machine") !== -1) return 0;
+  if (name.indexOf("camera") !== -1) return 1;
+  if (name.indexOf("locator") !== -1) return 2;
+  if (name.indexOf("drill") !== -1) return 3;
+  if (name.indexOf("grinder") !== -1) return 4;
+  if (name.indexOf("cutter") !== -1) return 5;
+  if (/\bbar\b/.test(name)) return 6;
+  if (name.indexOf("sledgehammer") !== -1) return 7;
+  if (name.indexOf("chisel") !== -1) return 8;
+  return 9;
+}
+
+function needLine_(row, mode) {
+  var stock = "Brooklyn " + row.brooklyn + ", HQ " + row.hq + ". " + row.source + ".";
+  var main = mode === "some"
+    ? esc_(row.item) + ": has " + row.actual + " of " + row.listed + ", needs " + row.need
+    : esc_(row.item) + " — need " + row.need;
+  return main + ". " + stock + (row.note ? " " + esc_(row.note) : "");
+}
+
+function groupedNeeds_(rows, mode) {
+  if (!rows.length) return "";
+  var order = ["300 Machine & Tools", "Hand Machine & Tools", "100 Machine", "Toilet", "Camera & Tools", "Air Tank", "Water Testing", "Drill", "Tubular Piping", "Caps", "Couplings & Elbows", "Miscellaneous", "Registration & Insurance"];
+  var sorted = rows.slice().sort(function (a, b) {
+    var ai = order.indexOf(a.section); if (ai < 0) ai = 99;
+    var bi = order.indexOf(b.section); if (bi < 0) bi = 99;
+    if (ai !== bi) return ai - bi;
+    return a.item < b.item ? -1 : 1;
+  });
+  var html = [];
+  var last = "";
+  sorted.forEach(function (row) {
+    if (row.section !== last) {
+      if (last) html.push("</ul>");
+      last = row.section;
+      html.push("<h3>" + esc_(row.section || "Other") + "</h3><ul>");
+    }
+    html.push("<li>" + needLine_(row, mode) + "</li>");
+  });
+  if (last) html.push("</ul>");
+  return html.join("");
 }
 
 function needsTable_(needs) {
