@@ -1,6 +1,21 @@
 # Update the office stock script
 
-The stock page already shows Chris Aguirre's Nov 19 checklist for van XSJJ22. Do this once so new checklists update the sheet and email the office. The web app address stays the same.
+Do this so Add new item, edits, and hidden items work, and the van checklist reads the Items tab. The web app address stays the same.
+
+1. Open the Office stock spreadsheet. Click Extensions, then Apps Script.
+2. Select all the code and delete it.
+3. Open https://raw.githubusercontent.com/powerrooter/powerrooter.github.io/main/stock/apps-script.gs , copy the whole page, paste it into Apps Script, and click Save.
+4. Click Deploy, then Manage deployments.
+5. Click the pencil on the existing web app.
+6. Set Version to New version.
+7. Click Deploy.
+8. Approve any permission Google asks for.
+
+Who has access stays Anyone. Execute as stays Me. Do not create a second web app.
+
+After that, Add new item on the stock page needs the office PIN. A listed amount of 0 stays in the office and is left off the van checklist. Hide keeps the history and removes the item from the checklist.
+
+The stock page already shows Chris Aguirre's Nov 19 checklist for van XSJJ22. The steps above also keep checklist emails working. The web app address stays the same.
 
 1. Open the Office stock spreadsheet. Click Extensions, then Apps Script.
 2. Select all the code and delete it.

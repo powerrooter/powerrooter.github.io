@@ -16,7 +16,7 @@ var SHEET_ITEMS = "Items";
 
 var LOG_HEADERS = ["timestamp", "action", "item", "section", "qty", "person", "van plate", "note", "location"];
 var VAN_HEADERS = ["report date", "van plate", "mechanic", "item", "section", "listed qty", "actual qty", "status", "note", "received"];
-var ITEM_HEADERS = ["section", "item", "listed qty"];
+var ITEM_HEADERS = ["section", "item", "listed qty", "retired"];
 
 var SEED_ITEMS = [{"section": "300 Machine & Tools", "item": "Maintained 300 Machine with 75 Ft of cable", "qty": 1}, {"section": "300 Machine & Tools", "item": "Extra 25 Ft of cable", "qty": 2}, {"section": "300 Machine & Tools", "item": "Extra Pins", "qty": 5}, {"section": "300 Machine & Tools", "item": "Pairs of yellow gloves", "qty": 2}, {"section": "300 Machine & Tools", "item": "Whip", "qty": 1}, {"section": "300 Machine & Tools", "item": "U Blade 3\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Half Blade 3\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "U Blade 4\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Half Blade 4\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Saw blade", "qty": 1}, {"section": "300 Machine & Tools", "item": "Puncher & Stand", "qty": 1}, {"section": "300 Machine & Tools", "item": "Hammer", "qty": 1}, {"section": "300 Machine & Tools", "item": "Channel Lock 10\" or 12\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Channel Lock 6.5\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Pipe Wrench", "qty": 1}, {"section": "300 Machine & Tools", "item": "PB Blaster / WD-40", "qty": 1}, {"section": "300 Machine & Tools", "item": "Extension wire 25 ft", "qty": 1}, {"section": "300 Machine & Tools", "item": "Duct Tape", "qty": 2}, {"section": "300 Machine & Tools", "item": "Long gloves", "qty": 1}, {"section": "300 Machine & Tools", "item": "Philip screw driver", "qty": 1}, {"section": "300 Machine & Tools", "item": "Flat screw driver", "qty": 1}, {"section": "300 Machine & Tools", "item": "Nut Driver", "qty": 1}, {"section": "300 Machine & Tools", "item": "Screw driver 4 in 1", "qty": 1}, {"section": "300 Machine & Tools", "item": "Outlet adapters 2-3", "qty": 1}, {"section": "300 Machine & Tools", "item": "PVC pipe with elbow for trap out sewer 2\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Repair plates 4\"", "qty": 2}, {"section": "Hand Machine & Tools", "item": "Hand Machine with 25 ft cable", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Extra 25 ft cable", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Drop head 25 ft cable", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Construction gloves", "qty": 3}, {"section": "Hand Machine & Tools", "item": "Channel lock 10\" or 12\"", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Channel lock 6.5\"", "qty": 1}, {"section": "Hand Machine & Tools", "item": "PVC channel lock", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Vise grip", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Flat Screw driver", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Philip screw driver", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Nut driver", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Screw driver 4 in 1", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Teflon Tape", "qty": 5}, {"section": "Hand Machine & Tools", "item": "Electric Tape", "qty": 5}, {"section": "Hand Machine & Tools", "item": "Epoxy", "qty": 2}, {"section": "Hand Machine & Tools", "item": "Plumbers putty", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Outlet adapters 2-3", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Extension wire 25 ft", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Wheeling Case", "qty": 1}, {"section": "100 Machine", "item": "Maintained 100 machine with 75 ft cable", "qty": 1}, {"section": "100 Machine", "item": "Construction gloves", "qty": 3}, {"section": "100 Machine", "item": "Boiler plugs", "qty": 10}, {"section": "Toilet", "item": "Toilet auger", "qty": 1}, {"section": "Toilet", "item": "Wax Rings", "qty": 10}, {"section": "Toilet", "item": "Johnny bolts", "qty": 10}, {"section": "Toilet", "item": "Silicone gun", "qty": 1}, {"section": "Toilet", "item": "Silicone", "qty": 2}, {"section": "Toilet", "item": "Plaster", "qty": 1}, {"section": "Toilet", "item": "Foam spray", "qty": 1}, {"section": "Toilet", "item": "Fill valves (Fluidmaster)", "qty": 3}, {"section": "Toilet", "item": "Flappers", "qty": 5}, {"section": "Toilet", "item": "Ratchet wrench set", "qty": 1}, {"section": "Toilet", "item": "Lock wrench for johnny bolts", "qty": 1}, {"section": "Camera & Tools", "item": "Camera", "qty": 1}, {"section": "Camera & Tools", "item": "Locator", "qty": 1}, {"section": "Camera & Tools", "item": "Rags", "qty": 2}, {"section": "Air Tank", "item": "Maintained Air tank", "qty": 2}, {"section": "Air Tank", "item": "Hose", "qty": 1}, {"section": "Air Tank", "item": "Hose Adapter", "qty": 1}, {"section": "Air Tank", "item": "Flush bag 2\"", "qty": 1}, {"section": "Air Tank", "item": "Flush bag 1/2\"–3\"", "qty": 1}, {"section": "Air Tank", "item": "Flush bag 3\"–4\"", "qty": 1}, {"section": "Air Tank", "item": "Flush bag 3\"–6\"", "qty": 1}, {"section": "Water Testing", "item": "Water hose 150 Ft", "qty": 1}, {"section": "Water Testing", "item": "Speedy with adapter to sink / toilet", "qty": 1}, {"section": "Water Testing", "item": "Nozzle", "qty": 1}, {"section": "Drill", "item": "Electric Drill", "qty": 1}, {"section": "Drill", "item": "Carbide hole saw bit 7/8\"", "qty": 1}, {"section": "Drill", "item": "Center bits", "qty": 2}, {"section": "Drill", "item": "PVC saw hole bit 7/8\"", "qty": 2}, {"section": "Drill", "item": "Plugs 7/8\"", "qty": 5}, {"section": "Tubular Piping", "item": "Pipe Cutter", "qty": 1}, {"section": "Tubular Piping", "item": "Brass Sink traps", "qty": 2}, {"section": "Tubular Piping", "item": "P trap set 1 1/2\"", "qty": 2}, {"section": "Tubular Piping", "item": "Elbows 1 1/2\"", "qty": 5}, {"section": "Tubular Piping", "item": "Offsets 1 1/2\"", "qty": 2}, {"section": "Tubular Piping", "item": "Tail Ends 1 1/2\"", "qty": 2}, {"section": "Tubular Piping", "item": "Slip nuts & washers 1 1/2\"", "qty": 5}, {"section": "Tubular Piping", "item": "P Trap sets 1 1/4\"", "qty": 3}, {"section": "Tubular Piping", "item": "Elbows 1 1/4\"", "qty": 5}, {"section": "Tubular Piping", "item": "Offsets 1 1/4\"", "qty": 2}, {"section": "Tubular Piping", "item": "Tail ends 1 1/4\"", "qty": 2}, {"section": "Tubular Piping", "item": "Slip nuts & washers 1 1/4\"", "qty": 5}, {"section": "Caps", "item": "Caps 3\"", "qty": 5}, {"section": "Caps", "item": "Caps 3 1/2\"", "qty": 5}, {"section": "Caps", "item": "Caps 4\"", "qty": 10}, {"section": "Caps", "item": "Caps 4 1/2\"", "qty": 5}, {"section": "Caps", "item": "Jim Cap 3\"", "qty": 5}, {"section": "Caps", "item": "Jim Cap 4\"", "qty": 5}, {"section": "Caps", "item": "Jim Cap 5\"", "qty": 5}, {"section": "Caps", "item": "Test Plugs 3\"", "qty": 4}, {"section": "Caps", "item": "Test Plugs 4\"", "qty": 4}, {"section": "Couplings & Elbows", "item": "Couplings 4\"", "qty": 5}, {"section": "Couplings & Elbows", "item": "Couplings 3\"", "qty": 5}, {"section": "Couplings & Elbows", "item": "Couplings 2\"", "qty": 5}, {"section": "Couplings & Elbows", "item": "Couplings 2–1 1/2\"", "qty": 2}, {"section": "Miscellaneous", "item": "Grinder with blades", "qty": 1}, {"section": "Miscellaneous", "item": "Shop Vac", "qty": 1}, {"section": "Miscellaneous", "item": "Pump Vac", "qty": 1}, {"section": "Miscellaneous", "item": "Pump with hose", "qty": 1}, {"section": "Miscellaneous", "item": "Set of L keys", "qty": 1}, {"section": "Miscellaneous", "item": "Sledgehammer", "qty": 1}, {"section": "Miscellaneous", "item": "Chisel", "qty": 1}, {"section": "Miscellaneous", "item": "Suction cups", "qty": 2}, {"section": "Miscellaneous", "item": "Extra extension wire 25 ft", "qty": 1}, {"section": "Miscellaneous", "item": "Extra extension wire 50 ft", "qty": 1}, {"section": "Miscellaneous", "item": "Goggles", "qty": 2}, {"section": "Miscellaneous", "item": "Boxes latex gloves", "qty": 6}, {"section": "Miscellaneous", "item": "Bulb outlet adapter", "qty": 1}, {"section": "Miscellaneous", "item": "Regular / Rechargeable flashlight", "qty": 1}, {"section": "Miscellaneous", "item": "Rubber boots", "qty": 1}, {"section": "Miscellaneous", "item": "Disposable boots", "qty": 1}, {"section": "Miscellaneous", "item": "Raincoat", "qty": 1}, {"section": "Miscellaneous", "item": "Grabber", "qty": 1}, {"section": "Miscellaneous", "item": "Bolt Cutter", "qty": 1}, {"section": "Miscellaneous", "item": "Razor blade", "qty": 1}, {"section": "Miscellaneous", "item": "Head Flash light", "qty": 1}, {"section": "Miscellaneous", "item": "Crow Bar", "qty": 1}, {"section": "Miscellaneous", "item": "Long Bar", "qty": 1}, {"section": "Miscellaneous", "item": "Pump", "qty": 1}, {"section": "Miscellaneous", "item": "Degreasing Wipes", "qty": 1}, {"section": "Miscellaneous", "item": "Degrease Spray", "qty": 1}, {"section": "Miscellaneous", "item": "Shoe Covers", "qty": 10}, {"section": "Registration & Insurance", "item": "Registration in the van", "qty": 1}, {"section": "Registration & Insurance", "item": "Insurance card in the van", "qty": 1}];
 
@@ -47,6 +47,9 @@ function doPost(e) {
     var data = readBody_(e);
     var action = String(data.action || "").trim().toUpperCase();
     if (action === "CHECKLIST") return json_(saveChecklist_(data));
+    if (action === "ADD_ITEM") return json_(addItem_(data));
+    if (action === "EDIT_ITEM") return json_(editItem_(data));
+    if (action === "RETIRE_ITEM") return json_(retireItem_(data));
     return json_(appendMovement_(data));
   } catch (err) {
     return json_({ ok: false, error: message_(err) });
@@ -149,6 +152,7 @@ function appendMovement_(data) {
   if (note.length > 300) return { ok: false, error: "Note is too long." };
   var found = findItem_(data.section, data.item);
   if (found.error) return { ok: false, error: found.error };
+  if (found.retired) return { ok: false, error: "That item is hidden. Show it again before changing its stock." };
 
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_LOG);
   sheet.appendRow([
@@ -196,7 +200,7 @@ function findItem_(section, item) {
   if (!wantedSection && matches.length > 1) {
     return { error: "That item is in more than one section. Choose the section too." };
   }
-  return { section: matches[0].section, item: matches[0].item };
+  return { section: matches[0].section, item: matches[0].item, retired: !!matches[0].retired };
 }
 
 function readItems_() {
@@ -206,10 +210,12 @@ function readItems_() {
     var item = text_(cell_(row, parsed.map, "item"));
     var section = text_(cell_(row, parsed.map, "section"));
     if (!item) return;
+    var retiredRaw = text_(cell_(row, parsed.map, "retired")).toLowerCase();
     out.push({
       section: section,
       item: item,
-      qty: numberOrNull_(cell_(row, parsed.map, "listed qty"))
+      qty: numberOrNull_(cell_(row, parsed.map, "listed qty")),
+      retired: retiredRaw === "yes" || retiredRaw === "true" || retiredRaw === "1"
     });
   });
   return out;
@@ -825,4 +831,160 @@ function needsTable_(needs) {
   });
   html.push("</table>");
   return html.join("");
+}
+
+function addItem_(data) {
+  assertPin_(data.pin);
+  var name = text_(data.item || data.name);
+  var section = text_(data.section || data.category);
+  if (!name) return { ok: false, error: "Enter the item name." };
+  if (!section) return { ok: false, error: "Choose a category." };
+  if (name.length > 120) return { ok: false, error: "Item name is too long." };
+  if (section.length > 80) return { ok: false, error: "Category name is too long." };
+  var listed = wholeQty_(data.qty == null ? data.listed : data.qty, true, false);
+  if (listed.error) return { ok: false, error: listed.error };
+  var brooklyn = wholeQty_(data.brooklyn, true, true);
+  if (brooklyn.error) return { ok: false, error: "Brooklyn: " + brooklyn.error };
+  var hq = wholeQty_(data.hq, true, true);
+  if (hq.error) return { ok: false, error: "Power HQ: " + hq.error };
+  var note = text_(data.note);
+  if (note.length > 300) return { ok: false, error: "Note is too long." };
+  if (findItemRow_(section, name)) return { ok: false, error: "That item is already in " + section + "." };
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_ITEMS);
+  ensureHeaders_(sheet, ITEM_HEADERS);
+  appendByHeaders_(sheet, {
+    "section": section,
+    "item": name,
+    "listed qty": listed.value,
+    "retired": ""
+  });
+  logStartingStock_(section, name, "Power Brooklyn", brooklyn.value, note);
+  logStartingStock_(section, name, "Power HQ", hq.value, note);
+  return { ok: true };
+}
+
+function editItem_(data) {
+  assertPin_(data.pin);
+  var fromSection = text_(data.fromSection || data.section);
+  var fromItem = text_(data.fromItem || data.item);
+  var name = text_(data.item || data.name);
+  var section = text_(data.section || data.category);
+  if (!fromItem || !name) return { ok: false, error: "Enter the item name." };
+  if (!section) return { ok: false, error: "Choose a category." };
+  var listed = wholeQty_(data.qty == null ? data.listed : data.qty, true, false);
+  if (listed.error) return { ok: false, error: listed.error };
+  var found = findItemRow_(fromSection, fromItem);
+  if (!found) return { ok: false, error: "That item is not on the list." };
+  var duplicate = findItemRow_(section, name);
+  if (duplicate && duplicate.row !== found.row) return { ok: false, error: "That item is already in " + section + "." };
+  setItemCell_(found, "section", section);
+  setItemCell_(found, "item", name);
+  setItemCell_(found, "listed qty", listed.value);
+  if (fromSection !== section || fromItem !== name) renameItemHistory_(fromSection, fromItem, section, name);
+  return { ok: true };
+}
+
+function retireItem_(data) {
+  assertPin_(data.pin);
+  var found = findItemRow_(data.section, data.item);
+  if (!found) return { ok: false, error: "That item is not on the list." };
+  var hide = !(data.retired === false || String(data.retired || "").toLowerCase() === "no" || String(data.retired || "") === "0");
+  setItemCell_(found, "retired", hide ? "yes" : "");
+  return { ok: true, retired: hide };
+}
+
+function wholeQty_(value, allowZero, allowBlank) {
+  if (value === "" || value == null) {
+    if (allowBlank) return { value: null };
+    return { error: "Enter a whole number. Use 0 if this item stays in the office and is not on the van checklist." };
+  }
+  var n;
+  if (typeof value === "number") n = value;
+  else {
+    var s = String(value).trim();
+    if (!/^\d+$/.test(s)) return { error: "Enter a whole number. Use 0 if this item stays in the office and is not on the van checklist." };
+    n = parseInt(s, 10);
+  }
+  if (!isFinite(n) || Math.floor(n) !== n || n < 0 || n > 100000) {
+    return { error: "Enter a whole number. Use 0 if this item stays in the office and is not on the van checklist." };
+  }
+  if (n === 0 && !allowZero && !allowBlank) return { error: "Enter a quantity greater than zero." };
+  return { value: n };
+}
+
+function findItemRow_(section, item) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_ITEMS);
+  if (!sheet || sheet.getLastRow() < 2) return null;
+  var values = sheet.getDataRange().getValues();
+  var map = {};
+  values[0].forEach(function (header, index) { map[String(header || "").trim().toLowerCase()] = index; });
+  var wantS = text_(section).toLowerCase();
+  var wantI = text_(item).toLowerCase();
+  for (var i = 1; i < values.length; i++) {
+    var gotS = text_(cell_(values[i], map, "section")).toLowerCase();
+    var gotI = text_(cell_(values[i], map, "item")).toLowerCase();
+    if (gotS === wantS && gotI === wantI) return { sheet: sheet, row: i + 1, map: map };
+  }
+  return null;
+}
+
+function setItemCell_(found, header, value) {
+  ensureHeaders_(found.sheet, ITEM_HEADERS);
+  var headers = found.sheet.getRange(1, 1, 1, found.sheet.getLastColumn()).getValues()[0];
+  var col = -1;
+  headers.forEach(function (name, index) {
+    if (String(name || "").trim().toLowerCase() === header) col = index + 1;
+  });
+  if (col < 1) return;
+  found.sheet.getRange(found.row, col).setValue(value);
+}
+
+function appendByHeaders_(sheet, fields) {
+  var width = Math.max(sheet.getLastColumn(), 1);
+  var headers = sheet.getRange(1, 1, 1, width).getValues()[0];
+  var line = [];
+  for (var c = 0; c < width; c++) line.push("");
+  headers.forEach(function (header, index) {
+    var key = String(header || "").trim().toLowerCase();
+    if (fields[key] != null) line[index] = fields[key];
+  });
+  sheet.getRange(sheet.getLastRow() + 1, 1, 1, width).setValues([line]);
+}
+
+function logStartingStock_(section, item, location, qty, note) {
+  if (qty == null || qty === 0) return;
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_LOG);
+  sheet.appendRow([
+    new Date(),
+    "ADD",
+    item,
+    section,
+    qty,
+    "Office",
+    "",
+    textCell_(note || "Starting stock"),
+    location
+  ]);
+}
+
+function renameItemHistory_(fromSection, fromItem, toSection, toItem) {
+  renameSheetItems_(SHEET_LOG, "section", "item", fromSection, fromItem, toSection, toItem);
+  renameSheetItems_(SHEET_VANS, "section", "item", fromSection, fromItem, toSection, toItem);
+}
+
+function renameSheetItems_(sheetName, sectionHeader, itemHeader, fromSection, fromItem, toSection, toItem) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheetName);
+  if (!sheet || sheet.getLastRow() < 2) return;
+  var values = sheet.getDataRange().getValues();
+  var map = {};
+  values[0].forEach(function (header, index) { map[String(header || "").trim().toLowerCase()] = index; });
+  var sectionCol = map[sectionHeader];
+  var itemCol = map[itemHeader];
+  if (sectionCol == null || itemCol == null) return;
+  for (var i = 1; i < values.length; i++) {
+    if (text_(values[i][sectionCol]) === fromSection && text_(values[i][itemCol]) === fromItem) {
+      sheet.getRange(i + 1, sectionCol + 1).setValue(toSection);
+      sheet.getRange(i + 1, itemCol + 1).setValue(toItem);
+    }
+  }
 }

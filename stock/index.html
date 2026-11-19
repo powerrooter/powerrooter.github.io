@@ -97,6 +97,7 @@
       gap: 8px;
     }
     h2 button { font-size: .8rem; padding: 6px 10px; min-height: 36px; }
+    button.tiny { min-height: 36px; font-size: .8rem; padding: 4px 10px; margin: 8px 6px 0 0; }
     h3.section { margin: 18px 0 8px; font-size: .95rem; }
     details.cat { margin: 10px 0 14px; }
     details.cat > summary {
@@ -264,7 +265,8 @@
       return rows.map((row) => ({
         section: String(row.section || ""),
         item: String(row.item || ""),
-        qty: row.qty == null ? (row.listed == null ? null : Number(row.listed)) : Number(row.qty)
+        qty: row.qty == null ? (row.listed == null ? null : Number(row.listed)) : Number(row.qty),
+        retired: row.retired === true || String(row.retired || "").toLowerCase() === "yes"
       })).filter((row) => row.item);
     }
     function catalogFrom(items, fallback) {
@@ -329,17 +331,17 @@
       const totals = onHandMap(log, view || "");
       const seen = new Set();
       const rows = [];
-      function consider(section, item, listed) {
+      function consider(section, item, listed, retired) {
         const key = itemKey(section, item);
         if (seen.has(key)) return;
         if (sectionFilter && section !== sectionFilter) return;
         if (q && (item + " " + section).toLowerCase().indexOf(q) === -1) return;
         seen.add(key);
         const onHand = totals.get(key) || 0;
-        rows.push({ section, item, listed, onHand, low: onHand <= 0, negative: onHand < 0 });
+        rows.push({ section, item, listed, onHand, low: onHand <= 0, negative: onHand < 0, retired: !!retired });
       }
-      catalog.forEach((it) => consider(it.section, it.item, it.qty));
-      log.forEach((row) => consider(row.section, row.item, null));
+      catalog.forEach((it) => consider(it.section, it.item, it.qty, it.retired));
+      log.forEach((row) => consider(row.section, row.item, null, false));
       return rows;
     }
     function latestReport(vanCounts, plate) {
@@ -770,6 +772,15 @@
       actions.appendChild(add);
       actions.appendChild(take);
       root.appendChild(actions);
+      const newItemBtn = el("button", "primary", "Add new item");
+      newItemBtn.type = "button";
+      newItemBtn.id = "newItemBtn";
+      newItemBtn.style.width = "100%";
+      newItemBtn.style.margin = "0 0 12px";
+      newItemBtn.style.borderRadius = "12px";
+      newItemBtn.style.minHeight = "52px";
+      newItemBtn.addEventListener("click", () => openItemForm(null));
+      root.appendChild(newItemBtn);
 
       const form = el("div", "meta");
       form.id = "formCard";
@@ -1009,7 +1020,7 @@
     }
 
     function renderOffice() {
-      const rows = officeRows(state.catalog, state.log, state.view, state.section, state.query);
+      const rows = officeRows(state.catalog, state.log, state.view, state.section, state.query).filter((row) => !row.retired);
       const low = rows.filter((row) => row.low).length;
       const summary = $("officeSummary");
       summary.textContent = "";
@@ -1051,10 +1062,36 @@
             });
             card.appendChild(split);
           }
+          const tools = document.createElement("div");
+          tools.style.marginTop = "8px";
+          const edit = el("button", "tiny", "Edit");
+          edit.type = "button";
+          edit.addEventListener("click", () => openItemForm(row));
+          const hide = el("button", "tiny", "Hide");
+          hide.type = "button";
+          hide.addEventListener("click", () => retireItem(row, true));
+          tools.appendChild(edit);
+          tools.appendChild(hide);
+          card.appendChild(tools);
           det.appendChild(card);
         });
         list.appendChild(det);
       });
+      const hidden = state.catalog.filter((it) => it.retired && (!state.section || it.section === state.section) && (!state.query || (it.item + " " + it.section).toLowerCase().indexOf(state.query.trim().toLowerCase()) !== -1));
+      if (hidden.length) {
+        const det = sectionDetails("office", "Hidden items", 0, "Hidden items: " + hidden.length);
+        hidden.forEach((it) => {
+          const card = el("div", "item");
+          card.appendChild(el("h3", null, it.item));
+          card.appendChild(el("div", "muted", it.section + (Number(it.qty) === 0 ? " · office only" : "")));
+          const show = el("button", "tiny", "Show");
+          show.type = "button";
+          show.addEventListener("click", () => retireItem(it, false));
+          card.appendChild(show);
+          det.appendChild(card);
+        });
+        list.appendChild(det);
+      }
     }
 
     function renderLog() {
@@ -1290,6 +1327,188 @@
       return node;
     }
 
+    function categoryNames() {
+      const order = ["300 Machine & Tools", "Hand Machine & Tools", "100 Machine", "Toilet", "Camera & Tools", "Air Tank", "Water Testing", "Drill", "Tubular Piping", "Caps", "Couplings & Elbows", "Miscellaneous", "Registration & Insurance"];
+      const names = [];
+      state.catalog.forEach((it) => {
+        if (it.section && names.indexOf(it.section) === -1) names.push(it.section);
+      });
+      return names.map((name, index) => ({ name, index })).sort((a, b) => {
+        const ai = order.indexOf(a.name);
+        const bi = order.indexOf(b.name);
+        if (ai === -1 && bi === -1) return a.index - b.index;
+        if (ai === -1) return 1;
+        if (bi === -1) return -1;
+        return ai - bi;
+      }).map((row) => row.name);
+    }
+
+    function openItemForm(existing) {
+      if (!stored(PIN_KEY)) {
+        renderPin();
+        const pinInput = $("pin");
+        if (pinInput) pinInput.focus();
+        showError("Enter the office PIN and save it on this phone.");
+        return;
+      }
+      showError("");
+      const card = $("formCard");
+      card.hidden = false;
+      card.textContent = "";
+      const form = document.createElement("form");
+      form.autocomplete = "off";
+      form.appendChild(el("h2", null, existing ? "Edit item" : "Add new item"));
+      form.appendChild(labeledInput("itemName", "Item name", "text", "What is it called?"));
+      const sectionWrap = el("div", "field");
+      const sectionLabel = el("label", null, "Category");
+      sectionLabel.htmlFor = "itemSection";
+      const section = document.createElement("select");
+      section.id = "itemSection";
+      categoryNames().forEach((name) => {
+        const opt = el("option", null, name);
+        opt.value = name;
+        section.appendChild(opt);
+      });
+      const newer = el("option", null, "New category…");
+      newer.value = "__new__";
+      section.appendChild(newer);
+      sectionWrap.appendChild(sectionLabel);
+      sectionWrap.appendChild(section);
+      form.appendChild(sectionWrap);
+      const newWrap = labeledInput("itemSectionNew", "New category", "text", "Category name");
+      newWrap.id = "newCategoryWrap";
+      newWrap.hidden = true;
+      form.appendChild(newWrap);
+      form.appendChild(labeledInput("itemQty", "Listed amount on each van", "number", "0"));
+      const qtyHint = el("p", "hint", "Use 0 if this stays in the office and is not on the van checklist.");
+      form.appendChild(qtyHint);
+      if (!existing) {
+        form.appendChild(labeledInput("itemBrooklyn", "Starting stock at Power Brooklyn (optional)", "number", "0"));
+        form.appendChild(labeledInput("itemHq", "Starting stock at Power HQ (optional)", "number", "0"));
+      }
+      form.appendChild(labeledInput("itemNote", "Note (optional)", "text", "Where it came from"));
+      const error = el("div", "error");
+      error.id = "formError";
+      form.appendChild(error);
+      const save = el("button", "primary", existing ? "Save item" : "Add item");
+      save.type = "submit";
+      save.id = "saveItemBtn";
+      save.style.width = "100%";
+      save.style.minHeight = "52px";
+      save.style.borderRadius = "12px";
+      const cancel = el("button", null, "Cancel");
+      cancel.type = "button";
+      cancel.style.width = "100%";
+      cancel.style.marginTop = "8px";
+      form.appendChild(save);
+      form.appendChild(cancel);
+      card.appendChild(form);
+      if (existing) {
+        $("itemName").value = existing.item;
+        section.value = categoryNames().indexOf(existing.section) === -1 ? "__new__" : existing.section;
+        newWrap.hidden = section.value !== "__new__";
+        if (section.value === "__new__") $("itemSectionNew").value = existing.section;
+        $("itemQty").value = existing.listed == null ? "0" : String(existing.listed);
+      } else {
+        $("itemQty").value = "1";
+      }
+      section.addEventListener("change", () => { newWrap.hidden = section.value !== "__new__"; });
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        saveItem(existing);
+      });
+      cancel.addEventListener("click", closeForm);
+      card.scrollIntoView({ behavior: "smooth", block: "start" });
+      $("itemName").focus();
+    }
+
+    function labeledInput(id, label, type, placeholder) {
+      const wrap = el("div", "field");
+      const lab = el("label", null, label);
+      lab.htmlFor = id;
+      const input = document.createElement("input");
+      input.id = id;
+      input.type = type;
+      input.placeholder = placeholder;
+      if (type === "number") { input.min = "0"; input.step = "1"; input.inputMode = "numeric"; }
+      wrap.appendChild(lab);
+      wrap.appendChild(input);
+      return wrap;
+    }
+
+    async function saveItem(existing) {
+      formError("");
+      const name = $("itemName").value.trim();
+      let section = $("itemSection").value;
+      if (section === "__new__") section = $("itemSectionNew").value.trim();
+      const qty = $("itemQty").value.trim();
+      if (!name) return formError("Enter the item name.");
+      if (!section) return formError("Choose a category.");
+      if (!/^\d+$/.test(qty)) return formError("Listed amount has to be a whole number. Use 0 if it stays in the office.");
+      const pin = stored(PIN_KEY);
+      if (!pin) return formError("Enter the office PIN and save it on this phone.");
+      const button = $("saveItemBtn");
+      button.disabled = true;
+      button.textContent = "Saving…";
+      const payload = {
+        action: existing ? "EDIT_ITEM" : "ADD_ITEM",
+        item: name,
+        section: section,
+        qty: Number(qty),
+        note: $("itemNote").value.trim(),
+        pin: pin
+      };
+      if (existing) {
+        payload.fromItem = existing.item;
+        payload.fromSection = existing.section;
+      } else {
+        payload.brooklyn = $("itemBrooklyn").value.trim();
+        payload.hq = $("itemHq").value.trim();
+      }
+      try {
+        await postMovement(payload);
+        toast(existing ? "Item saved." : "Item added.");
+        closeForm();
+        await load(false);
+      } catch (err) {
+        const message = err.message || "Couldn't save the item.";
+        if (/pin/i.test(message)) {
+          store(PIN_KEY, "");
+          renderPin();
+        }
+        formError(message);
+        button.disabled = false;
+        button.textContent = existing ? "Save item" : "Add item";
+      }
+    }
+
+    async function retireItem(row, hide) {
+      if (!stored(PIN_KEY)) {
+        renderPin();
+        showError("Enter the office PIN and save it on this phone.");
+        return;
+      }
+      const verb = hide ? "Hide" : "Show";
+      if (!confirm(verb + " " + row.item + (hide ? "? It leaves the checklist. Its history stays." : "?"))) return;
+      try {
+        await postMovement({
+          action: "RETIRE_ITEM",
+          item: row.item,
+          section: row.section,
+          retired: hide,
+          pin: stored(PIN_KEY)
+        });
+        toast(hide ? "Item hidden." : "Item shown.");
+        await load(false);
+      } catch (err) {
+        if (/pin/i.test(err.message || "")) {
+          store(PIN_KEY, "");
+          renderPin();
+        }
+        showError(err.message || "Couldn't update the item.");
+      }
+    }
+
     function openForm(mode) {
       draft.mode = mode;
       draft.location = "";
@@ -1401,7 +1620,7 @@
       box.textContent = "";
       const q = draft.query.trim().toLowerCase();
       if (!q || draft.chosen) return;
-      const matches = state.catalog.filter((it) => (it.item + " " + it.section).toLowerCase().indexOf(q) !== -1);
+      const matches = state.catalog.filter((it) => !it.retired && (it.item + " " + it.section).toLowerCase().indexOf(q) !== -1);
       matches.slice(0, 20).forEach((it) => {
         const btn = el("button", "pick", it.item);
         btn.type = "button";
@@ -1445,7 +1664,7 @@
       if (draft.chosen) return draft.chosen;
       const q = draft.query.trim().toLowerCase();
       if (!q) return null;
-      const exact = state.catalog.filter((it) => it.item.toLowerCase() === q);
+      const exact = state.catalog.filter((it) => !it.retired && it.item.toLowerCase() === q);
       return exact.length === 1 ? exact[0] : null;
     }
 
