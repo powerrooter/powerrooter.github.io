@@ -56,7 +56,7 @@
     .error { display: none; background: var(--less-bg); border-color: var(--less); color: var(--less); white-space: pre-line; }
     .error.show { display: block; }
     label { display: block; font-size: .8rem; font-weight: 600; margin-bottom: 4px; color: var(--muted); }
-    input[type="text"], input[type="search"], input[type="password"], input[type="number"], select {
+    input[type="text"], input[type="search"], input[type="password"], input[type="number"], input[type="date"], select {
       width: 100%;
       font: inherit;
       font-size: 16px;
@@ -114,6 +114,9 @@
       font-size: .75rem;
       font-weight: 700;
     }
+    .badge.added { background: var(--exact-bg); color: var(--exact); }
+    .when { font-weight: 700; margin-bottom: 4px; }
+    .filters label { margin-bottom: 0; }
     .summary { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; text-align: center; }
     .summary div strong { display: block; font-size: 1.35rem; }
     .summary .s-less strong { color: var(--less); }
@@ -385,12 +388,19 @@
       rows.sort((a, b) => Number(b.short) - Number(a.short));
       return { report, rows };
     }
-    function takenRows(log, person, van, office) {
+    function historyRows(log, person, van, office, action, fromDate, toDate) {
       return log.filter((row) => {
-        if (row.action !== "TAKE") return false;
+        if (row.action !== "ADD" && row.action !== "TAKE") return false;
+        if (action && row.action !== action) return false;
         if (person && row.person !== person) return false;
         if (van && normPlate(row.van) !== normPlate(van)) return false;
         if (office && row.location !== office) return false;
+        if (fromDate || toDate) {
+          const day = nyDateKey(row.timestamp);
+          if (!day) return false;
+          if (fromDate && day < fromDate) return false;
+          if (toDate && day > toDate) return false;
+        }
         return true;
       }).slice().sort((a, b) => timeValue(b.timestamp) - timeValue(a.timestamp));
     }
@@ -420,6 +430,9 @@
       logPerson: "",
       logVan: "",
       logOffice: "",
+      logAction: "",
+      logFrom: "",
+      logTo: "",
       vanPlate: "",
       shortOnly: false,
       status: ""
@@ -521,12 +534,15 @@
       root.appendChild(officeList);
 
       const logHead = el("h2");
-      logHead.appendChild(el("span", null, "Taken from the office"));
+      logHead.appendChild(el("span", null, "Stock history"));
       root.appendChild(logHead);
       const filters = el("div", "filters");
       filters.appendChild(selectBox("logPerson", "Filter by person"));
       filters.appendChild(selectBox("logVan", "Filter by van"));
       filters.appendChild(selectBox("logOffice", "Filter by office"));
+      filters.appendChild(selectBox("logAction", "Filter by added or taken"));
+      filters.appendChild(dateField("logFrom", "From date"));
+      filters.appendChild(dateField("logTo", "To date"));
       root.appendChild(filters);
       const logList = el("div");
       logList.id = "logList";
@@ -573,6 +589,9 @@
       $("logPerson").addEventListener("change", () => { state.logPerson = $("logPerson").value; renderLog(); });
       $("logVan").addEventListener("change", () => { state.logVan = $("logVan").value; renderLog(); });
       $("logOffice").addEventListener("change", () => { state.logOffice = $("logOffice").value; renderLog(); });
+      $("logAction").addEventListener("change", () => { state.logAction = $("logAction").value; renderLog(); });
+      $("logFrom").addEventListener("change", () => { state.logFrom = $("logFrom").value; renderLog(); });
+      $("logTo").addEventListener("change", () => { state.logTo = $("logTo").value; renderLog(); });
       vanPick.addEventListener("input", () => { state.vanPlate = vanPick.value; renderVan(); });
       shortBtn.addEventListener("click", () => {
         state.shortOnly = !state.shortOnly;
@@ -592,6 +611,17 @@
       node.id = id;
       if (label) node.setAttribute("aria-label", label);
       return node;
+    }
+
+    function dateField(id, label) {
+      const wrap = el("label", null, label);
+      wrap.htmlFor = id;
+      const input = document.createElement("input");
+      input.id = id;
+      input.type = "date";
+      input.setAttribute("aria-label", label);
+      wrap.appendChild(input);
+      return wrap;
     }
 
     function renderPin() {
@@ -678,6 +708,7 @@
       const plates = plateChoices(state.log, state.vanCounts);
       fillSelect("logVan", plates.map((plate) => ({ value: plate.label, label: plate.label })), state.logVan, "All vans");
       fillSelect("logOffice", state.locations.map((name) => ({ value: name, label: name })), state.logOffice, "All offices");
+      fillSelect("logAction", [{ value: "ADD", label: "Added" }, { value: "TAKE", label: "Taken" }], state.logAction, "All");
       const list = $("vanPicks");
       list.textContent = "";
       plates.forEach((plate) => {
@@ -741,21 +772,25 @@
     }
 
     function renderLog() {
-      const rows = takenRows(state.log, state.logPerson, state.logVan, state.logOffice);
+      const rows = historyRows(state.log, state.logPerson, state.logVan, state.logOffice, state.logAction, state.logFrom, state.logTo);
       const list = $("logList");
       list.textContent = "";
       if (!rows.length) {
-        list.appendChild(el("p", "hint", "Nothing taken from the office yet."));
+        list.appendChild(el("p", "hint", "No stock history yet."));
         return;
       }
       rows.forEach((row) => {
+        const added = row.action === "ADD";
         const card = el("div", "item");
+        card.appendChild(el("div", "when", formatNy(row.timestamp) || "Unknown time"));
         const title = el("h3", null, row.item);
-        const badge = el("span", "badge", "Took " + (isFinite(row.qty) ? row.qty : "?"));
+        const qty = isFinite(row.qty) ? String(row.qty) : "?";
+        const badge = el("span", "badge" + (added ? " added" : ""), (added ? "Added " : "Taken ") + qty);
         title.appendChild(badge);
         card.appendChild(title);
-        card.appendChild(el("div", "muted", row.section));
-        const bits = [formatNy(row.timestamp) || "Unknown time", row.person || "No name", row.van || "No plate", row.location || "No office"];
+        if (row.section) card.appendChild(el("div", "muted", row.section));
+        const bits = [row.location || "No office", row.person || "No name"];
+        if (!added) bits.push(row.van || "No plate");
         card.appendChild(el("div", null, bits.join(" · ")));
         if (row.note) card.appendChild(el("div", "muted", row.note));
         list.appendChild(card);
