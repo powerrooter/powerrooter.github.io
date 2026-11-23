@@ -3,103 +3,118 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#1b3a4b" />
-  <title>Power Rooter Office Stock</title>
+  <meta name="theme-color" content="#252F68" />
+  <title>Power Rooter Inventory</title>
   <style>
     :root {
-      --navy: #1b3a4b;
-      --orange: #c45c26;
-      --paper: #f6f3ee;
-      --card: #ffffff;
-      --line: #d8d2c8;
-      --muted: #5c6b73;
-      --exact: #1f7a4d;
-      --exact-bg: #e7f6ee;
-      --less: #b42318;
-      --less-bg: #fdeceb;
-      --more: #b54708;
-      --more-bg: #fff4e5;
+      --red: #E41F2C;
+      --red-dark: #C11824;
+      --red-pale: #FEECEC;
+      --blue: #252F68;
+      --blue-2: #2E3A82;
+      --blue-3: #1A2350;
+      --blue-soft: #8E99D4;
+      --blue-pale: #EDEFF7;
+      --bg: #F6F7FB;
+      --card: #fff;
+      --text: #112337;
+      --muted: #667085;
+      --line: #E2E6F0;
+      --green: #0F7B4F;
+      --green-pale: #E7F6EE;
     }
     * { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background: var(--paper);
-      color: var(--navy);
-      line-height: 1.4;
-      -webkit-text-size-adjust: 100%;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.45;
+      font-size: 16px;
     }
     header {
-      background: var(--navy);
+      background: var(--blue);
       color: #fff;
-      padding: calc(18px + env(safe-area-inset-top)) 16px 16px;
+      padding: calc(14px + env(safe-area-inset-top)) 16px 12px;
       position: sticky;
       top: 0;
-      z-index: 5;
-      box-shadow: 0 2px 8px rgba(0,0,0,.15);
+      z-index: 30;
     }
-    header h1 { margin: 0 0 4px; font-size: 1.15rem; }
-    header p { margin: 0; font-size: .9rem; color: #d7e2e8; }
-    header .subnav { margin: 8px 0 0; }
-    header a { color: #fff; }
-    .wrap { max-width: 760px; margin: 0 auto; padding: 16px; }
-    .notice, .meta, .item, .summary, .error {
+    .brand { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+    .brand h1 { margin: 0; font-size: 1.2rem; letter-spacing: .01em; }
+    .brand a { color: var(--blue-soft); font-size: .9rem; }
+    .tabs { display: flex; gap: 4px; margin-top: 12px; }
+    .tabs button {
+      flex: 1;
+      background: transparent;
+      color: #d5dcf5;
+      border: 0;
+      border-bottom: 3px solid transparent;
+      border-radius: 0;
+      padding: 10px 6px;
+      font-weight: 700;
+      min-height: 44px;
+    }
+    .tabs button.active { color: #fff; border-bottom-color: var(--red); }
+    .quick { display: flex; gap: 8px; margin-top: 10px; }
+    .quick button { flex: 1; min-height: 46px; border-radius: 10px; font-weight: 700; }
+    button.add { background: var(--red); color: #fff; border: 0; }
+    button.give { background: var(--blue-2); color: #fff; border: 1px solid var(--blue-soft); }
+    button {
+      font: inherit;
+      cursor: pointer;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--text);
+      border-radius: 999px;
+      padding: 8px 14px;
+      min-height: 40px;
+    }
+    button.primary { background: var(--red); color: #fff; border-color: var(--red); font-weight: 700; }
+    button.blue { background: var(--blue); color: #fff; border-color: var(--blue); font-weight: 700; }
+    button.tiny { min-height: 34px; font-size: .82rem; padding: 4px 10px; }
+    .wrap { max-width: 1180px; margin: 0 auto; padding: 16px; }
+    .note, .card, .item, .vancard {
       background: var(--card);
       border: 1px solid var(--line);
-      border-radius: 12px;
+      border-radius: 14px;
       padding: 14px;
       margin-bottom: 12px;
     }
-    .notice { background: var(--more-bg); border-color: var(--more); }
-    .notice strong { display: block; margin-bottom: 4px; }
-    a.notice { display: block; color: var(--navy); font-weight: 700; text-decoration: none; margin-bottom: 12px; }
-    .notice a { color: var(--navy); font-weight: 700; }
-    .error { display: none; background: var(--less-bg); border-color: var(--less); color: var(--less); white-space: pre-line; }
-    .error.show { display: block; }
-    label { display: block; font-size: .8rem; font-weight: 600; margin-bottom: 4px; color: var(--muted); }
-    input[type="text"], input[type="search"], input[type="password"], input[type="number"], input[type="date"], select {
+    .note { background: var(--red-pale); border-color: #f3c2c6; }
+    .note strong { color: var(--red-dark); }
+    .workspace { display: block; }
+    #detail:empty { display: none; }
+    h2 { margin: 8px 0 12px; font-size: 1.15rem; }
+    h3 { margin: 0 0 4px; font-size: 1rem; }
+    .muted { color: var(--muted); font-size: .9rem; }
+    .row { display: flex; justify-content: space-between; gap: 10px; align-items: center; }
+    .needs {
+      background: var(--red);
+      color: #fff;
+      font-weight: 800;
+      border-radius: 999px;
+      padding: 4px 10px;
+      white-space: nowrap;
+    }
+    .ok { color: var(--green); font-weight: 700; }
+    .bad { color: var(--red-dark); font-weight: 800; }
+    .search, input, select, textarea {
       width: 100%;
       font: inherit;
       font-size: 16px;
       padding: 12px;
       border: 1px solid var(--line);
-      border-radius: 8px;
-      background: #fffaf4;
-      color: var(--navy);
+      border-radius: 10px;
+      background: #fff;
+      color: var(--text);
       min-height: 48px;
     }
-    .hint { color: var(--muted); font-size: .9rem; margin: 6px 0 0; }
-    .toolbar, .actions, .filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 12px; }
-    .filters { display: grid; grid-template-columns: 1fr; }
-    @media (min-width: 560px) { .filters { grid-template-columns: 1fr 1fr 1fr; } }
-    button {
-      font: inherit;
-      border: 1px solid var(--line);
-      background: #fff;
-      color: var(--navy);
-      border-radius: 999px;
-      padding: 8px 14px;
-      cursor: pointer;
-      min-height: 44px;
-    }
-    button.primary { background: var(--orange); border-color: var(--orange); color: #fff; font-weight: 700; }
-    button.take { background: var(--navy); border-color: var(--navy); color: #fff; font-weight: 700; }
-    button.active { background: var(--navy); color: #fff; border-color: var(--navy); }
-    button:disabled { opacity: .6; }
-    .actions { display: grid; grid-template-columns: 1fr 1fr; }
-    .actions button { border-radius: 12px; min-height: 56px; font-size: 1.05rem; }
-    h2 {
-      font-size: 1rem;
-      margin: 22px 0 8px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-    }
-    h2 button { font-size: .8rem; padding: 6px 10px; min-height: 36px; }
-    button.tiny { min-height: 36px; font-size: .8rem; padding: 4px 10px; margin: 8px 6px 0 0; }
-    h3.section { margin: 18px 0 8px; font-size: .95rem; }
-    details.cat { margin: 10px 0 14px; }
+    label { display: block; font-size: .82rem; font-weight: 700; color: var(--muted); margin: 10px 0 4px; }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 12px; }
+    .picks button, .loc button { margin: 6px 6px 0 0; }
+    .loc button.active, .picks button.on { background: var(--blue); color: #fff; border-color: var(--blue); }
+    details.cat { margin: 8px 0 12px; }
     details.cat > summary {
       cursor: pointer;
       font-weight: 700;
@@ -110,581 +125,142 @@
       list-style: none;
     }
     details.cat > summary::-webkit-details-marker { display: none; }
-    details.cat.short > summary { border-color: var(--less); background: var(--less-bg); }
-    details.cat[open] > summary { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
-    details.cat .cat-body { padding: 8px 0 0; }
-    .item h3 { margin: 0 0 4px; font-size: 1rem; }
-    .item.low { border-color: #f2b8b5; }
-    .item.negative { border-color: #f2b8b5; background: var(--less-bg); }
-    .onhand { font-size: 1.55rem; font-weight: 800; line-height: 1.1; }
-    .item.low .onhand, .item.negative .onhand { color: var(--less); }
-    .muted { color: var(--muted); font-size: .85rem; }
-    .split .neg { color: var(--less); font-weight: 700; }
-    .badge {
-      display: inline-block;
-      margin-left: 6px;
-      background: var(--less-bg);
-      color: var(--less);
-      border-radius: 999px;
-      padding: 2px 8px;
-      font-size: .75rem;
-      font-weight: 700;
+    details.cat.short > summary { background: var(--red-pale); border-color: #f3c2c6; color: var(--red-dark); }
+    .item.low { background: var(--red-pale); border-color: #f3c2c6; }
+    .item.ok { border-color: #b7e2cc; }
+    .statgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .statgrid div { background: var(--blue-pale); border-radius: 12px; padding: 10px; text-align: center; }
+    .statgrid strong { display: block; font-size: 1.3rem; }
+    .error { display: none; background: var(--red-pale); color: var(--red-dark); border-radius: 10px; padding: 10px; margin: 8px 0; }
+    .error.show { display: block; }
+    #modal[hidden] { display: none; }
+    #modal { position: fixed; inset: 0; background: rgba(17, 35, 55, .45); z-index: 40; overflow: auto; padding: 16px; }
+    .modal-card { background: #fff; border-radius: 16px; padding: 16px; max-width: 560px; margin: 24px auto; }
+    .vancard { cursor: pointer; }
+    .vancard.selected { border-color: var(--blue); box-shadow: 0 0 0 2px var(--blue); }
+    @media (min-width: 980px) {
+      .workspace { display: grid; grid-template-columns: minmax(0, 1fr) 400px; gap: 16px; align-items: start; }
+      #detail { display: block; position: sticky; top: 92px; max-height: calc(100vh - 110px); overflow: auto; }
+      #detail:empty { display: block; }
+      .quick { width: 280px; }
+      header .top { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+      .tabs { margin-top: 0; flex: 1; max-width: 520px; }
     }
-    .badge.added { background: var(--exact-bg); color: var(--exact); }
-    .when { font-weight: 700; margin-bottom: 4px; }
-    .filters label { margin-bottom: 0; }
-    .summary { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; text-align: center; }
-    .summary div strong { display: block; font-size: 1.35rem; }
-    .summary .s-less strong { color: var(--less); }
-    .pin-row, .field { margin-bottom: 10px; }
-    .pin-row { display: flex; gap: 8px; align-items: center; }
-    .pin-row input { flex: 1; }
-    button.pick {
-      display: block;
-      width: 100%;
-      text-align: left;
-      border-radius: 12px;
-      margin-top: 8px;
-      background: #fff;
-    }
-    button.pick span { display: block; color: var(--muted); font-weight: 500; font-size: .8rem; }
-    .chip { background: var(--exact-bg); border: 1px solid #9fd4b3; border-radius: 10px; padding: 10px 12px; margin-top: 8px; }
-    .loc-choices { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .loc-choices button { border-radius: 12px; min-height: 52px; font-weight: 700; }
-    .submit-box button.primary { width: 100%; padding: 14px; font-size: 1.05rem; border-radius: 12px; }
-    #formCard { scroll-margin-top: 96px; }
-    .req { color: var(--orange); }
-    [hidden] { display: none !important; }
-    footer { color: var(--muted); font-size: .85rem; margin: 8px 0 40px; }
-    footer a { color: var(--navy); font-weight: 600; }
-    #toast {
-      display: none;
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--navy);
-      color: #fff;
-      padding: 10px 16px;
-      border-radius: 999px;
-      z-index: 10;
-      max-width: 90%;
-      text-align: center;
+    @media (max-width: 979px) {
+      #detail.open { position: fixed; inset: 0; z-index: 25; background: var(--bg); overflow: auto; padding: 16px; }
     }
   </style>
 </head>
 <body>
   <header>
-    <h1>Office stock</h1>
-    <p>Power Brooklyn and Power HQ</p>
-    <p class="subnav"><a href="/">Weekly van checklist</a></p>
+    <div class="top">
+      <div class="brand">
+        <h1>Power Rooter</h1>
+        <a href="/">Van checklist</a>
+      </div>
+      <div class="tabs" role="tablist">
+        <button type="button" data-tab="parts">Parts</button>
+        <button type="button" data-tab="vehicles">Vehicles</button>
+        <button type="button" data-tab="stock">Stock</button>
+      </div>
+      <div class="quick">
+        <button type="button" class="add" id="quickAdd">Add stock</button>
+        <button type="button" class="give" id="quickGive">Give to van</button>
+      </div>
+    </div>
   </header>
   <div class="wrap">
-    <div id="setup" class="notice">
-      <strong>Setup needed.</strong>
-      This page is not connected to the office spreadsheet yet, so Add stock and Take stock stay off.
-      Deploy the Apps Script, then paste the web app address that ends in /exec into API_URL at the top of this page.
-      <p class="hint"><a href="SETUP.md">Setup steps</a></p>
+    <div id="scriptNote" class="note" hidden></div>
+    <div id="loadError" class="error" role="alert"></div>
+    <div class="workspace">
+      <main id="main"></main>
+      <aside id="detail"></aside>
     </div>
-    <div id="app"></div>
-    <footer>Power Rooter office stock for Power Brooklyn and Power HQ. <a href="/">Back to the weekly checklist</a></footer>
   </div>
-  <div id="toast" role="status"></div>
+  <div id="modal" hidden></div>
   <script>
-    // Deployed Apps Script web app. Who has access must be Anyone, or the page cannot read it.
     const API_URL = "https://script.google.com/macros/s/AKfycbzmF5ifybYu5rBY5BpRdhgDS22-wLWB-l_vK2sW47ThvBbQ4jTyoo0qnPDZGOqwPE8t2A/exec";
-    const ACCESS_ERROR = "Can't reach the stock sheet. In Apps Script, set Deploy, Manage deployments, Who has access to Anyone.";
-    const LOCATIONS = ["Power Brooklyn", "Power HQ"];
-    const BACKFILL_URLS = ["backfill/2026-11-19-XSJJ22.json"];
-    const PARAM_VAN = (new URLSearchParams(location.search).get("van") || "").trim();
     const PIN_KEY = "pr-office-stock-pin";
-    const PERSON_KEY = "pr-office-stock-person";
-    const VAN_KEY = "pr-office-stock-van";
-    const ITEMS = [{"section": "300 Machine & Tools", "item": "Maintained 300 Machine with 75 Ft of cable", "qty": 1}, {"section": "300 Machine & Tools", "item": "Extra 25 Ft of cable", "qty": 2}, {"section": "300 Machine & Tools", "item": "Extra Pins", "qty": 5}, {"section": "300 Machine & Tools", "item": "Pairs of yellow gloves", "qty": 2}, {"section": "300 Machine & Tools", "item": "Whip", "qty": 1}, {"section": "300 Machine & Tools", "item": "U Blade 3\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Half Blade 3\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "U Blade 4\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Half Blade 4\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Saw blade", "qty": 1}, {"section": "300 Machine & Tools", "item": "Puncher & Stand", "qty": 1}, {"section": "300 Machine & Tools", "item": "Hammer", "qty": 1}, {"section": "300 Machine & Tools", "item": "Channel Lock 10\" or 12\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Channel Lock 6.5\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Pipe Wrench", "qty": 1}, {"section": "300 Machine & Tools", "item": "PB Blaster / WD-40", "qty": 1}, {"section": "300 Machine & Tools", "item": "Extension wire 25 ft", "qty": 1}, {"section": "300 Machine & Tools", "item": "Duct Tape", "qty": 2}, {"section": "300 Machine & Tools", "item": "Long gloves", "qty": 1}, {"section": "300 Machine & Tools", "item": "Philip screw driver", "qty": 1}, {"section": "300 Machine & Tools", "item": "Flat screw driver", "qty": 1}, {"section": "300 Machine & Tools", "item": "Nut Driver", "qty": 1}, {"section": "300 Machine & Tools", "item": "Screw driver 4 in 1", "qty": 1}, {"section": "300 Machine & Tools", "item": "Outlet adapters 2-3", "qty": 1}, {"section": "300 Machine & Tools", "item": "PVC pipe with elbow for trap out sewer 2\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Repair plates 4\"", "qty": 2}, {"section": "Hand Machine & Tools", "item": "Hand Machine with 25 ft cable", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Extra 25 ft cable", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Drop head 25 ft cable", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Construction gloves", "qty": 3}, {"section": "Hand Machine & Tools", "item": "Channel lock 10\" or 12\"", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Channel lock 6.5\"", "qty": 1}, {"section": "Hand Machine & Tools", "item": "PVC channel lock", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Vise grip", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Flat Screw driver", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Philip screw driver", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Nut driver", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Screw driver 4 in 1", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Teflon Tape", "qty": 5}, {"section": "Hand Machine & Tools", "item": "Electric Tape", "qty": 5}, {"section": "Hand Machine & Tools", "item": "Epoxy", "qty": 2}, {"section": "Hand Machine & Tools", "item": "Plumbers putty", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Outlet adapters 2-3", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Extension wire 25 ft", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Wheeling Case", "qty": 1}, {"section": "100 Machine", "item": "Maintained 100 machine with 75 ft cable", "qty": 1}, {"section": "100 Machine", "item": "Construction gloves", "qty": 3}, {"section": "100 Machine", "item": "Boiler plugs", "qty": 10}, {"section": "Toilet", "item": "Toilet auger", "qty": 1}, {"section": "Toilet", "item": "Wax Rings", "qty": 10}, {"section": "Toilet", "item": "Johnny bolts", "qty": 10}, {"section": "Toilet", "item": "Silicone gun", "qty": 1}, {"section": "Toilet", "item": "Silicone", "qty": 2}, {"section": "Toilet", "item": "Plaster", "qty": 1}, {"section": "Toilet", "item": "Foam spray", "qty": 1}, {"section": "Toilet", "item": "Fill valves (Fluidmaster)", "qty": 3}, {"section": "Toilet", "item": "Flappers", "qty": 5}, {"section": "Toilet", "item": "Ratchet wrench set", "qty": 1}, {"section": "Toilet", "item": "Lock wrench for johnny bolts", "qty": 1}, {"section": "Camera & Tools", "item": "Camera", "qty": 1}, {"section": "Camera & Tools", "item": "Locator", "qty": 1}, {"section": "Camera & Tools", "item": "Rags", "qty": 2}, {"section": "Air Tank", "item": "Maintained Air tank", "qty": 2}, {"section": "Air Tank", "item": "Hose", "qty": 1}, {"section": "Air Tank", "item": "Hose Adapter", "qty": 1}, {"section": "Air Tank", "item": "Flush bag 2\"", "qty": 1}, {"section": "Air Tank", "item": "Flush bag 1/2\"–3\"", "qty": 1}, {"section": "Air Tank", "item": "Flush bag 3\"–4\"", "qty": 1}, {"section": "Air Tank", "item": "Flush bag 3\"–6\"", "qty": 1}, {"section": "Water Testing", "item": "Water hose 150 Ft", "qty": 1}, {"section": "Water Testing", "item": "Speedy with adapter to sink / toilet", "qty": 1}, {"section": "Water Testing", "item": "Nozzle", "qty": 1}, {"section": "Drill", "item": "Electric Drill", "qty": 1}, {"section": "Drill", "item": "Carbide hole saw bit 7/8\"", "qty": 1}, {"section": "Drill", "item": "Center bits", "qty": 2}, {"section": "Drill", "item": "PVC saw hole bit 7/8\"", "qty": 2}, {"section": "Drill", "item": "Plugs 7/8\"", "qty": 5}, {"section": "Tubular Piping", "item": "Pipe Cutter", "qty": 1}, {"section": "Tubular Piping", "item": "Brass Sink traps", "qty": 2}, {"section": "Tubular Piping", "item": "P trap set 1 1/2\"", "qty": 2}, {"section": "Tubular Piping", "item": "Elbows 1 1/2\"", "qty": 5}, {"section": "Tubular Piping", "item": "Offsets 1 1/2\"", "qty": 2}, {"section": "Tubular Piping", "item": "Tail Ends 1 1/2\"", "qty": 2}, {"section": "Tubular Piping", "item": "Slip nuts & washers 1 1/2\"", "qty": 5}, {"section": "Tubular Piping", "item": "P Trap sets 1 1/4\"", "qty": 3}, {"section": "Tubular Piping", "item": "Elbows 1 1/4\"", "qty": 5}, {"section": "Tubular Piping", "item": "Offsets 1 1/4\"", "qty": 2}, {"section": "Tubular Piping", "item": "Tail ends 1 1/4\"", "qty": 2}, {"section": "Tubular Piping", "item": "Slip nuts & washers 1 1/4\"", "qty": 5}, {"section": "Caps", "item": "Caps 3\"", "qty": 5}, {"section": "Caps", "item": "Caps 3 1/2\"", "qty": 5}, {"section": "Caps", "item": "Caps 4\"", "qty": 10}, {"section": "Caps", "item": "Caps 4 1/2\"", "qty": 5}, {"section": "Caps", "item": "Jim Cap 3\"", "qty": 5}, {"section": "Caps", "item": "Jim Cap 4\"", "qty": 5}, {"section": "Caps", "item": "Jim Cap 5\"", "qty": 5}, {"section": "Caps", "item": "Test Plugs 3\"", "qty": 4}, {"section": "Caps", "item": "Test Plugs 4\"", "qty": 4}, {"section": "Couplings & Elbows", "item": "Couplings 4\"", "qty": 5}, {"section": "Couplings & Elbows", "item": "Couplings 3\"", "qty": 5}, {"section": "Couplings & Elbows", "item": "Couplings 2\"", "qty": 5}, {"section": "Couplings & Elbows", "item": "Couplings 2–1 1/2\"", "qty": 2}, {"section": "Miscellaneous", "item": "Grinder with blades", "qty": 1}, {"section": "Miscellaneous", "item": "Shop Vac", "qty": 1}, {"section": "Miscellaneous", "item": "Pump Vac", "qty": 1}, {"section": "Miscellaneous", "item": "Pump with hose", "qty": 1}, {"section": "Miscellaneous", "item": "Set of L keys", "qty": 1}, {"section": "Miscellaneous", "item": "Sledgehammer", "qty": 1}, {"section": "Miscellaneous", "item": "Chisel", "qty": 1}, {"section": "Miscellaneous", "item": "Suction cups", "qty": 2}, {"section": "Miscellaneous", "item": "Extra extension wire 25 ft", "qty": 1}, {"section": "Miscellaneous", "item": "Extra extension wire 50 ft", "qty": 1}, {"section": "Miscellaneous", "item": "Goggles", "qty": 2}, {"section": "Miscellaneous", "item": "Boxes latex gloves", "qty": 6}, {"section": "Miscellaneous", "item": "Bulb outlet adapter", "qty": 1}, {"section": "Miscellaneous", "item": "Regular / Rechargeable flashlight", "qty": 1}, {"section": "Miscellaneous", "item": "Rubber boots", "qty": 1}, {"section": "Miscellaneous", "item": "Disposable boots", "qty": 1}, {"section": "Miscellaneous", "item": "Raincoat", "qty": 1}, {"section": "Miscellaneous", "item": "Grabber", "qty": 1}, {"section": "Miscellaneous", "item": "Bolt Cutter", "qty": 1}, {"section": "Miscellaneous", "item": "Razor blade", "qty": 1}, {"section": "Miscellaneous", "item": "Head Flash light", "qty": 1}, {"section": "Miscellaneous", "item": "Crow Bar", "qty": 1}, {"section": "Miscellaneous", "item": "Long Bar", "qty": 1}, {"section": "Miscellaneous", "item": "Pump", "qty": 1}, {"section": "Miscellaneous", "item": "Degreasing Wipes", "qty": 1}, {"section": "Miscellaneous", "item": "Degrease Spray", "qty": 1}, {"section": "Miscellaneous", "item": "Shoe Covers", "qty": 10}, {"section": "Registration & Insurance", "item": "Registration in the van", "qty": 1}, {"section": "Registration & Insurance", "item": "Insurance card in the van", "qty": 1}];
+    const LOCATIONS = ["Power Brooklyn", "Power HQ"];
+    const SECTIONS = ["300 Machine & Tools", "Hand Machine & Tools", "100 Machine", "Toilet", "Camera & Tools", "Air Tank", "Water Testing", "Drill", "Tubular Piping", "Caps", "Couplings & Elbows", "Miscellaneous", "Registration & Insurance"];
+    const LIBRARY = [{"section": "300 Machine & Tools", "item": "Maintained 300 Machine with 75 Ft of cable", "qty": 1}, {"section": "300 Machine & Tools", "item": "Extra 25 Ft of cable", "qty": 2}, {"section": "300 Machine & Tools", "item": "Extra Pins", "qty": 5}, {"section": "300 Machine & Tools", "item": "Pairs of yellow gloves", "qty": 2}, {"section": "300 Machine & Tools", "item": "Whip", "qty": 1}, {"section": "300 Machine & Tools", "item": "U Blade 3\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Half Blade 3\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "U Blade 4\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Half Blade 4\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Saw blade", "qty": 1}, {"section": "300 Machine & Tools", "item": "Puncher & Stand", "qty": 1}, {"section": "300 Machine & Tools", "item": "Hammer", "qty": 1}, {"section": "300 Machine & Tools", "item": "Channel Lock 10\" or 12\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Channel Lock 6.5\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Pipe Wrench", "qty": 1}, {"section": "300 Machine & Tools", "item": "PB Blaster / WD-40", "qty": 1}, {"section": "300 Machine & Tools", "item": "Extension wire 25 ft", "qty": 1}, {"section": "300 Machine & Tools", "item": "Duct Tape", "qty": 2}, {"section": "300 Machine & Tools", "item": "Long gloves", "qty": 1}, {"section": "300 Machine & Tools", "item": "Philip screw driver", "qty": 1}, {"section": "300 Machine & Tools", "item": "Flat screw driver", "qty": 1}, {"section": "300 Machine & Tools", "item": "Nut Driver", "qty": 1}, {"section": "300 Machine & Tools", "item": "Screw driver 4 in 1", "qty": 1}, {"section": "300 Machine & Tools", "item": "Outlet adapters 2-3", "qty": 1}, {"section": "300 Machine & Tools", "item": "PVC pipe with elbow for trap out sewer 2\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Repair plates 4\"", "qty": 2}, {"section": "Hand Machine & Tools", "item": "Hand Machine with 25 ft cable", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Extra 25 ft cable", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Drop head 25 ft cable", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Construction gloves", "qty": 3}, {"section": "Hand Machine & Tools", "item": "Channel lock 10\" or 12\"", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Channel lock 6.5\"", "qty": 1}, {"section": "Hand Machine & Tools", "item": "PVC channel lock", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Vise grip", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Flat Screw driver", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Philip screw driver", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Nut driver", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Screw driver 4 in 1", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Teflon Tape", "qty": 5}, {"section": "Hand Machine & Tools", "item": "Electric Tape", "qty": 5}, {"section": "Hand Machine & Tools", "item": "Epoxy", "qty": 2}, {"section": "Hand Machine & Tools", "item": "Plumbers putty", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Outlet adapters 2-3", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Extension wire 25 ft", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Wheeling Case", "qty": 1}, {"section": "100 Machine", "item": "Maintained 100 machine with 75 ft cable", "qty": 1}, {"section": "100 Machine", "item": "Construction gloves", "qty": 3}, {"section": "100 Machine", "item": "Boiler plugs", "qty": 10}, {"section": "Toilet", "item": "Toilet auger", "qty": 1}, {"section": "Toilet", "item": "Wax Rings", "qty": 10}, {"section": "Toilet", "item": "Johnny bolts", "qty": 10}, {"section": "Toilet", "item": "Silicone gun", "qty": 1}, {"section": "Toilet", "item": "Silicone", "qty": 2}, {"section": "Toilet", "item": "Plaster", "qty": 1}, {"section": "Toilet", "item": "Foam spray", "qty": 1}, {"section": "Toilet", "item": "Fill valves (Fluidmaster)", "qty": 3}, {"section": "Toilet", "item": "Flappers", "qty": 5}, {"section": "Toilet", "item": "Ratchet wrench set", "qty": 1}, {"section": "Toilet", "item": "Lock wrench for johnny bolts", "qty": 1}, {"section": "Camera & Tools", "item": "Camera", "qty": 1}, {"section": "Camera & Tools", "item": "Locator", "qty": 1}, {"section": "Camera & Tools", "item": "Rags", "qty": 2}, {"section": "Air Tank", "item": "Maintained Air tank", "qty": 2}, {"section": "Air Tank", "item": "Hose", "qty": 1}, {"section": "Air Tank", "item": "Hose Adapter", "qty": 1}, {"section": "Air Tank", "item": "Flush bag 2\"", "qty": 1}, {"section": "Air Tank", "item": "Flush bag 1/2\"–3\"", "qty": 1}, {"section": "Air Tank", "item": "Flush bag 3\"–4\"", "qty": 1}, {"section": "Air Tank", "item": "Flush bag 3\"–6\"", "qty": 1}, {"section": "Water Testing", "item": "Water hose 150 Ft", "qty": 1}, {"section": "Water Testing", "item": "Speedy with adapter to sink / toilet", "qty": 1}, {"section": "Water Testing", "item": "Nozzle", "qty": 1}, {"section": "Drill", "item": "Electric Drill", "qty": 1}, {"section": "Drill", "item": "Carbide hole saw bit 7/8\"", "qty": 1}, {"section": "Drill", "item": "Center bits", "qty": 2}, {"section": "Drill", "item": "PVC saw hole bit 7/8\"", "qty": 2}, {"section": "Drill", "item": "Plugs 7/8\"", "qty": 5}, {"section": "Tubular Piping", "item": "Pipe Cutter", "qty": 1}, {"section": "Tubular Piping", "item": "Brass Sink traps", "qty": 2}, {"section": "Tubular Piping", "item": "P trap set 1 1/2\"", "qty": 2}, {"section": "Tubular Piping", "item": "Elbows 1 1/2\"", "qty": 5}, {"section": "Tubular Piping", "item": "Offsets 1 1/2\"", "qty": 2}, {"section": "Tubular Piping", "item": "Tail Ends 1 1/2\"", "qty": 2}, {"section": "Tubular Piping", "item": "Slip nuts & washers 1 1/2\"", "qty": 5}, {"section": "Tubular Piping", "item": "P Trap sets 1 1/4\"", "qty": 3}, {"section": "Tubular Piping", "item": "Elbows 1 1/4\"", "qty": 5}, {"section": "Tubular Piping", "item": "Offsets 1 1/4\"", "qty": 2}, {"section": "Tubular Piping", "item": "Tail ends 1 1/4\"", "qty": 2}, {"section": "Tubular Piping", "item": "Slip nuts & washers 1 1/4\"", "qty": 5}, {"section": "Caps", "item": "Caps 3\"", "qty": 5}, {"section": "Caps", "item": "Caps 3 1/2\"", "qty": 5}, {"section": "Caps", "item": "Caps 4\"", "qty": 10}, {"section": "Caps", "item": "Caps 4 1/2\"", "qty": 5}, {"section": "Caps", "item": "Jim Cap 3\"", "qty": 5}, {"section": "Caps", "item": "Jim Cap 4\"", "qty": 5}, {"section": "Caps", "item": "Jim Cap 5\"", "qty": 5}, {"section": "Caps", "item": "Test Plugs 3\"", "qty": 4}, {"section": "Caps", "item": "Test Plugs 4\"", "qty": 4}, {"section": "Couplings & Elbows", "item": "Couplings 4\"", "qty": 5}, {"section": "Couplings & Elbows", "item": "Couplings 3\"", "qty": 5}, {"section": "Couplings & Elbows", "item": "Couplings 2\"", "qty": 5}, {"section": "Couplings & Elbows", "item": "Couplings 2–1 1/2\"", "qty": 2}, {"section": "Miscellaneous", "item": "Grinder with blades", "qty": 1}, {"section": "Miscellaneous", "item": "Shop Vac", "qty": 1}, {"section": "Miscellaneous", "item": "Pump Vac", "qty": 1}, {"section": "Miscellaneous", "item": "Pump with hose", "qty": 1}, {"section": "Miscellaneous", "item": "Set of L keys", "qty": 1}, {"section": "Miscellaneous", "item": "Sledgehammer", "qty": 1}, {"section": "Miscellaneous", "item": "Chisel", "qty": 1}, {"section": "Miscellaneous", "item": "Suction cups", "qty": 2}, {"section": "Miscellaneous", "item": "Extra extension wire 25 ft", "qty": 1}, {"section": "Miscellaneous", "item": "Extra extension wire 50 ft", "qty": 1}, {"section": "Miscellaneous", "item": "Goggles", "qty": 2}, {"section": "Miscellaneous", "item": "Boxes latex gloves", "qty": 6}, {"section": "Miscellaneous", "item": "Bulb outlet adapter", "qty": 1}, {"section": "Miscellaneous", "item": "Regular / Rechargeable flashlight", "qty": 1}, {"section": "Miscellaneous", "item": "Rubber boots", "qty": 1}, {"section": "Miscellaneous", "item": "Disposable boots", "qty": 1}, {"section": "Miscellaneous", "item": "Raincoat", "qty": 1}, {"section": "Miscellaneous", "item": "Grabber", "qty": 1}, {"section": "Miscellaneous", "item": "Bolt Cutter", "qty": 1}, {"section": "Miscellaneous", "item": "Razor blade", "qty": 1}, {"section": "Miscellaneous", "item": "Head Flash light", "qty": 1}, {"section": "Miscellaneous", "item": "Crow Bar", "qty": 1}, {"section": "Miscellaneous", "item": "Long Bar", "qty": 1}, {"section": "Miscellaneous", "item": "Pump", "qty": 1}, {"section": "Miscellaneous", "item": "Degreasing Wipes", "qty": 1}, {"section": "Miscellaneous", "item": "Degrease Spray", "qty": 1}, {"section": "Miscellaneous", "item": "Shoe Covers", "qty": 10}, {"section": "Registration & Insurance", "item": "Registration in the van", "qty": 1}, {"section": "Registration & Insurance", "item": "Insurance card in the van", "qty": 1}];
+    const PARAM_VAN = (new URLSearchParams(location.search).get("van") || "").trim();
+    const UPDATE_NOTE = "Saving vans, part numbers, who paid, and giving stock to a van needs the updated script. In Apps Script, paste the new code, then Deploy, Manage deployments, the pencil, New version, Deploy.";
 
-    // PURE START
-    function itemKey(section, item) {
-      return String(section || "") + "\n" + String(item || "");
+    const $ = (id) => document.getElementById(id);
+    const state = {
+      tab: PARAM_VAN ? "vehicles" : "parts",
+      items: LIBRARY.map((it) => Object.assign({ retired: false, sku: "", supplier: "", unitCost: null, unit: "", notes: "" }, it)),
+      log: [],
+      vanCounts: [],
+      vehicles: [],
+      scriptReady: false,
+      loaded: false,
+      query: "",
+      stockAt: "Power Brooklyn",
+      selected: PARAM_VAN ? { type: "van", plate: PARAM_VAN } : null,
+      detailOpen: !!PARAM_VAN
+    };
+    const catOpen = new Map();
+
+    function el(tag, cls, text) {
+      const node = document.createElement(tag);
+      if (cls) node.className = cls;
+      if (text != null) node.textContent = text;
+      return node;
     }
-    function normPlate(value) {
-      return String(value || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+    function stored(key) { try { return localStorage.getItem(key) || ""; } catch (e) { return ""; } }
+    function store(key, value) { try { if (value) localStorage.setItem(key, value); else localStorage.removeItem(key); } catch (e) {} }
+    function normPlate(value) { return String(value || "").toUpperCase().replace(/[^A-Z0-9]/g, ""); }
+    function itemKey(section, item) { return String(section || "") + "\n" + String(item || ""); }
+    function money(value) {
+      if (value == null || value === "" || !isFinite(Number(value))) return "";
+      return "$" + Number(value).toFixed(2);
     }
-    function isPositiveInt(value) {
-      if (typeof value === "number") {
-        return isFinite(value) && value > 0 && Math.floor(value) === value && value <= 100000;
-      }
-      const s = String(value == null ? "" : value).trim();
-      if (!/^\d+$/.test(s)) return false;
-      const n = Number(s);
-      return n > 0 && n <= 100000;
-    }
+    function paidLabel(value) { return value ? value : "Not recorded"; }
     function nyDateKey(value) {
       const s = String(value == null ? "" : value).trim();
       if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
       const d = new Date(s);
       if (isNaN(d.getTime())) return "";
-      const parts = new Intl.DateTimeFormat("en-US", {
-        timeZone: "America/New_York",
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit"
-      }).formatToParts(d);
+      const parts = new Intl.DateTimeFormat("en-US", { timeZone: "America/New_York", year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(d);
       const get = (type) => parts.find((p) => p.type === type).value;
       return get("year") + "-" + get("month") + "-" + get("day");
     }
     function formatNy(value) {
-      const s = String(value == null ? "" : value).trim();
+      const s = String(value || "").trim();
       if (!s) return "";
       if (/^\d{4}-\d{2}-\d{2}$/.test(s)) {
         const bits = s.split("-").map(Number);
-        const noon = new Date(Date.UTC(bits[0], bits[1] - 1, bits[2], 17, 0, 0));
-        return new Intl.DateTimeFormat("en-US", {
-          timeZone: "America/New_York",
-          month: "short",
-          day: "numeric",
-          year: "numeric"
-        }).format(noon);
+        return new Intl.DateTimeFormat("en-US", { timeZone: "America/New_York", month: "short", day: "numeric", year: "numeric" }).format(new Date(Date.UTC(bits[0], bits[1] - 1, bits[2], 17)));
       }
       const d = new Date(s);
       if (isNaN(d.getTime())) return s;
-      return new Intl.DateTimeFormat("en-US", {
-        timeZone: "America/New_York",
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-        hour: "numeric",
-        minute: "2-digit"
-      }).format(d);
+      return new Intl.DateTimeFormat("en-US", { timeZone: "America/New_York", month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" }).format(d);
     }
-    function timeValue(value) {
-      const t = new Date(value).getTime();
-      return isNaN(t) ? 0 : t;
+    function timeValue(value) { const t = new Date(value).getTime(); return isNaN(t) ? 0 : t; }
+    function todayISO() {
+      const d = new Date();
+      const z = (n) => String(n).padStart(2, "0");
+      return d.getFullYear() + "-" + z(d.getMonth() + 1) + "-" + z(d.getDate());
     }
-    function normalizeItems(rows) {
-      if (!Array.isArray(rows)) return [];
-      return rows.map((row) => ({
-        section: String(row.section || ""),
-        item: String(row.item || ""),
-        qty: row.qty == null ? (row.listed == null ? null : Number(row.listed)) : Number(row.qty),
-        retired: row.retired === true || String(row.retired || "").toLowerCase() === "yes"
-      })).filter((row) => row.item);
-    }
-    function catalogFrom(items, fallback) {
-      const rows = normalizeItems(items);
-      return rows.length ? rows : normalizeItems(fallback);
-    }
-    function normalizeLog(rows) {
-      if (!Array.isArray(rows)) return [];
-      return rows.map((row) => ({
-        timestamp: row.timestamp || "",
-        action: String(row.action || "").toUpperCase(),
-        item: String(row.item || ""),
-        section: String(row.section || ""),
-        qty: Number(row.qty),
-        person: String(row.person || ""),
-        van: String(row.van || ""),
-        note: String(row.note || ""),
-        location: String(row.location || "")
-      })).filter((row) => row.action === "ADD" || row.action === "TAKE");
-    }
-    function normalizeCounts(rows) {
-      if (!Array.isArray(rows)) return [];
-      return rows.map((row) => ({
-        date: String(row.date || ""),
-        van: String(row.van || ""),
-        mechanic: String(row.mechanic || ""),
-        item: String(row.item || ""),
-        section: String(row.section || ""),
-        listed: row.listed == null || row.listed === "" ? null : Number(row.listed),
-        actual: row.actual == null || row.actual === "" ? null : Number(row.actual),
-        status: String(row.status || ""),
-        note: String(row.note || "")
-      })).filter((row) => row.item && row.van && /^\d{4}-\d{2}-\d{2}$/.test(row.date) && (row.actual == null || isFinite(row.actual)));
-    }
-    function onHandMap(log, location) {
-      const map = new Map();
-      log.forEach((row) => {
-        if (location && row.location !== location) return;
-        if (row.action !== "ADD" && row.action !== "TAKE") return;
-        if (!isFinite(row.qty)) return;
-        const delta = row.action === "ADD" ? row.qty : -row.qty;
-        const key = itemKey(row.section, row.item);
-        map.set(key, (map.get(key) || 0) + delta);
-      });
-      return map;
-    }
-    function breakdown(log, section, item, locs) {
-      const key = itemKey(section, item);
-      const map = new Map();
-      (locs || []).forEach((name) => map.set(name, 0));
-      log.forEach((row) => {
-        if (itemKey(row.section, row.item) !== key) return;
-        if (row.action !== "ADD" && row.action !== "TAKE") return;
-        if (!isFinite(row.qty)) return;
-        const delta = row.action === "ADD" ? row.qty : -row.qty;
-        map.set(row.location, (map.get(row.location) || 0) + delta);
-      });
-      return Array.from(map.entries());
-    }
-    function officeRows(catalog, log, view, sectionFilter, query) {
-      const q = String(query || "").trim().toLowerCase();
-      const totals = onHandMap(log, view || "");
-      const seen = new Set();
-      const rows = [];
-      function consider(section, item, listed, retired) {
-        const key = itemKey(section, item);
-        if (seen.has(key)) return;
-        if (sectionFilter && section !== sectionFilter) return;
-        if (q && (item + " " + section).toLowerCase().indexOf(q) === -1) return;
-        seen.add(key);
-        const onHand = totals.get(key) || 0;
-        rows.push({ section, item, listed, onHand, low: onHand <= 0, negative: onHand < 0, retired: !!retired });
-      }
-      catalog.forEach((it) => consider(it.section, it.item, it.qty, it.retired));
-      log.forEach((row) => consider(row.section, row.item, null, false));
-      return rows;
-    }
-    function latestReport(vanCounts, plate) {
-      const key = normPlate(plate);
-      if (!key) return null;
-      const rows = vanCounts.filter((row) => normPlate(row.van) === key && row.date);
-      if (!rows.length) return null;
-      let date = "";
-      rows.forEach((row) => { if (row.date > date) date = row.date; });
-      const latest = rows.filter((row) => row.date === date);
-      const byItem = new Map();
-      latest.forEach((row) => byItem.set(itemKey(row.section, row.item), row));
-      const names = [];
-      latest.forEach((row) => {
-        if (row.mechanic && names.indexOf(row.mechanic) === -1) names.push(row.mechanic);
-      });
-      return { date, mechanic: names.join(", "), rows: Array.from(byItem.values()) };
-    }
-    function takenSinceMap(log, plate, sinceDate) {
-      const key = normPlate(plate);
-      const map = new Map();
-      if (!key) return map;
-      log.forEach((row) => {
-        if (row.action !== "TAKE") return;
-        if (normPlate(row.van) !== key) return;
-        if (!isFinite(row.qty)) return;
-        if (sinceDate) {
-          const day = nyDateKey(row.timestamp);
-          if (!day || day < sinceDate) return;
-        }
-        const id = itemKey(row.section, row.item);
-        map.set(id, (map.get(id) || 0) + row.qty);
-      });
-      return map;
-    }
-    function vanRows(catalog, log, vanCounts, plate) {
-      const report = latestReport(vanCounts, plate);
-      const taken = takenSinceMap(log, plate, report ? report.date : null);
-      const countByKey = new Map();
-      if (report) report.rows.forEach((row) => countByKey.set(itemKey(row.section, row.item), row));
-      const seen = new Set();
-      const rows = [];
-      function push(section, item, listed) {
-        const key = itemKey(section, item);
-        if (seen.has(key)) return;
-        seen.add(key);
-        const count = countByKey.get(key);
-        const lastActual = count && count.actual != null && isFinite(Number(count.actual)) ? Number(count.actual) : null;
-        const took = taken.get(key) || 0;
-        const estimated = lastActual == null ? null : lastActual + took;
-        const listedNum = listed == null || listed === "" || !isFinite(Number(listed)) ? null : Number(listed);
-        const short = estimated != null && listedNum != null && estimated < listedNum;
-        rows.push({
-          section, item, listed: listedNum, lastActual,
-          lastDate: report ? report.date : "",
-          mechanic: report ? report.mechanic : "",
-          taken: took, estimated, short
-        });
-      }
-      catalog.forEach((it) => push(it.section, it.item, it.qty));
-      countByKey.forEach((row) => push(row.section, row.item, row.listed));
-      taken.forEach((qty, key) => {
-        const parts = key.split("\n");
-        push(parts[0], parts.slice(1).join("\n"), null);
-      });
-      rows.sort((a, b) => Number(b.short) - Number(a.short));
-      return { report, rows };
-    }
-    function historyRows(log, person, van, office, action, fromDate, toDate) {
-      return log.filter((row) => {
-        if (row.action !== "ADD" && row.action !== "TAKE") return false;
-        if (action && row.action !== action) return false;
-        if (person && row.person !== person) return false;
-        if (van && normPlate(row.van) !== normPlate(van)) return false;
-        if (office && row.location !== office) return false;
-        if (fromDate || toDate) {
-          const day = nyDateKey(row.timestamp);
-          if (!day) return false;
-          if (fromDate && day < fromDate) return false;
-          if (toDate && day > toDate) return false;
-        }
-        return true;
-      }).slice().sort((a, b) => timeValue(b.timestamp) - timeValue(a.timestamp));
-    }
-    function officeStock(log, section, item, locations) {
-      const totals = {};
-      (locations || []).forEach((name) => { totals[name] = 0; });
-      log.forEach((row) => {
-        if (itemKey(row.section, row.item) !== itemKey(section, item)) return;
-        if (row.action !== "ADD" && row.action !== "TAKE") return;
-        if (!isFinite(row.qty)) return;
-        const delta = row.action === "ADD" ? row.qty : -row.qty;
-        const name = row.location || "";
-        totals[name] = (totals[name] || 0) + delta;
-      });
-      return totals;
-    }
-    function suggestSource(need, brooklyn, hq) {
-      const b = brooklyn || 0;
-      const h = hq || 0;
-      if (b >= need && h >= need) return b >= h ? "Brooklyn" : "HQ";
-      if (b >= need) return "Brooklyn";
-      if (h >= need) return "HQ";
-      if (b + h >= need) return "Split";
-      return "Order";
-    }
-    function isBigMissing(row) {
-      if (row.actual !== 0) return false;
-      if (Number(row.listed) === 1) return true;
-      return /machine|camera|locator|drill|grinder|pipe cutter|bolt cutter/i.test(row.item || "");
-    }
-    function inferStatus(row) {
-      if (row.status) return row.status;
-      if (row.actual == null || !isFinite(Number(row.actual)) || !isFinite(Number(row.listed))) return "";
-      const actual = Number(row.actual);
-      const listed = Number(row.listed);
-      if (actual < listed) return "Less";
-      if (actual > listed) return "More";
-      return "Exact";
-    }
-    function reportDates(vanCounts, plate) {
-      const key = normPlate(plate);
-      const dates = [];
-      vanCounts.forEach((row) => {
-        if (normPlate(row.van) === key && row.date && dates.indexOf(row.date) === -1) dates.push(row.date);
-      });
-      dates.sort();
-      return dates;
-    }
-    function rowsForDate(vanCounts, plate, date) {
-      const key = normPlate(plate);
-      const map = new Map();
-      vanCounts.forEach((row) => {
-        if (normPlate(row.van) === key && row.date === date) map.set(itemKey(row.section, row.item), row);
-      });
-      return Array.from(map.values());
-    }
-    function takesBetween(log, plate, afterDate, throughDate) {
-      const key = normPlate(plate);
-      const map = new Map();
-      log.forEach((row) => {
-        if (row.action !== "TAKE" || normPlate(row.van) !== key || !isFinite(row.qty)) return;
-        const day = nyDateKey(row.timestamp);
-        if (!day || day <= afterDate || (throughDate && day > throughDate)) return;
-        const id = itemKey(row.section, row.item);
-        map.set(id, (map.get(id) || 0) + row.qty);
-      });
-      return map;
-    }
-    function assessVan(vanCounts, log, plate, locations, notices) {
-      const dates = reportDates(vanCounts, plate);
-      if (!dates.length) return null;
-      const date = dates[dates.length - 1];
-      const previous = dates.length > 1 ? dates[dates.length - 2] : "";
-      const rows = rowsForDate(vanCounts, plate, date);
-      const prevBy = new Map();
-      if (previous) rowsForDate(vanCounts, plate, previous).forEach((row) => prevBy.set(itemKey(row.section, row.item), row));
-      const taken = previous ? takesBetween(log, plate, previous, date) : new Map();
-      const mechanic = (rows.find((row) => row.mechanic) || {}).mechanic || "";
-      const displayPlate = (rows.find((row) => row.van) || {}).van || plate;
-      const needs = [];
-      const recount = [];
-      const discrepancies = [];
-      const registration = [];
-      const notes = [];
-      rows.forEach((row) => {
-        const status = inferStatus(row);
-        const actual = row.actual == null || !isFinite(Number(row.actual)) ? null : Number(row.actual);
-        const listed = row.listed == null || !isFinite(Number(row.listed)) ? null : Number(row.listed);
-        if (row.note) notes.push({ section: row.section, item: row.item, note: row.note });
-        if (row.section === "Registration & Insurance" && status !== "Exact" && (actual === 0 || actual == null || status === "Less")) {
-          registration.push({ section: row.section, item: row.item, actual, status });
-        }
-        if (status === "Less" && actual == null) {
-          recount.push({ section: row.section, item: row.item, listed, note: row.note || "" });
-        } else if (status === "Less" && actual != null && listed != null && listed - actual > 0) {
-          const stock = officeStock(log, row.section, row.item, locations);
-          const brooklyn = stock["Power Brooklyn"] || 0;
-          const hq = stock["Power HQ"] || 0;
-          const need = listed - actual;
-          needs.push({
-            section: row.section, item: row.item, listed, actual, need, brooklyn, hq,
-            source: suggestSource(need, brooklyn, hq),
-            big: isBigMissing({ item: row.item, listed, actual }),
-            note: row.note || ""
-          });
-        }
-        if (previous && actual != null) {
-          const prev = prevBy.get(itemKey(row.section, row.item));
-          const prevActual = prev && prev.actual != null && isFinite(Number(prev.actual)) ? Number(prev.actual) : null;
-          if (prevActual != null) {
-            const took = taken.get(itemKey(row.section, row.item)) || 0;
-            const expected = prevActual + took;
-            if (actual !== expected) {
-              discrepancies.push({
-                section: row.section, item: row.item, previous: prevActual, taken: took, expected, actual,
-                direction: actual < expected ? "below" : "above"
-              });
-            }
-          }
-        }
-      });
-      needs.sort((a, b) => Number(b.big) - Number(a.big) || b.need - a.need || a.item.localeCompare(b.item));
-      const noticeKey = normPlate(displayPlate) + "|" + date;
-      return {
-        plate: displayPlate, date, mechanic, baseline: !previous,
-        notice: (notices && notices[noticeKey]) || "",
-        needs, recount, discrepancies, registration, notes,
-        big: needs.filter((row) => row.big)
-      };
-    }
-    function mergeBackfill(vanCounts, reports) {
-      const counts = vanCounts.slice();
-      const notices = {};
-      (reports || []).forEach((report) => {
-        if (!report || !report.van || !report.date || !Array.isArray(report.items)) return;
-        const key = normPlate(report.van) + "|" + report.date;
-        if (report.notice) notices[key] = String(report.notice);
-        const exists = counts.some((row) => normPlate(row.van) === normPlate(report.van) && row.date === report.date);
-        if (exists) {
-          report.items.forEach((item) => {
-            if (!item || item.actual == null || item.actual === "" || !isFinite(Number(item.actual))) return;
-            const row = counts.find((entry) => normPlate(entry.van) === normPlate(report.van) && entry.date === report.date && itemKey(entry.section, entry.item) === itemKey(item.section || "", item.item));
-            if (row && (row.actual == null || row.actual === "")) {
-              row.actual = Number(item.actual);
-              if (item.status) row.status = item.status;
-            }
-          });
-          return;
-        }
-        report.items.forEach((item) => {
-          if (!item || !item.item) return;
-          const actual = item.actual == null || item.actual === "" ? null : Number(item.actual);
-          counts.push({
-            date: report.date,
-            van: report.van,
-            mechanic: report.mechanic || "",
-            section: item.section || "",
-            item: item.item,
-            listed: item.listed == null || item.listed === "" ? null : Number(item.listed),
-            actual: actual != null && isFinite(actual) ? actual : null,
-            status: item.status || "",
-            note: item.note || ""
-          });
-        });
-      });
-      return { counts, notices };
-    }
-    function isBigTool(row) {
-      if (Number(row.listed) !== 1 || row.actual !== 0) return false;
-      return /machine|camera|locator|drill|grinder|cutter|sledgehammer|chisel|\bbar\b/i.test(row.item || "");
-    }
-    function needsBreakdown(needs) {
-      const rows = needs || [];
-      const none = rows.filter((row) => row.actual === 0);
-      const some = rows.filter((row) => row.actual > 0 && row.listed != null && row.actual < row.listed);
-      const pieces = rows.reduce((sum, row) => sum + (Number(row.need) || 0), 0);
-      const tools = none.filter(isBigTool).slice().sort((a, b) => toolRank(a.item) - toolRank(b.item) || a.item.localeCompare(b.item));
-      const rest = none.filter((row) => !isBigTool(row));
-      return {
-        items: rows.length,
-        pieces,
-        none,
-        some,
-        tools,
-        rest,
-        noneItems: none.length,
-        nonePieces: none.reduce((sum, row) => sum + (Number(row.need) || 0), 0),
-        someItems: some.length,
-        somePieces: some.reduce((sum, row) => sum + (Number(row.need) || 0), 0)
-      };
-    }
-    function toolRank(item) {
-      const name = String(item || "").toLowerCase();
-      if (name.indexOf("machine") !== -1) return 0;
-      if (name.indexOf("camera") !== -1) return 1;
-      if (name.indexOf("locator") !== -1) return 2;
-      if (name.indexOf("drill") !== -1) return 3;
-      if (name.indexOf("grinder") !== -1) return 4;
-      if (name.indexOf("cutter") !== -1) return 5;
-      if (/\bbar\b/.test(name)) return 6;
-      if (name.indexOf("sledgehammer") !== -1) return 7;
-      if (name.indexOf("chisel") !== -1) return 8;
-      return 9;
+    function activeItems() { return state.items.filter((it) => !it.retired); }
+    function sectionRank(name) {
+      const i = SECTIONS.indexOf(name);
+      return i === -1 ? 100 : i;
     }
     function groupBySection(rows) {
-      const order = ["300 Machine & Tools", "Hand Machine & Tools", "100 Machine", "Toilet", "Camera & Tools", "Air Tank", "Water Testing", "Drill", "Tubular Piping", "Caps", "Couplings & Elbows", "Miscellaneous", "Registration & Insurance"];
       const buckets = new Map();
-      (rows || []).forEach((row) => {
+      rows.forEach((row) => {
         const section = row.section || "Other";
         if (!buckets.has(section)) buckets.set(section, []);
         buckets.get(section).push(row);
       });
       return Array.from(buckets.keys()).sort((a, b) => {
-        const ai = order.indexOf(a);
-        const bi = order.indexOf(b);
-        return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
+        const d = sectionRank(a) - sectionRank(b);
+        return d !== 0 ? d : a.localeCompare(b);
       }).map((section) => ({ section, rows: buckets.get(section) }));
     }
-    function monthDay(iso) {
-      const s = String(iso || "");
-      if (!/^\d{4}-\d{2}-\d{2}$/.test(s)) return formatNy(s);
-      const bits = s.split("-").map(Number);
-      const noon = new Date(Date.UTC(bits[0], bits[1] - 1, bits[2], 17, 0, 0));
-      return new Intl.DateTimeFormat("en-US", { timeZone: "America/New_York", month: "short", day: "numeric" }).format(noon);
-    }
-    function plateChoices(log, counts) {
-      const map = new Map();
-      function add(raw, time) {
-        const key = normPlate(raw);
-        if (!key) return;
-        const prev = map.get(key);
-        if (!prev || time >= prev.time) map.set(key, { key, label: String(raw).trim(), time });
-      }
-      log.forEach((row) => { if (row.action === "TAKE") add(row.van, timeValue(row.timestamp)); });
-      counts.forEach((row) => add(row.van, Date.parse(row.date + "T00:00:00Z") || 0));
-      return Array.from(map.values()).sort((a, b) => a.label.localeCompare(b.label));
-    }
-    // PURE END
-
-    const $ = (id) => document.getElementById(id);
-    const state = {
-      locations: LOCATIONS.slice(),
-      catalog: catalogFrom(null, ITEMS),
-      log: [],
-      vanCounts: [],
-      view: "",
-      section: "",
-      query: "",
-      logPerson: "",
-      logVan: "",
-      logOffice: "",
-      logAction: "",
-      logFrom: "",
-      logTo: "",
-      vanPlate: PARAM_VAN,
-      notices: {},
-      shortOnly: false,
-      status: ""
-    };
-    const draft = { mode: "", location: "", chosen: null, query: "" };
-    const catOpen = new Map();
-
     function sectionDetails(scope, section, shortCount, label) {
       const key = scope + "\n" + section;
       if (!catOpen.has(key)) catOpen.set(key, shortCount > 0);
@@ -693,631 +269,447 @@
       det.dataset.key = key;
       det.open = !!catOpen.get(key);
       det.addEventListener("toggle", () => { catOpen.set(key, det.open); });
-      const sum = document.createElement("summary");
-      sum.textContent = label;
-      det.appendChild(sum);
+      det.appendChild(el("summary", null, label));
       return det;
     }
-    function setAllSections(open) {
+    function catTools() {
+      const bar = el("div", "toolbar");
+      const open = el("button", null, "Expand all");
+      const shut = el("button", null, "Collapse all");
+      open.type = "button"; shut.type = "button";
+      open.addEventListener("click", () => setCats(true));
+      shut.addEventListener("click", () => setCats(false));
+      bar.appendChild(open); bar.appendChild(shut);
+      return bar;
+    }
+    function setCats(open) {
       document.querySelectorAll("details.cat").forEach((det) => {
         det.open = open;
         if (det.dataset.key) catOpen.set(det.dataset.key, open);
       });
     }
-    function el(tag, cls, text) {
-      const node = document.createElement(tag);
-      if (cls) node.className = cls;
-      if (text != null) node.textContent = text;
-      return node;
+
+    function shelfQty(section, item, location) {
+      let n = 0;
+      state.log.forEach((row) => {
+        if (row.section !== section || row.item !== item || row.location !== location) return;
+        const q = Number(row.qty) || 0;
+        if (row.action === "ADD") n += q;
+        else if (row.action === "TAKE" || row.action === "ISSUE") n -= q;
+      });
+      return n;
     }
-    function stored(key) {
-      try { return localStorage.getItem(key) || ""; } catch (err) { return ""; }
+    function fifoLots(section, item, location) {
+      const rows = state.log.filter((row) => row.section === section && row.item === item && row.location === location && (row.action === "ADD" || row.action === "TAKE" || row.action === "ISSUE"))
+        .slice().sort((a, b) => timeValue(a.timestamp) - timeValue(b.timestamp));
+      const lots = [];
+      rows.forEach((row) => {
+        const qty = Number(row.qty) || 0;
+        if (qty <= 0) return;
+        if (row.action === "ADD") lots.push({ qty, paidBy: row.paidBy || "", unitCost: row.unitCost });
+        else {
+          let left = qty;
+          lots.forEach((lot) => {
+            if (left <= 0) return;
+            const use = Math.min(lot.qty, left);
+            lot.qty -= use;
+            left -= use;
+          });
+        }
+      });
+      return lots.filter((lot) => lot.qty > 0);
     }
-    function store(key, value) {
-      try {
-        if (value) localStorage.setItem(key, value);
-        else localStorage.removeItem(key);
-      } catch (err) { /* private mode */ }
+    function latestReport(plate) {
+      const key = normPlate(plate);
+      const rows = state.vanCounts.filter((row) => normPlate(row.van) === key && row.date);
+      if (!rows.length) return null;
+      let date = "";
+      rows.forEach((row) => { if (row.date > date) date = row.date; });
+      const latest = rows.filter((row) => row.date === date);
+      const mechanic = (latest.find((row) => row.mechanic) || {}).mechanic || "";
+      return { date, mechanic, rows: latest };
     }
-    function toast(message) {
-      const node = $("toast");
-      node.textContent = message;
-      node.style.display = "block";
-      clearTimeout(toast.timer);
-      toast.timer = setTimeout(() => { node.style.display = "none"; }, 2400);
+    function givenSince(plate, section, item, date) {
+      const key = normPlate(plate);
+      let n = 0;
+      state.log.forEach((row) => {
+        if ((row.action !== "TAKE" && row.action !== "ISSUE") || normPlate(row.van) !== key) return;
+        if (row.section !== section || row.item !== item) return;
+        const day = nyDateKey(row.timestamp);
+        if (date && (!day || day < date)) return;
+        n += Number(row.qty) || 0;
+      });
+      return n;
     }
+    function onVanQty(plate, section, item) {
+      const report = latestReport(plate);
+      if (!report) return { have: null, actual: null, date: "", given: 0 };
+      const row = report.rows.find((entry) => entry.section === section && entry.item === item);
+      const actual = row && row.actual != null && isFinite(Number(row.actual)) ? Number(row.actual) : null;
+      const given = givenSince(plate, section, item, report.date);
+      return { have: actual == null ? null : actual + given, actual, date: report.date, given };
+    }
+    function vehicleList() {
+      const map = new Map();
+      (state.vehicles || []).forEach((van) => {
+        map.set(normPlate(van.plate), { plate: van.plate, makeModel: van.makeModel || "", mechanic: van.mechanic || "", home: van.home || "", saved: true });
+      });
+      state.vanCounts.forEach((row) => {
+        const key = normPlate(row.van);
+        if (!key) return;
+        if (!map.has(key)) map.set(key, { plate: row.van, makeModel: "", mechanic: "", home: "", saved: false });
+      });
+      state.log.forEach((row) => {
+        const key = normPlate(row.van);
+        if (!key) return;
+        if (!map.has(key)) map.set(key, { plate: row.van, makeModel: "", mechanic: "", home: "", saved: false });
+      });
+      map.forEach((van, key) => {
+        const report = latestReport(van.plate);
+        van.lastDate = report ? report.date : "";
+        van.lastMechanic = report ? report.mechanic : "";
+        if (!van.mechanic && van.lastMechanic) van.mechanic = van.lastMechanic;
+        van.needs = needsCount(van.plate);
+      });
+      return Array.from(map.values()).sort((a, b) => b.needs - a.needs || a.plate.localeCompare(b.plate));
+    }
+    function needsCount(plate) {
+      let n = 0;
+      if (!latestReport(plate)) return 0;
+      activeItems().forEach((it) => {
+        if (!(Number(it.qty) > 0)) return;
+        const have = onVanQty(plate, it.section, it.item).have;
+        if (have != null && have < Number(it.qty)) n += 1;
+      });
+      return n;
+    }
+    function ownership() {
+      const companies = LOCATIONS.concat(["Not recorded"]);
+      const blank = () => ({ shelf: 0, vans: 0, value: 0, valued: false });
+      const totals = {};
+      companies.forEach((name) => { totals[name] = blank(); });
+      activeItems().forEach((it) => {
+        LOCATIONS.forEach((loc) => {
+          fifoLots(it.section, it.item, loc).forEach((lot) => {
+            const name = lot.paidBy || "Not recorded";
+            if (!totals[name]) totals[name] = blank();
+            totals[name].shelf += lot.qty;
+            if (lot.unitCost != null && isFinite(Number(lot.unitCost))) {
+              totals[name].value += lot.qty * Number(lot.unitCost);
+              totals[name].valued = true;
+            }
+          });
+        });
+      });
+      state.log.forEach((row) => {
+        if (row.action !== "TAKE" && row.action !== "ISSUE") return;
+        if (!normPlate(row.van)) return;
+        const name = row.paidBy || "Not recorded";
+        if (!totals[name]) totals[name] = blank();
+        const q = Number(row.qty) || 0;
+        totals[name].vans += q;
+        if (row.unitCost != null && isFinite(Number(row.unitCost))) {
+          totals[name].value += q * Number(row.unitCost);
+          totals[name].valued = true;
+        }
+      });
+      return totals;
+    }
+
     function showError(message) {
       const node = $("loadError");
-      if (!node) return;
       if (!message) { node.classList.remove("show"); node.textContent = ""; return; }
       node.textContent = message;
       node.classList.add("show");
-      node.scrollIntoView({ block: "nearest" });
     }
-
-    function shell() {
-      const root = $("app");
-      root.textContent = "";
-      const alerts = el("div");
-      alerts.id = "alerts";
-      root.appendChild(alerts);
-      const catTools = el("div", "toolbar");
-      const expandAll = el("button", null, "Expand all");
-      expandAll.type = "button";
-      expandAll.id = "expandAll";
-      const collapseAll = el("button", null, "Collapse all");
-      collapseAll.type = "button";
-      collapseAll.id = "collapseAll";
-      catTools.appendChild(expandAll);
-      catTools.appendChild(collapseAll);
-      root.appendChild(catTools);
-      expandAll.addEventListener("click", () => setAllSections(true));
-      collapseAll.addEventListener("click", () => setAllSections(false));
-      const pin = el("div", "meta");
-      pin.id = "pinBar";
-      root.appendChild(pin);
-
-      const err = el("div", "error");
-      err.id = "loadError";
-      err.setAttribute("role", "alert");
-      root.appendChild(err);
-
-      const actions = el("div", "actions");
-      const add = el("button", "primary", "Add stock");
+    function render() {
+      document.querySelectorAll(".tabs button").forEach((btn) => btn.classList.toggle("active", btn.dataset.tab === state.tab));
+      const note = $("scriptNote");
+      if (state.loaded && !state.scriptReady) {
+        note.hidden = false;
+        note.innerHTML = "";
+        note.appendChild(el("strong", null, "Update the script"));
+        note.appendChild(el("p", null, UPDATE_NOTE));
+      } else note.hidden = true;
+      const main = $("main");
+      main.textContent = "";
+      if (state.tab === "parts") renderParts(main);
+      else if (state.tab === "vehicles") renderVehicles(main);
+      else renderStock(main);
+      renderDetail();
+    }
+    function renderParts(main) {
+      main.appendChild(el("h2", null, "Parts library"));
+      const bar = el("div", "row");
+      const add = el("button", "primary", "Add product");
       add.type = "button";
-      add.id = "addBtn";
-      const take = el("button", "take", "Take stock");
-      take.type = "button";
-      take.id = "takeBtn";
-      actions.appendChild(add);
-      actions.appendChild(take);
-      root.appendChild(actions);
-      const newItemBtn = el("button", "primary", "Add new item");
-      newItemBtn.type = "button";
-      newItemBtn.id = "newItemBtn";
-      newItemBtn.style.width = "100%";
-      newItemBtn.style.margin = "0 0 12px";
-      newItemBtn.style.borderRadius = "12px";
-      newItemBtn.style.minHeight = "52px";
-      newItemBtn.addEventListener("click", () => openItemForm(null));
-      root.appendChild(newItemBtn);
-
-      const form = el("div", "meta");
-      form.id = "formCard";
-      form.hidden = true;
-      root.appendChild(form);
-
-      const officeHead = el("h2");
-      officeHead.appendChild(el("span", null, "Office stock"));
-      const refresh = el("button", null, "Refresh");
-      refresh.type = "button";
-      refresh.id = "refreshBtn";
-      officeHead.appendChild(refresh);
-      root.appendChild(officeHead);
-      const status = el("p", "hint");
-      status.id = "statusLine";
-      root.appendChild(status);
-
-      const locSwitch = el("div", "toolbar");
-      locSwitch.id = "locSwitch";
-      root.appendChild(locSwitch);
-
+      add.addEventListener("click", () => openProductForm(null));
+      bar.appendChild(add);
+      main.appendChild(bar);
       const search = document.createElement("input");
-      search.id = "search";
-      search.type = "search";
-      search.placeholder = "Search items";
-      search.setAttribute("aria-label", "Search items");
-      search.autocomplete = "off";
-      root.appendChild(search);
-
-      const section = document.createElement("select");
-      section.id = "sectionFilter";
-      section.setAttribute("aria-label", "Section");
-      section.style.margin = "8px 0 12px";
-      root.appendChild(section);
-
-      const summary = el("div", "summary");
-      summary.id = "officeSummary";
-      root.appendChild(summary);
-      const officeList = el("div");
-      officeList.id = "officeList";
-      root.appendChild(officeList);
-
-      const logHead = el("h2");
-      logHead.appendChild(el("span", null, "Stock history"));
-      root.appendChild(logHead);
-      const filters = el("div", "filters");
-      filters.appendChild(selectBox("logPerson", "Filter by person"));
-      filters.appendChild(selectBox("logVan", "Filter by van"));
-      filters.appendChild(selectBox("logOffice", "Filter by office"));
-      filters.appendChild(selectBox("logAction", "Filter by added or taken"));
-      filters.appendChild(dateField("logFrom", "From date"));
-      filters.appendChild(dateField("logTo", "To date"));
-      root.appendChild(filters);
-      const logList = el("div");
-      logList.id = "logList";
-      root.appendChild(logList);
-
-      const fleet = el("div");
-      fleet.id = "fleet";
-      root.appendChild(fleet);
-      const vanHead = el("h2");
-      vanHead.appendChild(el("span", null, "Stock per van"));
-      root.appendChild(vanHead);
-      root.appendChild(el("p", "hint", "Pick a plate. Estimated count is the last checklist count plus what that van has taken from either office since that checklist date, including that day."));
-      const vanPick = document.createElement("input");
-      vanPick.id = "vanPick";
-      vanPick.type = "text";
-      vanPick.placeholder = "Van license plate";
-      vanPick.setAttribute("aria-label", "Van license plate");
-      vanPick.autocapitalize = "characters";
-      vanPick.autocomplete = "off";
-      vanPick.spellcheck = false;
-      vanPick.setAttribute("list", "vanPicks");
-      if (state.vanPlate) vanPick.value = state.vanPlate;
-      root.appendChild(vanPick);
-      const vans = document.createElement("datalist");
-      vans.id = "vanPicks";
-      root.appendChild(vans);
-      const people = document.createElement("datalist");
-      people.id = "peopleList";
-      root.appendChild(people);
-      const shortBtn = el("button", null, "Short only");
-      shortBtn.type = "button";
-      shortBtn.id = "shortOnly";
-      const shortBar = el("div", "toolbar");
-      shortBar.appendChild(shortBtn);
-      root.appendChild(shortBar);
-      const vanSummary = el("div");
-      vanSummary.id = "vanSummary";
-      root.appendChild(vanSummary);
-      const vanNeeds = el("div");
-      vanNeeds.id = "vanNeeds";
-      root.appendChild(vanNeeds);
-      const vanList = el("div");
-      vanList.id = "vanList";
-      root.appendChild(vanList);
-
-      add.addEventListener("click", () => openForm("ADD"));
-      take.addEventListener("click", () => openForm("TAKE"));
-      refresh.addEventListener("click", () => load(true));
-      search.addEventListener("input", () => { state.query = search.value; renderOffice(); });
-      section.addEventListener("change", () => { state.section = section.value; renderOffice(); });
-      $("logPerson").addEventListener("change", () => { state.logPerson = $("logPerson").value; renderLog(); });
-      $("logVan").addEventListener("change", () => { state.logVan = $("logVan").value; renderLog(); });
-      $("logOffice").addEventListener("change", () => { state.logOffice = $("logOffice").value; renderLog(); });
-      $("logAction").addEventListener("change", () => { state.logAction = $("logAction").value; renderLog(); });
-      $("logFrom").addEventListener("change", () => { state.logFrom = $("logFrom").value; renderLog(); });
-      $("logTo").addEventListener("change", () => { state.logTo = $("logTo").value; renderLog(); });
-      vanPick.addEventListener("input", () => { state.vanPlate = vanPick.value; renderVan(); });
-      shortBtn.addEventListener("click", () => {
-        state.shortOnly = !state.shortOnly;
-        shortBtn.classList.toggle("active", state.shortOnly);
-        renderVan();
-      });
-      renderPin();
-      renderLocationSwitch();
-      renderFilters();
-    }
-
-    function selectBox(id, label) {
-      const node = document.createElement("select");
-      node.id = id;
-      if (label) node.setAttribute("aria-label", label);
-      return node;
-    }
-
-    function dateField(id, label) {
-      const wrap = el("label", null, label);
-      wrap.htmlFor = id;
-      const input = document.createElement("input");
-      input.id = id;
-      input.type = "date";
-      input.setAttribute("aria-label", label);
-      wrap.appendChild(input);
-      return wrap;
-    }
-
-    function renderPin() {
-      const bar = $("pinBar");
-      bar.textContent = "";
-      const saved = stored(PIN_KEY);
-      if (saved) {
-        bar.appendChild(el("strong", null, "PIN saved on this phone."));
-        const change = el("button", null, "Change PIN");
-        change.type = "button";
-        change.style.marginLeft = "8px";
-        change.addEventListener("click", () => { store(PIN_KEY, ""); renderPin(); });
-        bar.appendChild(change);
-        bar.appendChild(el("p", "hint", "Anyone can look at stock. The PIN is only for Add and Take."));
-        return;
-      }
-      const label = el("label", null, "Office PIN");
-      label.htmlFor = "pin";
-      bar.appendChild(label);
-      const row = el("div", "pin-row");
-      const input = document.createElement("input");
-      input.id = "pin";
-      input.type = "password";
-      input.autocomplete = "current-password";
-      input.placeholder = "Shared office PIN";
-      const save = el("button", "primary", "Save");
-      save.type = "button";
-      row.appendChild(input);
-      row.appendChild(save);
-      bar.appendChild(row);
-      bar.appendChild(el("p", "hint", "Enter it once. This phone remembers it for Add and Take."));
-      const commit = () => {
-        const value = input.value.trim();
-        if (!value) { input.focus(); return; }
-        store(PIN_KEY, value);
-        renderPin();
-        toast("PIN saved on this phone.");
-      };
-      save.addEventListener("click", commit);
-      input.addEventListener("keydown", (event) => { if (event.key === "Enter") commit(); });
-    }
-
-    function renderLocationSwitch() {
-      const bar = $("locSwitch");
-      bar.textContent = "";
-      const options = state.locations.map((name) => ({ value: name, label: name }));
-      options.push({ value: "", label: "Both offices" });
-      options.forEach((opt) => {
-        const btn = el("button", state.view === opt.value ? "active" : "", opt.label);
-        btn.type = "button";
-        btn.setAttribute("aria-pressed", state.view === opt.value ? "true" : "false");
-        btn.addEventListener("click", () => {
-          state.view = opt.value;
-          renderLocationSwitch();
-          renderOffice();
-        });
-        bar.appendChild(btn);
-      });
-    }
-
-    function fillSelect(id, options, current, allLabel) {
-      const select = $(id);
-      select.textContent = "";
-      const all = el("option", null, allLabel);
-      all.value = "";
-      select.appendChild(all);
-      options.forEach((opt) => {
-        const node = el("option", null, opt.label);
-        node.value = opt.value;
-        select.appendChild(node);
-      });
-      select.value = current;
-      if (select.value !== current) select.value = "";
-    }
-
-    function renderFilters() {
-      const sections = [];
-      state.catalog.forEach((it) => { if (sections.indexOf(it.section) === -1) sections.push(it.section); });
-      fillSelect("sectionFilter", sections.map((name) => ({ value: name, label: name })), state.section, "All sections");
-      const people = [];
-      state.log.forEach((row) => { if (row.person && people.indexOf(row.person) === -1) people.push(row.person); });
-      people.sort((a, b) => a.localeCompare(b));
-      fillSelect("logPerson", people.map((name) => ({ value: name, label: name })), state.logPerson, "All people");
-      const plates = plateChoices(state.log, state.vanCounts);
-      fillSelect("logVan", plates.map((plate) => ({ value: plate.label, label: plate.label })), state.logVan, "All vans");
-      fillSelect("logOffice", state.locations.map((name) => ({ value: name, label: name })), state.logOffice, "All offices");
-      fillSelect("logAction", [{ value: "ADD", label: "Added" }, { value: "TAKE", label: "Taken" }], state.logAction, "All");
-      const list = $("vanPicks");
-      list.textContent = "";
-      plates.forEach((plate) => {
-        const opt = document.createElement("option");
-        opt.value = plate.label;
-        list.appendChild(opt);
-      });
-      const peopleList = $("peopleList");
-      peopleList.textContent = "";
-      people.forEach((name) => {
-        const opt = document.createElement("option");
-        opt.value = name;
-        peopleList.appendChild(opt);
-      });
-    }
-
-    function renderOffice() {
-      const rows = officeRows(state.catalog, state.log, state.view, state.section, state.query).filter((row) => !row.retired);
-      const low = rows.filter((row) => row.low).length;
-      const summary = $("officeSummary");
-      summary.textContent = "";
-      const total = el("div");
-      total.appendChild(el("strong", null, String(rows.length)));
-      total.appendChild(document.createTextNode("showing"));
-      const zero = el("div", "s-less");
-      zero.appendChild(el("strong", null, String(low)));
-      zero.appendChild(document.createTextNode("at zero or below"));
-      summary.appendChild(total);
-      summary.appendChild(zero);
-
-      const list = $("officeList");
-      list.textContent = "";
-      if (!rows.length) {
-        list.appendChild(el("p", "hint", "No items match."));
-        return;
-      }
+      search.className = "search";
+      search.placeholder = "Search parts";
+      search.value = state.query;
+      search.addEventListener("input", () => { state.query = search.value; render(); });
+      main.appendChild(search);
+      main.appendChild(catTools());
+      const q = state.query.trim().toLowerCase();
+      const rows = activeItems().filter((it) => !q || (it.item + " " + it.section + " " + (it.sku || "")).toLowerCase().indexOf(q) !== -1);
+      if (!rows.length) { main.appendChild(el("p", "muted", "No parts match.")); return; }
       groupBySection(rows).forEach((group) => {
-        const shorts = group.rows.filter((row) => row.low);
-        const pcs = shorts.reduce((sum, row) => {
-          if (row.onHand < 0) return sum + (-row.onHand);
-          const listed = Number(row.listed);
-          return sum + (isFinite(listed) ? listed : 0);
-        }, 0);
-        const det = sectionDetails("office", group.section, shorts.length, group.section + ": " + shorts.length + " short, " + pcs + " pcs");
-        group.rows.forEach((row) => {
-          const card = el("div", "item" + (row.negative ? " negative" : row.low ? " low" : ""));
-          card.appendChild(el("h3", null, row.item));
-          card.appendChild(el("div", "onhand", String(row.onHand)));
-          const where = state.view ? state.view : "both offices";
-          card.appendChild(el("div", "muted", "On hand, " + where));
-          if (!state.view) {
-            const parts = breakdown(state.log, row.section, row.item, state.locations);
-            const split = el("div", "split muted");
-            parts.forEach((part, index) => {
-              if (index) split.appendChild(document.createTextNode(" · "));
-              split.appendChild(el("span", part[1] < 0 ? "neg" : "", part[0] + " " + part[1]));
-            });
-            card.appendChild(split);
-          }
-          const tools = document.createElement("div");
-          tools.style.marginTop = "8px";
-          const edit = el("button", "tiny", "Edit");
-          edit.type = "button";
-          edit.addEventListener("click", () => openItemForm(row));
-          const hide = el("button", "tiny", "Hide");
-          hide.type = "button";
-          hide.addEventListener("click", () => retireItem(row, true));
-          tools.appendChild(edit);
-          tools.appendChild(hide);
-          card.appendChild(tools);
-          det.appendChild(card);
-        });
-        list.appendChild(det);
-      });
-      const hidden = state.catalog.filter((it) => it.retired && (!state.section || it.section === state.section) && (!state.query || (it.item + " " + it.section).toLowerCase().indexOf(state.query.trim().toLowerCase()) !== -1));
-      if (hidden.length) {
-        const det = sectionDetails("office", "Hidden items", 0, "Hidden items: " + hidden.length);
-        hidden.forEach((it) => {
+        const det = sectionDetails(q ? "parts-search" : "parts", group.section, q ? group.rows.length : 0, group.section + ": " + group.rows.length + " parts");
+        if (q) det.open = true;
+        group.rows.forEach((it) => {
           const card = el("div", "item");
           card.appendChild(el("h3", null, it.item));
-          card.appendChild(el("div", "muted", it.section + (Number(it.qty) === 0 ? " · office only" : "")));
-          const show = el("button", "tiny", "Show");
-          show.type = "button";
-          show.addEventListener("click", () => retireItem(it, false));
-          card.appendChild(show);
+          const bits = [it.section];
+          if (Number(it.qty) > 0) bits.push(it.qty + " per van");
+          else bits.push("Office only");
+          if (it.sku) bits.push(it.sku);
+          card.appendChild(el("div", "muted", bits.join(" · ")));
+          const open = el("button", "tiny", "Details");
+          open.type = "button";
+          open.addEventListener("click", () => select({ type: "part", section: it.section, item: it.item }));
+          card.appendChild(open);
           det.appendChild(card);
         });
-        list.appendChild(det);
-      }
-    }
-
-    function renderLog() {
-      const rows = historyRows(state.log, state.logPerson, state.logVan, state.logOffice, state.logAction, state.logFrom, state.logTo);
-      const list = $("logList");
-      list.textContent = "";
-      if (!rows.length) {
-        list.appendChild(el("p", "hint", "No stock history yet."));
-        return;
-      }
-      rows.forEach((row) => {
-        const added = row.action === "ADD";
-        const card = el("div", "item");
-        card.appendChild(el("div", "when", formatNy(row.timestamp) || "Unknown time"));
-        const title = el("h3", null, row.item);
-        const qty = isFinite(row.qty) ? String(row.qty) : "?";
-        const badge = el("span", "badge" + (added ? " added" : ""), (added ? "Added " : "Taken ") + qty);
-        title.appendChild(badge);
-        card.appendChild(title);
-        if (row.section) card.appendChild(el("div", "muted", row.section));
-        const bits = [row.location || "No office", row.person || "No name"];
-        if (!added) bits.push(row.van || "No plate");
-        card.appendChild(el("div", null, bits.join(" · ")));
-        if (row.note) card.appendChild(el("div", "muted", row.note));
-        list.appendChild(card);
+        main.appendChild(det);
       });
     }
-
-    function renderAlerts() {
-      const root = $("alerts");
-      if (!root) return;
-      root.textContent = "";
-      const fleet = fleetReports();
-      fleet.forEach((report) => {
-        if (!report.needs.length) return;
-        const link = document.createElement("a");
-        link.className = "notice";
-        link.href = "?van=" + encodeURIComponent(report.plate);
-        link.textContent = "Van " + report.plate + ": needs " + report.needs.length + " items (latest checklist " + monthDay(report.date) + ", " + (report.mechanic || "unknown mechanic") + ")";
-        root.appendChild(link);
+    function renderVehicles(main) {
+      main.appendChild(el("h2", null, "Vehicles"));
+      const add = el("button", "blue", "Add vehicle");
+      add.type = "button";
+      add.addEventListener("click", () => openVehicleForm(null));
+      main.appendChild(add);
+      const vans = vehicleList();
+      if (!vans.length) { main.appendChild(el("p", "muted", "No vans yet.")); return; }
+      vans.forEach((van) => {
+        const card = el("div", "vancard" + (state.selected && state.selected.type === "van" && normPlate(state.selected.plate) === normPlate(van.plate) ? " selected" : ""));
+        const top = el("div", "row");
+        top.appendChild(el("h3", null, van.plate));
+        if (van.needs) top.appendChild(el("span", "needs", "Needs " + van.needs));
+        else top.appendChild(el("span", "ok", "At listed amount"));
+        card.appendChild(top);
+        card.appendChild(el("div", "muted", [van.mechanic || "No mechanic", van.lastDate ? formatNy(van.lastDate) : "No checklist", van.makeModel || ""].filter(Boolean).join(" · ")));
+        card.addEventListener("click", () => select({ type: "van", plate: van.plate }));
+        main.appendChild(card);
       });
     }
-
-    function fleetReports() {
-      const seen = [];
-      state.vanCounts.forEach((row) => {
-        const key = normPlate(row.van);
-        if (!key || seen.indexOf(key) !== -1) return;
-        seen.push(key);
-      });
-      return seen.map((key) => assessVan(state.vanCounts, state.log, key, state.locations, state.notices)).filter(Boolean);
-    }
-
-    function renderFleet() {
-      const root = $("fleet");
-      if (!root) return;
-      root.textContent = "";
-      const reports = fleetReports();
-      if (!reports.length) return;
-      root.appendChild(el("h2", null, "Vans"));
-      reports.forEach((report) => {
-        const btn = el("button", null, report.plate + " — " + formatNy(report.date) + " — " + (report.mechanic || "No name") + " — " + report.needs.length + " to bring, " + report.recount.length + " to recount");
+    function renderStock(main) {
+      main.appendChild(el("h2", null, "Stock"));
+      const locs = el("div", "toolbar loc");
+      LOCATIONS.forEach((name) => {
+        const btn = el("button", state.stockAt === name ? "active" : "", name);
         btn.type = "button";
-        btn.style.display = "block";
-        btn.style.width = "100%";
-        btn.style.textAlign = "left";
-        btn.style.borderRadius = "12px";
-        btn.style.marginBottom = "8px";
-        if (normPlate(state.vanPlate) === normPlate(report.plate)) btn.classList.add("active");
-        btn.addEventListener("click", () => {
-          state.vanPlate = report.plate;
-          const input = $("vanPick");
-          if (input) input.value = report.plate;
-          const url = new URL(location.href);
-          url.searchParams.set("van", report.plate);
-          history.replaceState(null, "", url.toString());
-          renderVan();
-          const needs = $("vanNeeds");
-          if (needs) needs.scrollIntoView({ behavior: "smooth", block: "start" });
-        });
-        root.appendChild(btn);
+        btn.addEventListener("click", () => { state.stockAt = name; render(); });
+        locs.appendChild(btn);
       });
-    }
-
-    function renderNeeds(report) {
-      const root = $("vanNeeds");
-      root.textContent = "";
-      if (!report) return;
-      if (report.registration.length) {
-        const box = el("div", "error show");
-        box.textContent = "Registration or insurance card is missing: " + report.registration.map((row) => row.item).join(", ") + ".";
-        root.appendChild(box);
-      }
-      if (report.notice) {
-        const note = el("div", "notice");
-        note.textContent = report.notice;
-        root.appendChild(note);
-      }
-      if (report.baseline) {
-        root.appendChild(el("p", "hint", "First checklist for this van. This count is the baseline, so nothing is flagged as lost or extra yet."));
-      }
-      root.appendChild(el("h3", "section", "What this van needs"));
-      const split = needsBreakdown(report.needs);
-      root.appendChild(countLine("Short ", split.items, " items, ", split.pieces, " pieces total; another ", report.recount.length, " items need a recount."));
-      root.appendChild(el("h3", "section", "Has none at all — " + split.noneItems + " items, " + split.nonePieces + " pieces"));
-      if (!split.none.length) root.appendChild(el("p", "hint", "No item is completely gone."));
-      if (split.tools.length) {
-        const toolPcs = split.tools.reduce((sum, row) => sum + (Number(row.need) || 0), 0);
-        const tools = sectionDetails("needs-tools", "Big tools", split.tools.length, "Big tools: " + split.tools.length + " short, " + toolPcs + " pcs");
-        split.tools.forEach((row) => tools.appendChild(needCard(row, "none")));
-        root.appendChild(tools);
-      }
-      appendNeedGroups(root, "needs-none", split.rest, "none");
-      root.appendChild(el("h3", "section", "Has some, but not enough — " + split.someItems + " items, " + split.somePieces + " pieces"));
-      if (!split.some.length) root.appendChild(el("p", "hint", "No partial counts."));
-      appendNeedGroups(root, "needs-some", split.some, "some");
-      root.appendChild(el("h3", "section", "No count entered, recount"));
-      if (!report.recount.length) root.appendChild(el("p", "hint", "Every short item has a count."));
-      report.recount.forEach((row) => {
-        root.appendChild(el("div", "item", row.item + ": count missing, recount (listed " + (row.listed == null ? "?" : row.listed) + ")" + (row.note ? " — " + row.note : "")));
-      });
-      if (!report.baseline) {
-        root.appendChild(el("h3", "section", "Discrepancies"));
-        if (!report.discrepancies.length) root.appendChild(el("p", "hint", "The new count matches the last checklist plus what this van took from the office."));
-        report.discrepancies.forEach((row) => {
-          const why = row.direction === "below"
-            ? "Has " + row.actual + ", expected " + row.expected + " (last count " + row.previous + " plus " + row.taken + " taken). Lost, used, or not logged."
-            : "Has " + row.actual + ", expected " + row.expected + " (last count " + row.previous + " plus " + row.taken + " taken). More than the office logged.";
-          root.appendChild(el("div", "item" + (row.direction === "below" ? " negative" : ""), row.item + " — " + why));
-        });
-      }
-    }
-
-    function renderVan() {
-      renderAlerts();
-      renderFleet();
-      const summary = $("vanSummary");
-      const list = $("vanList");
-      const needs = $("vanNeeds");
-      summary.textContent = "";
-      list.textContent = "";
-      if (needs) needs.textContent = "";
-      const plate = state.vanPlate.trim();
-      if (!normPlate(plate)) {
-        summary.appendChild(el("p", "hint", "Type a license plate to see that van."));
-        return;
-      }
-      const report = assessVan(state.vanCounts, state.log, plate, state.locations, state.notices);
-      if (report) renderNeeds(report);
-      const result = vanRows(state.catalog, state.log, state.vanCounts, plate);
-      const shown = state.shortOnly ? result.rows.filter((row) => row.short) : result.rows;
-      const short = result.rows.filter((row) => row.short).length;
-      const intro = el("div", "summary");
-      const a = el("div");
-      a.appendChild(el("strong", null, plate.toUpperCase()));
-      a.appendChild(document.createTextNode(result.report ? formatNy(result.report.date) : "No checklist yet"));
-      const b = el("div", "s-less");
-      b.appendChild(el("strong", null, String(short)));
-      b.appendChild(document.createTextNode("short"));
-      intro.appendChild(a);
-      intro.appendChild(b);
-      summary.appendChild(intro);
-      if (result.report && result.report.mechanic) {
-        summary.appendChild(el("p", "hint", "Last checklist by " + result.report.mechanic + "."));
-      }
-      if (!result.report) {
-        summary.appendChild(el("p", "hint", "No weekly checklist yet for this plate. Taken amounts are everything recorded for this van. There is no estimated count until a checklist is in Van Counts."));
-      }
-      if (!shown.length) {
-        list.appendChild(el("p", "hint", state.shortOnly ? "Nothing is short on this van." : "No items."));
-        return;
-      }
-      groupBySection(shown).forEach((group) => {
-        const shorts = group.rows.filter((row) => row.short);
-        const pcs = shorts.reduce((sum, row) => {
-          if (row.estimated == null || row.listed == null || !isFinite(Number(row.estimated)) || !isFinite(Number(row.listed))) return sum;
-          return sum + Math.max(0, Number(row.listed) - Number(row.estimated));
-        }, 0);
-        const det = sectionDetails("van", group.section, shorts.length, group.section + ": " + shorts.length + " short, " + pcs + " pcs");
-        group.rows.forEach((row) => {
-          const card = el("div", "item" + (row.short ? " negative" : ""));
-          const title = el("h3", null, row.item);
-          if (row.short) title.appendChild(el("span", "badge", "Short"));
-          card.appendChild(title);
-          card.appendChild(line("Listed", row.listed == null ? "—" : String(row.listed)));
-          const last = row.lastActual == null ? "No count on the last checklist" : String(row.lastActual) + " on " + formatNy(row.lastDate);
-          card.appendChild(line("Last checklist", last));
-          card.appendChild(line(result.report ? "Taken since checklist" : "Taken from the office", String(row.taken)));
-          card.appendChild(line("Estimated now", row.estimated == null ? "—" : String(row.estimated)));
-          det.appendChild(card);
-        });
-        list.appendChild(det);
-      });
-    }
-    function appendNeedGroups(parent, scope, rows, mode) {
+      main.appendChild(locs);
+      const search = document.createElement("input");
+      search.placeholder = "Search this shelf";
+      search.value = state.query;
+      search.addEventListener("input", () => { state.query = search.value; render(); });
+      main.appendChild(search);
+      main.appendChild(catTools());
+      const q = state.query.trim().toLowerCase();
+      const rows = activeItems().map((it) => Object.assign({}, it, { onHand: shelfQty(it.section, it.item, state.stockAt) }))
+        .filter((it) => !q || (it.item + " " + it.section).toLowerCase().indexOf(q) !== -1);
       groupBySection(rows).forEach((group) => {
-        const pcs = group.rows.reduce((sum, row) => sum + (Number(row.need) || 0), 0);
-        const det = sectionDetails(scope, group.section, group.rows.length, group.section + ": " + group.rows.length + " short, " + pcs + " pcs");
-        group.rows.forEach((row) => det.appendChild(needCard(row, mode)));
-        parent.appendChild(det);
+        const ordered = group.rows.slice().sort((a, b) => (b.onHand > 0) - (a.onHand > 0));
+        const shorts = ordered.filter((row) => row.onHand <= 0);
+        const pcs = shorts.reduce((sum, row) => sum + (row.onHand < 0 ? -row.onHand : (Number(row.qty) || 0)), 0);
+        const det = sectionDetails("stock-" + state.stockAt, group.section, shorts.length, group.section + ": " + shorts.length + " short, " + pcs + " pcs");
+        const positive = ordered.filter((row) => row.onHand > 0);
+        const zero = ordered.filter((row) => row.onHand <= 0);
+        positive.forEach((row) => det.appendChild(stockCard(row)));
+        if (zero.length) {
+          const nested = sectionDetails("stock-zero-" + state.stockAt, group.section, 0, "At zero (" + zero.length + ")");
+          zero.forEach((row) => nested.appendChild(stockCard(row)));
+          det.appendChild(nested);
+        }
+        main.appendChild(det);
+      });
+      main.appendChild(el("h2", null, "History at " + state.stockAt));
+      const history = state.log.filter((row) => row.location === state.stockAt).slice().sort((a, b) => timeValue(b.timestamp) - timeValue(a.timestamp));
+      if (!history.length) main.appendChild(el("p", "muted", "No stock recorded at this office yet."));
+      history.slice(0, 40).forEach((row) => main.appendChild(historyCard(row)));
+      main.appendChild(el("h2", null, "Who owns the stock"));
+      const owned = ownership();
+      LOCATIONS.concat(["Not recorded"]).forEach((name) => {
+        const row = owned[name] || { shelf: 0, vans: 0, value: 0, valued: false };
+        if (!row.shelf && !row.vans && name === "Not recorded") return;
+        const card = el("div", "card");
+        card.appendChild(el("h3", null, name === "Not recorded" ? "Not recorded" : name));
+        card.appendChild(el("div", null, "On shelves: " + row.shelf));
+        card.appendChild(el("div", null, "On vans: " + row.vans));
+        card.appendChild(el("div", "muted", row.valued ? "Recorded value " + money(row.value) : "Value not recorded"));
+        main.appendChild(card);
       });
     }
-
-    function countLine(lead, a, mid, b, tail, c, end) {
-      const node = el("p");
-      node.appendChild(document.createTextNode(lead));
-      node.appendChild(el("strong", null, String(a)));
-      node.appendChild(document.createTextNode(mid));
-      node.appendChild(el("strong", null, String(b)));
-      node.appendChild(document.createTextNode(tail));
-      node.appendChild(el("strong", null, String(c)));
-      node.appendChild(document.createTextNode(end));
-      return node;
+    function stockCard(row) {
+      const card = el("div", "item" + (row.onHand < 0 ? " low" : row.onHand > 0 ? " ok" : ""));
+      card.appendChild(el("h3", null, row.item));
+      card.appendChild(el("div", row.onHand > 0 ? "ok" : "bad", "On shelf " + row.onHand));
+      const open = el("button", "tiny", "Details");
+      open.type = "button";
+      open.addEventListener("click", () => select({ type: "part", section: row.section, item: row.item }));
+      card.appendChild(open);
+      return card;
     }
-    function needCard(row, mode) {
-      const card = el("div", "item" + (row.source === "Order" ? " low" : ""));
-      const title = el("h3", null, row.item);
-      title.appendChild(el("span", "badge" + (row.source === "Order" ? "" : " added"), row.source));
-      card.appendChild(title);
-      if (mode === "some") {
-        card.appendChild(el("div", null, "has " + row.actual + " of " + row.listed + ", needs " + row.need));
-      } else {
-        card.appendChild(el("div", null, "Need " + row.need));
-      }
-      card.appendChild(el("div", "muted", "Brooklyn " + row.brooklyn + " · HQ " + row.hq));
+    function historyCard(row) {
+      const card = el("div", "item");
+      const verb = row.action === "ADD" ? "Added" : row.action === "ISSUE" ? "Gave" : "Took";
+      card.appendChild(el("div", "muted", formatNy(row.timestamp) || "Unknown time"));
+      card.appendChild(el("h3", null, verb + " " + (row.qty == null ? "?" : row.qty) + " · " + row.item));
+      const bits = [row.person || "No name"];
+      if (row.van) bits.push(row.van);
+      bits.push("Paid by " + paidLabel(row.paidBy));
+      if (row.vendor) bits.push(row.vendor);
+      if (row.invoice) bits.push("#" + row.invoice);
+      card.appendChild(el("div", null, bits.join(" · ")));
       if (row.note) card.appendChild(el("div", "muted", row.note));
+      return card;
+    }
+    function renderDetail() {
+      const aside = $("detail");
+      aside.textContent = "";
+      aside.classList.toggle("open", !!(state.detailOpen && state.selected));
+      if (!state.selected) {
+        aside.appendChild(el("div", "card", "Select a part or a van to see the detail."));
+        return;
+      }
+      const close = el("button", "tiny", "Close");
+      close.type = "button";
+      close.addEventListener("click", () => { state.detailOpen = false; state.selected = null; render(); });
+      aside.appendChild(close);
+      if (state.selected.type === "part") renderPartDetail(aside);
+      else renderVanDetail(aside);
+    }
+    function findItem(section, item) {
+      return state.items.find((it) => it.section === section && it.item === item) || { section, item, qty: null, retired: false };
+    }
+    function renderPartDetail(aside) {
+      const it = findItem(state.selected.section, state.selected.item);
+      aside.appendChild(el("h2", null, it.item));
+      aside.appendChild(el("div", "muted", it.section + (it.sku ? " · " + it.sku : "")));
+      const edit = el("button", "tiny", "Edit");
+      edit.type = "button";
+      edit.addEventListener("click", () => openProductForm(it));
+      const hide = el("button", "tiny", it.retired ? "Show" : "Hide");
+      hide.type = "button";
+      hide.addEventListener("click", () => retire(it, !it.retired));
+      aside.appendChild(edit); aside.appendChild(hide);
+      const facts = el("div", "card");
+      facts.appendChild(line("Required on each van", Number(it.qty) > 0 ? String(it.qty) : "Office only"));
+      facts.appendChild(line("Supplier", it.supplier || "Not recorded"));
+      facts.appendChild(line("Unit cost", it.unitCost == null ? "Not recorded" : money(it.unitCost) + (it.unit ? " / " + it.unit : "")));
+      if (it.notes) facts.appendChild(line("Notes", it.notes));
+      aside.appendChild(facts);
+      aside.appendChild(el("h3", null, "On the shelf"));
+      LOCATIONS.forEach((loc) => {
+        const qty = shelfQty(it.section, it.item, loc);
+        aside.appendChild(el("div", qty > 0 ? "ok" : "bad", loc + ": " + qty));
+        const lots = fifoLots(it.section, it.item, loc);
+        if (!lots.length) return;
+        const by = {};
+        lots.forEach((lot) => { const name = paidLabel(lot.paidBy); by[name] = (by[name] || 0) + lot.qty; });
+        Object.keys(by).forEach((name) => aside.appendChild(el("div", "muted", "Owned by " + name + ": " + by[name] + " on the shelf")));
+      });
+      aside.appendChild(el("h3", null, "On the vans"));
+      vehicleList().forEach((van) => {
+        if (!(Number(it.qty) > 0) && !onVanQty(van.plate, it.section, it.item).given) return;
+        const pos = onVanQty(van.plate, it.section, it.item);
+        const required = Number(it.qty) || 0;
+        const have = pos.have == null ? "No count" : String(pos.have);
+        aside.appendChild(el("div", null, van.plate + ": " + have + (required ? " of " + required : "")));
+      });
+    }
+    function renderVanDetail(aside) {
+      const plate = state.selected.plate;
+      const van = vehicleList().find((entry) => normPlate(entry.plate) === normPlate(plate));
+      const report = latestReport(plate);
+      aside.appendChild(el("h2", null, (van && van.plate) || plate));
+      aside.appendChild(el("div", "muted", [(van && van.mechanic) || "No mechanic", van && van.makeModel, van && van.home].filter(Boolean).join(" · ")));
+      if (!van || !van.saved) aside.appendChild(el("p", "muted", "This plate is on a checklist but is not saved as a vehicle yet."));
+      const edit = el("button", "tiny", van && van.saved ? "Edit vehicle" : "Save vehicle");
+      edit.type = "button";
+      edit.addEventListener("click", () => openVehicleForm(van || { plate }));
+      aside.appendChild(edit);
+      if (!report) {
+        aside.appendChild(el("p", null, "No checklist yet for this van."));
+        return;
+      }
+      let at = 0, none = 0, partial = 0, extra = 0;
+      const lines = [];
+      activeItems().forEach((it) => {
+        if (!(Number(it.qty) > 0)) return;
+        const pos = onVanQty(plate, it.section, it.item);
+        const required = Number(it.qty);
+        const have = pos.have;
+        let kind = "unknown";
+        if (have == null) kind = "recount";
+        else if (have === 0) { kind = "none"; none += 1; }
+        else if (have < required) { kind = "partial"; partial += 1; }
+        else if (have > required) { kind = "extra"; extra += 1; }
+        else { kind = "ok"; at += 1; }
+        lines.push({ it, required, have, kind, missing: have == null ? null : Math.max(0, required - have), extraQty: have == null ? 0 : Math.max(0, have - required) });
+      });
+      const grid = el("div", "statgrid");
+      [["At listed amount", at, "ok"], ["Has none", none, "bad"], ["Partial", partial, "bad"], ["Extra", extra, ""]].forEach((pair) => {
+        const cell = el("div");
+        cell.appendChild(el("strong", pair[2], String(pair[1])));
+        cell.appendChild(document.createTextNode(pair[0]));
+        grid.appendChild(cell);
+      });
+      aside.appendChild(grid);
+      const reg = lines.filter((row) => row.it.section === "Registration & Insurance" && row.kind !== "ok" && row.kind !== "extra");
+      if (reg.length) aside.appendChild(el("div", "note", "Registration or insurance card is missing: " + reg.map((row) => row.it.item).join(", ") + "."));
+      aside.appendChild(catTools());
+      const rank = { none: 0, partial: 1, recount: 2, extra: 3, ok: 4, unknown: 5 };
+      groupBySection(lines.map((row) => Object.assign({ section: row.it.section, item: row.it.item }, row))).forEach((group) => {
+        const ordered = group.rows.slice().sort((a, b) => rank[a.kind] - rank[b.kind]);
+        const shortRows = ordered.filter((row) => row.missing > 0);
+        const pcs = shortRows.reduce((sum, row) => sum + row.missing, 0);
+        const det = sectionDetails("van-" + plate, group.section, shortRows.length, group.section + ": " + shortRows.length + " short, " + pcs + " pcs");
+        ordered.forEach((row) => det.appendChild(vanItem(plate, row)));
+        aside.appendChild(det);
+      });
+      aside.appendChild(el("h3", null, "Given to this van"));
+      const given = state.log.filter((row) => (row.action === "TAKE" || row.action === "ISSUE") && normPlate(row.van) === normPlate(plate))
+        .slice().sort((a, b) => timeValue(b.timestamp) - timeValue(a.timestamp));
+      if (!given.length) aside.appendChild(el("p", "muted", "Nothing has been given to this van from the office yet."));
+      const owned = {};
+      given.forEach((row) => {
+        const name = paidLabel(row.paidBy);
+        owned[name] = (owned[name] || 0) + (Number(row.qty) || 0);
+        aside.appendChild(historyCard(row));
+      });
+      if (given.length) {
+        aside.appendChild(el("h3", null, "Who paid for what is on this van"));
+        Object.keys(owned).forEach((name) => aside.appendChild(el("div", null, name + ": " + owned[name])));
+      }
+    }
+    function vanItem(plate, row) {
+      const card = el("div", "item" + (row.missing > 0 ? " low" : row.kind === "ok" ? " ok" : ""));
+      card.appendChild(el("h3", null, row.it.item));
+      card.appendChild(line("Should have", String(row.required)));
+      card.appendChild(line("On van", row.have == null ? "No count, recount" : String(row.have)));
+      if (row.missing > 0) card.appendChild(el("div", "bad", "Missing " + row.missing));
+      if (row.extraQty > 0) card.appendChild(el("div", null, "Extra " + row.extraQty));
+      if (row.missing > 0) {
+        let offered = false;
+        LOCATIONS.forEach((loc) => {
+          const shelf = shelfQty(row.it.section, row.it.item, loc);
+          if (shelf <= 0) return;
+          offered = true;
+          const btn = el("button", "blue tiny", "Give from " + (loc === "Power HQ" ? "HQ" : "Brooklyn"));
+          btn.type = "button";
+          btn.addEventListener("click", () => openGive({ section: row.it.section, item: row.it.item, location: loc, van: plate, qty: Math.min(row.missing, shelf) }));
+          card.appendChild(btn);
+        });
+        if (!offered) card.appendChild(el("div", "bad", "Order"));
+      }
       return card;
     }
     function line(label, value) {
@@ -1326,417 +718,330 @@
       node.appendChild(document.createTextNode(value));
       return node;
     }
-
-    function categoryNames() {
-      const order = ["300 Machine & Tools", "Hand Machine & Tools", "100 Machine", "Toilet", "Camera & Tools", "Air Tank", "Water Testing", "Drill", "Tubular Piping", "Caps", "Couplings & Elbows", "Miscellaneous", "Registration & Insurance"];
-      const names = [];
-      state.catalog.forEach((it) => {
-        if (it.section && names.indexOf(it.section) === -1) names.push(it.section);
-      });
-      return names.map((name, index) => ({ name, index })).sort((a, b) => {
-        const ai = order.indexOf(a.name);
-        const bi = order.indexOf(b.name);
-        if (ai === -1 && bi === -1) return a.index - b.index;
-        if (ai === -1) return 1;
-        if (bi === -1) return -1;
-        return ai - bi;
-      }).map((row) => row.name);
+    function select(sel) {
+      state.selected = sel;
+      state.detailOpen = true;
+      if (sel.type === "van") {
+        const url = new URL(location.href);
+        url.searchParams.set("van", sel.plate);
+        history.replaceState(null, "", url.toString());
+      }
+      render();
     }
 
-    function openItemForm(existing) {
+    function pinOrNote() {
+      if (!stored(PIN_KEY)) return null;
+      return stored(PIN_KEY);
+    }
+    function openModal(title, build, onSubmit) {
+      const root = $("modal");
+      root.hidden = false;
+      root.textContent = "";
+      const form = el("form", "modal-card");
+      form.appendChild(el("h2", null, title));
+      if (!state.scriptReady) form.appendChild(el("p", "note", UPDATE_NOTE));
       if (!stored(PIN_KEY)) {
-        renderPin();
-        const pinInput = $("pin");
-        if (pinInput) pinInput.focus();
-        showError("Enter the office PIN and save it on this phone.");
-        return;
+        const pin = document.createElement("input");
+        pin.id = "modalPin";
+        pin.type = "password";
+        pin.placeholder = "Office PIN";
+        form.appendChild(el("label", null, "Office PIN"));
+        form.appendChild(pin);
       }
-      showError("");
-      const card = $("formCard");
-      card.hidden = false;
-      card.textContent = "";
-      const form = document.createElement("form");
-      form.autocomplete = "off";
-      form.appendChild(el("h2", null, existing ? "Edit item" : "Add new item"));
-      form.appendChild(labeledInput("itemName", "Item name", "text", "What is it called?"));
-      const sectionWrap = el("div", "field");
-      const sectionLabel = el("label", null, "Category");
-      sectionLabel.htmlFor = "itemSection";
-      const section = document.createElement("select");
-      section.id = "itemSection";
-      categoryNames().forEach((name) => {
-        const opt = el("option", null, name);
-        opt.value = name;
-        section.appendChild(opt);
-      });
-      const newer = el("option", null, "New category…");
-      newer.value = "__new__";
-      section.appendChild(newer);
-      sectionWrap.appendChild(sectionLabel);
-      sectionWrap.appendChild(section);
-      form.appendChild(sectionWrap);
-      const newWrap = labeledInput("itemSectionNew", "New category", "text", "Category name");
-      newWrap.id = "newCategoryWrap";
-      newWrap.hidden = true;
-      form.appendChild(newWrap);
-      form.appendChild(labeledInput("itemQty", "Listed amount on each van", "number", "0"));
-      const qtyHint = el("p", "hint", "Use 0 if this stays in the office and is not on the van checklist.");
-      form.appendChild(qtyHint);
-      if (!existing) {
-        form.appendChild(labeledInput("itemBrooklyn", "Starting stock at Power Brooklyn (optional)", "number", "0"));
-        form.appendChild(labeledInput("itemHq", "Starting stock at Power HQ (optional)", "number", "0"));
-      }
-      form.appendChild(labeledInput("itemNote", "Note (optional)", "text", "Where it came from"));
-      const error = el("div", "error");
-      error.id = "formError";
-      form.appendChild(error);
-      const save = el("button", "primary", existing ? "Save item" : "Add item");
+      root.appendChild(form);
+      build(form);
+      const err = el("div", "error");
+      err.id = "modalError";
+      form.appendChild(err);
+      const save = el("button", "primary", "Save");
       save.type = "submit";
-      save.id = "saveItemBtn";
       save.style.width = "100%";
       save.style.minHeight = "52px";
-      save.style.borderRadius = "12px";
       const cancel = el("button", null, "Cancel");
       cancel.type = "button";
       cancel.style.width = "100%";
       cancel.style.marginTop = "8px";
       form.appendChild(save);
       form.appendChild(cancel);
-      card.appendChild(form);
-      if (existing) {
-        $("itemName").value = existing.item;
-        section.value = categoryNames().indexOf(existing.section) === -1 ? "__new__" : existing.section;
-        newWrap.hidden = section.value !== "__new__";
-        if (section.value === "__new__") $("itemSectionNew").value = existing.section;
-        $("itemQty").value = existing.listed == null ? "0" : String(existing.listed);
-      } else {
-        $("itemQty").value = "1";
-      }
-      section.addEventListener("change", () => { newWrap.hidden = section.value !== "__new__"; });
       form.addEventListener("submit", (event) => {
         event.preventDefault();
-        saveItem(existing);
+        const pin = stored(PIN_KEY) || ($("modalPin") && $("modalPin").value.trim());
+        if (!pin) return modalError("Enter the office PIN.");
+        store(PIN_KEY, pin);
+        onSubmit(pin, save, err);
       });
-      cancel.addEventListener("click", closeForm);
-      card.scrollIntoView({ behavior: "smooth", block: "start" });
-      $("itemName").focus();
+      cancel.addEventListener("click", closeModal);
     }
-
-    function labeledInput(id, label, type, placeholder) {
-      const wrap = el("div", "field");
-      const lab = el("label", null, label);
-      lab.htmlFor = id;
-      const input = document.createElement("input");
-      input.id = id;
-      input.type = type;
-      input.placeholder = placeholder;
-      if (type === "number") { input.min = "0"; input.step = "1"; input.inputMode = "numeric"; }
-      wrap.appendChild(lab);
-      wrap.appendChild(input);
-      return wrap;
-    }
-
-    async function saveItem(existing) {
-      formError("");
-      const name = $("itemName").value.trim();
-      let section = $("itemSection").value;
-      if (section === "__new__") section = $("itemSectionNew").value.trim();
-      const qty = $("itemQty").value.trim();
-      if (!name) return formError("Enter the item name.");
-      if (!section) return formError("Choose a category.");
-      if (!/^\d+$/.test(qty)) return formError("Listed amount has to be a whole number. Use 0 if it stays in the office.");
-      const pin = stored(PIN_KEY);
-      if (!pin) return formError("Enter the office PIN and save it on this phone.");
-      const button = $("saveItemBtn");
-      button.disabled = true;
-      button.textContent = "Saving…";
-      const payload = {
-        action: existing ? "EDIT_ITEM" : "ADD_ITEM",
-        item: name,
-        section: section,
-        qty: Number(qty),
-        note: $("itemNote").value.trim(),
-        pin: pin
-      };
-      if (existing) {
-        payload.fromItem = existing.item;
-        payload.fromSection = existing.section;
-      } else {
-        payload.brooklyn = $("itemBrooklyn").value.trim();
-        payload.hq = $("itemHq").value.trim();
-      }
-      try {
-        await postMovement(payload);
-        toast(existing ? "Item saved." : "Item added.");
-        closeForm();
-        await load(false);
-      } catch (err) {
-        const message = err.message || "Couldn't save the item.";
-        if (/pin/i.test(message)) {
-          store(PIN_KEY, "");
-          renderPin();
-        }
-        formError(message);
-        button.disabled = false;
-        button.textContent = existing ? "Save item" : "Add item";
-      }
-    }
-
-    async function retireItem(row, hide) {
-      if (!stored(PIN_KEY)) {
-        renderPin();
-        showError("Enter the office PIN and save it on this phone.");
-        return;
-      }
-      const verb = hide ? "Hide" : "Show";
-      if (!confirm(verb + " " + row.item + (hide ? "? It leaves the checklist. Its history stays." : "?"))) return;
-      try {
-        await postMovement({
-          action: "RETIRE_ITEM",
-          item: row.item,
-          section: row.section,
-          retired: hide,
-          pin: stored(PIN_KEY)
-        });
-        toast(hide ? "Item hidden." : "Item shown.");
-        await load(false);
-      } catch (err) {
-        if (/pin/i.test(err.message || "")) {
-          store(PIN_KEY, "");
-          renderPin();
-        }
-        showError(err.message || "Couldn't update the item.");
-      }
-    }
-
-    function openForm(mode) {
-      draft.mode = mode;
-      draft.location = "";
-      draft.chosen = null;
-      draft.query = "";
-      const card = $("formCard");
-      card.hidden = false;
-      card.textContent = "";
-      const form = document.createElement("form");
-      form.autocomplete = "off";
-      form.appendChild(el("h2", null, mode === "ADD" ? "Add stock" : "Take stock"));
-      form.appendChild(el("label", null, "Office"));
-      const locs = el("div", "loc-choices");
-      locs.id = "formLocs";
-      form.appendChild(locs);
-      const itemLabel = el("label", null, "Item");
-      itemLabel.htmlFor = "itemSearch";
-      itemLabel.style.marginTop = "10px";
-      form.appendChild(itemLabel);
-      const search = document.createElement("input");
-      search.id = "itemSearch";
-      search.type = "text";
-      search.placeholder = "Type to find an item";
-      search.autocomplete = "off";
-      form.appendChild(search);
-      const results = el("div");
-      results.id = "itemResults";
-      form.appendChild(results);
-      const chosen = el("div");
-      chosen.id = "itemChosen";
-      form.appendChild(chosen);
-      form.appendChild(field("qty", "Quantity", "number", "1"));
-      form.appendChild(field("person", mode === "TAKE" ? "Who is taking it" : "Person", "text", "Name"));
-      if (mode === "TAKE") form.appendChild(field("van", "Van license plate", "text", "License plate"));
-      form.appendChild(field("note", "Note (optional)", "text", "Delivery, job, or reason"));
-      const error = el("div", "error");
-      error.id = "formError";
-      form.appendChild(error);
-      const box = el("div", "submit-box");
-      const save = el("button", "primary", mode === "ADD" ? "Add to office" : "Take from office");
-      save.type = "submit";
-      save.id = "saveMove";
-      const cancel = el("button", null, "Cancel");
-      cancel.type = "button";
-      cancel.style.width = "100%";
-      cancel.style.marginTop = "8px";
-      box.appendChild(save);
-      box.appendChild(cancel);
-      form.appendChild(box);
-      card.appendChild(form);
-      renderFormLocs();
-      const person = $("person");
-      person.setAttribute("list", "peopleList");
-      person.value = stored(PERSON_KEY);
-      if (mode === "TAKE") {
-        const van = $("van");
-        van.setAttribute("list", "vanPicks");
-        van.autocapitalize = "characters";
-        van.spellcheck = false;
-        van.value = stored(VAN_KEY);
-      }
-      search.addEventListener("input", () => {
-        draft.query = search.value;
-        draft.chosen = null;
-        renderChosen();
-        renderItemResults();
-      });
-      form.addEventListener("submit", (event) => {
-        event.preventDefault();
-        submitForm();
-      });
-      cancel.addEventListener("click", closeForm);
-      card.scrollIntoView({ behavior: "smooth", block: "start" });
-      search.focus();
-    }
-
-    function field(id, label, type, placeholder) {
-      const wrap = el("div", "field");
-      const lab = el("label", null, label);
-      lab.htmlFor = id;
-      const input = document.createElement("input");
-      input.id = id;
-      input.type = type;
-      input.placeholder = placeholder;
-      if (type === "number") { input.min = "1"; input.step = "1"; input.inputMode = "numeric"; }
-      wrap.appendChild(lab);
-      wrap.appendChild(input);
-      return wrap;
-    }
-
-    function renderFormLocs() {
-      const locs = $("formLocs");
-      if (!locs) return;
-      locs.textContent = "";
-      state.locations.forEach((name) => {
-        const btn = el("button", draft.location === name ? "active" : "", name);
-        btn.type = "button";
-        btn.addEventListener("click", () => {
-          draft.location = name;
-          renderFormLocs();
-        });
-        locs.appendChild(btn);
-      });
-    }
-
-    function renderItemResults() {
-      const box = $("itemResults");
-      if (!box) return;
-      box.textContent = "";
-      const q = draft.query.trim().toLowerCase();
-      if (!q || draft.chosen) return;
-      const matches = state.catalog.filter((it) => !it.retired && (it.item + " " + it.section).toLowerCase().indexOf(q) !== -1);
-      matches.slice(0, 20).forEach((it) => {
-        const btn = el("button", "pick", it.item);
-        btn.type = "button";
-        btn.appendChild(el("span", null, it.section));
-        btn.addEventListener("click", () => {
-          draft.chosen = it;
-          $("itemSearch").value = it.item;
-          draft.query = it.item;
-          renderChosen();
-          renderItemResults();
-        });
-        box.appendChild(btn);
-      });
-      if (!matches.length) box.appendChild(el("p", "hint", "No matching item."));
-      else if (matches.length > 20) box.appendChild(el("p", "hint", "Keep typing to narrow the list."));
-    }
-
-    function renderChosen() {
-      const box = $("itemChosen");
-      if (!box) return;
-      box.textContent = "";
-      if (!draft.chosen) return;
-      const chip = el("div", "chip");
-      chip.appendChild(el("strong", null, draft.chosen.item));
-      chip.appendChild(el("div", "muted", draft.chosen.section));
-      const clear = el("button", null, "Choose a different item");
-      clear.type = "button";
-      clear.style.marginTop = "8px";
-      clear.addEventListener("click", () => {
-        draft.chosen = null;
-        $("itemSearch").value = "";
-        draft.query = "";
-        renderChosen();
-        $("itemSearch").focus();
-      });
-      chip.appendChild(clear);
-      box.appendChild(chip);
-    }
-
-    function resolveChosen() {
-      if (draft.chosen) return draft.chosen;
-      const q = draft.query.trim().toLowerCase();
-      if (!q) return null;
-      const exact = state.catalog.filter((it) => !it.retired && it.item.toLowerCase() === q);
-      return exact.length === 1 ? exact[0] : null;
-    }
-
-    function formError(message) {
-      const node = $("formError");
-      if (!message) { node.classList.remove("show"); node.textContent = ""; return; }
+    function modalError(message) {
+      const node = $("modalError");
       node.textContent = message;
       node.classList.add("show");
     }
-
-    async function submitForm() {
-      formError("");
-      const item = resolveChosen();
-      const qty = $("qty").value;
-      const person = $("person").value.trim();
-      const note = $("note").value.trim();
-      const van = draft.mode === "TAKE" ? $("van").value.trim() : "";
-      if (!draft.location) return formError("Choose Power Brooklyn or Power HQ.");
-      if (state.locations.indexOf(draft.location) === -1) return formError("Choose an office.");
-      if (!item) return formError("Choose an item from the list. If the name is in two sections, tap the right one.");
-      if (!isPositiveInt(qty)) return formError("Quantity has to be a whole number greater than zero.");
-      if (!person) return formError("Enter the person's name.");
-      if (draft.mode === "TAKE" && !van) return formError("Enter the van license plate.");
-      const pin = stored(PIN_KEY);
-      if (!pin) {
-        renderPin();
-        const pinInput = $("pin");
-        if (pinInput) pinInput.focus();
-        return formError("Enter the office PIN and save it on this phone.");
-      }
-      const button = $("saveMove");
-      button.disabled = true;
-      button.textContent = "Saving…";
-      try {
-        await postMovement({
-          action: draft.mode,
-          item: item.item,
-          section: item.section,
-          qty: Number(qty),
-          person,
-          van,
-          note,
-          location: draft.location,
-          pin
-        });
-        store(PERSON_KEY, person);
-        if (van) store(VAN_KEY, van);
-        toast(draft.mode === "ADD" ? "Added to " + draft.location + "." : "Taken from " + draft.location + ".");
-        closeForm();
-        await load(false);
-      } catch (err) {
-        const message = err.message || "Couldn't save.";
-        if (/pin/i.test(message)) {
-          store(PIN_KEY, "");
-          renderPin();
-          const pinInput = $("pin");
-          if (pinInput) pinInput.focus();
+    function closeModal() { $("modal").hidden = true; $("modal").textContent = ""; }
+    function productPicker(form, current, onPick) {
+      form.appendChild(el("label", null, "Product"));
+      const input = document.createElement("input");
+      input.placeholder = "Type to find a part";
+      input.value = current ? current.item : "";
+      form.appendChild(input);
+      const box = el("div", "picks");
+      form.appendChild(box);
+      let chosen = current || null;
+      function paint() {
+        box.textContent = "";
+        const q = input.value.trim().toLowerCase();
+        if (chosen && chosen.item === input.value) {
+          box.appendChild(el("div", "muted", chosen.section));
+          return;
         }
-        formError(message);
-        button.disabled = false;
-        button.textContent = draft.mode === "ADD" ? "Add to office" : "Take from office";
+        chosen = null;
+        activeItems().filter((it) => !q || (it.item + " " + it.section).toLowerCase().indexOf(q) !== -1).slice(0, 8).forEach((it) => {
+          const btn = el("button", null, it.item);
+          btn.type = "button";
+          btn.addEventListener("click", () => { chosen = it; input.value = it.item; onPick(it); paint(); });
+          box.appendChild(btn);
+          box.appendChild(el("div", "muted", it.section));
+        });
       }
+      input.addEventListener("input", paint);
+      paint();
+      return () => chosen;
     }
-
-    function closeForm() {
-      draft.mode = "";
-      const card = $("formCard");
-      card.hidden = true;
-      card.textContent = "";
+    function openStockForm() {
+      let chosen = null;
+      openModal("Add stock", (form) => {
+        productPicker(form, null, (it) => { chosen = it; const cost = $("stockCost"); if (cost && it.unitCost != null) cost.value = String(it.unitCost); });
+        field(form, "stockQty", "Quantity", "number");
+        selectField(form, "stockLoc", "Location", LOCATIONS);
+        selectField(form, "stockPaid", "Paid by", LOCATIONS);
+        field(form, "stockCost", "Unit cost", "number");
+        field(form, "stockVendor", "Vendor", "text");
+        field(form, "stockDate", "Date", "date");
+        $("stockDate").value = todayISO();
+        field(form, "stockInvoice", "Invoice or receipt #", "text");
+        field(form, "stockNote", "Notes", "text");
+      }, async (pin, button) => {
+        if (!chosen) return modalError("Choose a product from the list.");
+        const qty = $("stockQty").value.trim();
+        if (!/^\d+$/.test(qty) || Number(qty) <= 0) return modalError("Enter a quantity greater than zero.");
+        button.disabled = true;
+        try {
+          await post({
+            action: "ADD",
+            item: chosen.item,
+            section: chosen.section,
+            qty: Number(qty),
+            location: $("stockLoc").value,
+            paidBy: $("stockPaid").value,
+            unitCost: $("stockCost").value.trim(),
+            vendor: $("stockVendor").value.trim(),
+            date: $("stockDate").value,
+            invoice: $("stockInvoice").value.trim(),
+            note: $("stockNote").value.trim(),
+            person: "Office",
+            pin
+          });
+          closeModal();
+          if (!state.scriptReady) showError("The quantity was saved. Paid by, cost, vendor, and invoice need the script update, so they will show as Not recorded until then.");
+          await load();
+        } catch (err) {
+          modalError(err.message);
+          button.disabled = false;
+        }
+      });
     }
-
-    async function postMovement(payload) {
+    function openGive(preset) {
+      if (!state.scriptReady) {
+        showError(UPDATE_NOTE);
+        return;
+      }
+      let chosen = preset ? findItem(preset.section, preset.item) : null;
+      openModal("Give to van", (form) => {
+        productPicker(form, chosen, (it) => { chosen = it; });
+        field(form, "giveQty", "Quantity", "number");
+        if (preset && preset.qty) $("giveQty").value = String(preset.qty);
+        selectField(form, "giveFrom", "From", LOCATIONS, preset && preset.location);
+        const plates = vehicleList().map((van) => van.plate);
+        selectField(form, "giveVan", "Van", plates.length ? plates : [""], preset && preset.van);
+        field(form, "giveMech", "Mechanic", "text");
+        const van = vehicleList().find((entry) => preset && normPlate(entry.plate) === normPlate(preset.van));
+        if (van) $("giveMech").value = van.mechanic || "";
+        $("giveVan").addEventListener("change", () => {
+          const found = vehicleList().find((entry) => normPlate(entry.plate) === normPlate($("giveVan").value));
+          if (found) $("giveMech").value = found.mechanic || "";
+        });
+        field(form, "giveDate", "Date", "date");
+        $("giveDate").value = todayISO();
+        field(form, "giveNote", "Notes", "text");
+      }, async (pin, button) => {
+        if (!chosen) return modalError("Choose a product.");
+        const qty = $("giveQty").value.trim();
+        if (!/^\d+$/.test(qty) || Number(qty) <= 0) return modalError("Enter a quantity greater than zero.");
+        if (!$("giveVan").value) return modalError("Choose a van.");
+        button.disabled = true;
+        try {
+          await post({
+            action: "ISSUE",
+            item: chosen.item,
+            section: chosen.section,
+            qty: Number(qty),
+            location: $("giveFrom").value,
+            van: $("giveVan").value,
+            mechanic: $("giveMech").value.trim(),
+            date: $("giveDate").value,
+            note: $("giveNote").value.trim(),
+            pin
+          });
+          closeModal();
+          await load();
+        } catch (err) {
+          modalError(/action must be add or take/i.test(err.message || "") ? UPDATE_NOTE : err.message);
+          button.disabled = false;
+        }
+      });
+    }
+    function openProductForm(existing) {
+      openModal(existing ? "Edit product" : "Add product", (form) => {
+        field(form, "prodName", "Name", "text");
+        const names = [];
+        state.items.forEach((it) => { if (it.section && names.indexOf(it.section) === -1) names.push(it.section); });
+        names.sort((a, b) => sectionRank(a) - sectionRank(b));
+        selectField(form, "prodSection", "Category", names.concat(["__new__"]));
+        $("prodSection").querySelector("option[value='__new__']").textContent = "New category…";
+        field(form, "prodNew", "New category", "text");
+        $("prodNew").parentElement.hidden = true;
+        $("prodSection").addEventListener("change", () => { $("prodNew").parentElement.hidden = $("prodSection").value !== "__new__"; });
+        field(form, "prodSku", "Part # / SKU", "text");
+        field(form, "prodSupplier", "Supplier", "text");
+        field(form, "prodCost", "Unit cost", "number");
+        field(form, "prodUnit", "Unit", "text");
+        field(form, "prodQty", "Required qty per van", "number");
+        field(form, "prodNotes", "Notes", "text");
+        const active = document.createElement("input");
+        active.id = "prodActive";
+        active.type = "checkbox";
+        active.checked = !(existing && existing.retired);
+        const lab = el("label", null, " Active");
+        lab.prepend(active);
+        form.appendChild(lab);
+        if (existing) {
+          $("prodName").value = existing.item;
+          if (names.indexOf(existing.section) === -1) { $("prodSection").value = "__new__"; $("prodNew").parentElement.hidden = false; $("prodNew").value = existing.section; }
+          else $("prodSection").value = existing.section;
+          $("prodSku").value = existing.sku || "";
+          $("prodSupplier").value = existing.supplier || "";
+          if (existing.unitCost != null) $("prodCost").value = String(existing.unitCost);
+          $("prodUnit").value = existing.unit || "";
+          $("prodQty").value = existing.qty == null ? "0" : String(existing.qty);
+          $("prodNotes").value = existing.notes || "";
+        } else $("prodQty").value = "1";
+      }, async (pin, button) => {
+        const name = $("prodName").value.trim();
+        let section = $("prodSection").value;
+        if (section === "__new__") section = $("prodNew").value.trim();
+        const qty = $("prodQty").value.trim();
+        if (!name) return modalError("Enter the product name.");
+        if (!section) return modalError("Choose a category.");
+        if (!/^\d+$/.test(qty)) return modalError("Required qty has to be a whole number. Use 0 for office-only parts.");
+        button.disabled = true;
+        try {
+          const payload = {
+            action: existing ? "EDIT_ITEM" : "ADD_ITEM",
+            item: name,
+            section,
+            qty: Number(qty),
+            sku: $("prodSku").value.trim(),
+            supplier: $("prodSupplier").value.trim(),
+            unitCost: $("prodCost").value.trim(),
+            unit: $("prodUnit").value.trim(),
+            notes: $("prodNotes").value.trim(),
+            pin
+          };
+          if (existing) { payload.fromItem = existing.item; payload.fromSection = existing.section; }
+          await post(payload);
+          const shouldHide = !$("prodActive").checked;
+          if (existing && !!existing.retired !== shouldHide) {
+            await post({ action: "RETIRE_ITEM", item: name, section, retired: shouldHide, pin });
+          }
+          closeModal();
+          if (!state.scriptReady) showError("The name, category, and required quantity were saved. Part number, supplier, cost, and notes need the script update.");
+          await load();
+        } catch (err) {
+          modalError(err.message);
+          button.disabled = false;
+        }
+      });
+    }
+    function openVehicleForm(existing) {
+      if (!state.scriptReady && !(existing && existing.saved)) {
+        showError(UPDATE_NOTE);
+      }
+      openModal(existing && existing.saved ? "Edit vehicle" : "Add vehicle", (form) => {
+        field(form, "vehPlate", "License plate", "text");
+        field(form, "vehMake", "Make and model", "text");
+        field(form, "vehMech", "Mechanic", "text");
+        selectField(form, "vehHome", "Home location", [""].concat(LOCATIONS));
+        if (existing) {
+          $("vehPlate").value = existing.plate || "";
+          $("vehMake").value = existing.makeModel || "";
+          $("vehMech").value = existing.mechanic || "";
+          $("vehHome").value = existing.home || "";
+        }
+      }, async (pin, button) => {
+        if (!state.scriptReady) return modalError(UPDATE_NOTE);
+        const plate = $("vehPlate").value.trim();
+        if (!plate) return modalError("Enter the license plate.");
+        button.disabled = true;
+        try {
+          await post({
+            action: existing && existing.saved ? "EDIT_VEHICLE" : "ADD_VEHICLE",
+            fromPlate: existing && existing.plate,
+            plate,
+            makeModel: $("vehMake").value.trim(),
+            mechanic: $("vehMech").value.trim(),
+            home: $("vehHome").value,
+            pin
+          });
+          closeModal();
+          state.tab = "vehicles";
+          state.selected = { type: "van", plate };
+          await load();
+        } catch (err) {
+          modalError(/action must be add or take/i.test(err.message || "") ? UPDATE_NOTE : err.message);
+          button.disabled = false;
+        }
+      });
+    }
+    async function retire(it, hide) {
+      const pin = stored(PIN_KEY);
+      if (!pin) return openProductForm(it);
+      if (!confirm((hide ? "Hide " : "Show ") + it.item + "?")) return;
+      try {
+        await post({ action: "RETIRE_ITEM", item: it.item, section: it.section, retired: hide, pin });
+        await load();
+      } catch (err) { showError(err.message); }
+    }
+    function field(form, id, label, type) {
+      form.appendChild(el("label", null, label));
+      const input = document.createElement("input");
+      input.id = id;
+      input.type = type;
+      if (type === "number") { input.min = "0"; input.step = "any"; }
+      form.appendChild(input);
+    }
+    function selectField(form, id, label, values, selected) {
+      form.appendChild(el("label", null, label));
+      const select = document.createElement("select");
+      select.id = id;
+      values.forEach((value) => {
+        const opt = el("option", null, value || "Choose");
+        opt.value = value;
+        select.appendChild(opt);
+      });
+      if (selected) select.value = selected;
+      form.appendChild(select);
+    }
+    async function post(payload) {
       let response;
       try {
         response = await fetch(API_URL, {
@@ -1747,92 +1052,60 @@
           body: JSON.stringify(payload)
         });
       } catch (err) {
-        throw new Error(ACCESS_ERROR);
+        throw new Error("Can't reach the stock sheet. In Apps Script, set Deploy, Manage deployments, Who has access to Anyone.");
       }
-      return readResponse(response);
-    }
-
-    let didScrollVan = false;
-    function maybeScrollVan() {
-      if (didScrollVan || !PARAM_VAN) return;
-      const node = $("vanNeeds") || $("vanPick");
-      if (!node) return;
-      didScrollVan = true;
-      node.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-    async function loadBackfill() {
-      const reports = [];
-      for (const url of BACKFILL_URLS) {
-        try {
-          const response = await fetch(url, { cache: "no-store" });
-          if (!response.ok) continue;
-          const data = await response.json();
-          if (Array.isArray(data)) reports.push.apply(reports, data);
-          else if (data) reports.push(data);
-        } catch (err) { /* the sheet copy is enough when the file is missing */ }
-      }
-      return reports;
-    }
-    async function load(manual) {
-      state.status = "Loading office stock…";
-      const line = $("statusLine");
-      if (line) line.textContent = state.status;
-      showError("");
-      let data = null;
-      try {
-        const join = API_URL.indexOf("?") === -1 ? "?" : "&";
-        const response = await fetch(API_URL + join + "t=" + Date.now(), { method: "GET", redirect: "follow", cache: "no-store" });
-        data = await readResponse(response);
-      } catch (err) {
-        showError(err.message || ACCESS_ERROR);
-      }
-      if (data) {
-        if (Array.isArray(data.locations) && data.locations.length) state.locations = data.locations.slice();
-        state.catalog = catalogFrom(data.items, ITEMS);
-        state.log = normalizeLog(data.log);
-        state.vanCounts = normalizeCounts(data.vanCounts);
-        if (state.view && state.locations.indexOf(state.view) === -1) state.view = "";
-        state.status = "Updated " + formatNy(new Date().toISOString()) + ".";
-      }
-      try {
-        const merged = mergeBackfill(state.vanCounts, await loadBackfill());
-        state.vanCounts = merged.counts;
-        state.notices = merged.notices;
-      } catch (err) { /* keep the sheet counts */ }
-      renderLocationSwitch();
-      renderFilters();
-      renderFormLocs();
-      renderOffice();
-      renderLog();
-      renderVan();
-      if (line) line.textContent = state.status;
-      maybeScrollVan();
-    }
-
-    async function readResponse(response) {
       const text = await response.text();
       let data = null;
-      try { data = JSON.parse(text); } catch (err) { data = null; }
-      if (data && typeof data === "object" && !Array.isArray(data)) {
-        if (data.ok === false) throw new Error(data.error || "Couldn't read the spreadsheet.");
-        if (response.ok || data.ok === true || Array.isArray(data.items) || Array.isArray(data.log)) return data;
+      try { data = JSON.parse(text); } catch (e) { data = null; }
+      if (data && data.ok === false) {
+        if (/pin/i.test(data.error || "")) store(PIN_KEY, "");
+        throw new Error(data.error || "Couldn't save.");
       }
-      throw new Error(ACCESS_ERROR);
+      if (!data || data.ok !== true) throw new Error("Can't reach the stock sheet. In Apps Script, set Deploy, Manage deployments, Who has access to Anyone.");
+      return data;
     }
-
-    function boot() {
-      if (!String(API_URL).trim()) return;
-      $("setup").hidden = true;
-      shell();
-      load(false);
+    async function load() {
+      showError("");
+      try {
+        const response = await fetch(API_URL + (API_URL.indexOf("?") === -1 ? "?" : "&") + "t=" + Date.now(), { cache: "no-store", redirect: "follow" });
+        const data = await response.json();
+        if (!data || data.ok === false) throw new Error((data && data.error) || "Couldn't read the sheet.");
+        if (Array.isArray(data.items) && data.items.length) {
+          state.items = data.items.map((row) => ({
+            section: row.section || "",
+            item: row.item || "",
+            qty: row.qty == null ? 0 : Number(row.qty),
+            retired: row.retired === true || String(row.retired || "").toLowerCase() === "yes",
+            sku: row.sku || "",
+            supplier: row.supplier || "",
+            unitCost: row.unitCost == null ? null : Number(row.unitCost),
+            unit: row.unit || "",
+            notes: row.notes || ""
+          })).filter((row) => row.item);
+        }
+        state.log = (data.log || []).map((row) => Object.assign({ paidBy: "", unitCost: null, vendor: "", invoice: "" }, row, {
+          action: String(row.action || "").toUpperCase(),
+          paidBy: row.paidBy || ""
+        }));
+        state.vanCounts = data.vanCounts || [];
+        state.scriptReady = Array.isArray(data.vehicles);
+        state.vehicles = state.scriptReady ? data.vehicles : [];
+        state.loaded = true;
+      } catch (err) {
+        state.loaded = true;
+        showError(err.message || "Couldn't read the stock sheet. The built-in parts list is showing.");
+      }
+      render();
     }
-    try { boot(); }
-    catch (err) {
-      const extra = document.createElement("p");
-      extra.textContent = "This page hit an error: " + (err && err.message ? err.message : err);
-      $("setup").hidden = false;
-      $("setup").appendChild(extra);
-    }
+    document.querySelectorAll(".tabs button").forEach((btn) => btn.addEventListener("click", () => {
+      state.tab = btn.dataset.tab;
+      state.query = "";
+      render();
+    }));
+    $("quickAdd").addEventListener("click", openStockForm);
+    $("quickGive").addEventListener("click", () => openGive(null));
+    $("modal").addEventListener("click", (event) => { if (event.target.id === "modal") closeModal(); });
+    load();
   </script>
 </body>
 </html>

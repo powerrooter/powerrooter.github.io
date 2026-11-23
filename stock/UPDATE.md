@@ -1,6 +1,6 @@
 # Update the office stock script
 
-Do this so Add new item, edits, and hidden items work, and the van checklist reads the Items tab. The web app address stays the same.
+Do this so the inventory page can save vehicles, part numbers, who paid for stock, and giving parts to a van. The web address does not change. Until you do this, the page still opens and shows the current stock. New fields say "Not recorded", and the buttons that need the new script tell you to update it.
 
 1. Open the Office stock spreadsheet. Click Extensions, then Apps Script.
 2. Select all the code and delete it.
@@ -13,22 +13,9 @@ Do this so Add new item, edits, and hidden items work, and the van checklist rea
 
 Who has access stays Anyone. Execute as stays Me. Do not create a second web app.
 
-After that, Add new item on the stock page needs the office PIN. A listed amount of 0 stays in the office and is left off the van checklist. Hide keeps the history and removes the item from the checklist.
+This adds columns and a Vehicles tab. It does not delete the items, the office log, or the van checklists already in the sheet. The first time the new script runs, it adds van XSJJ22 / Chris Aguirre to Vehicles only if that plate is not already there.
 
-The stock page already shows Chris Aguirre's Nov 19 checklist for van XSJJ22. The steps above also keep checklist emails working. The web app address stays the same.
-
-1. Open the Office stock spreadsheet. Click Extensions, then Apps Script.
-2. Select all the code and delete it.
-3. Open https://raw.githubusercontent.com/powerrooter/powerrooter.github.io/main/stock/apps-script.gs , copy the whole page, paste it into Apps Script, and click Save.
-4. Click Deploy, then Manage deployments.
-5. Click the pencil on the existing web app.
-6. Set Version to New version.
-7. Click Deploy.
-8. Approve the new email permission when Google asks. The script sends the van-needs email as you.
-
-Who has access stays Anyone. Execute as stays Me. Do not create a second web app.
-
-The page already shows the Nov 19 XSJJ22 checklist from a file in this repo. After the script is updated, load that same checklist into the sheet without sending the email again. From the repo folder, run:
+To load Chris's Nov 19 checklist again without sending another email, from the repo folder run:
 
 ```bash
 curl -sS -L \
@@ -37,6 +24,4 @@ curl -sS -L \
   "https://script.google.com/macros/s/AKfycbzmF5ifybYu5rBY5BpRdhgDS22-wLWB-l_vK2sW47ThvBbQ4jTyoo0qnPDZGOqwPE8t2A/exec"
 ```
 
-The answer should say `"ok": true` and `"emailed": false`. Sending this file again replaces the same van and date, including the seven counts now saved as 0, and it does not email the office. After that, the stock page reads XSJJ22 from the sheet.
-
-Resubmitting the weekly form also writes the checklist, and that one does email the office.
+The answer should say `"ok": true` and `"emailed": false`. Sending it again replaces that van and date only.
