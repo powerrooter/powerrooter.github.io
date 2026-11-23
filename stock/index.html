@@ -129,8 +129,12 @@
     .item.low { background: var(--red-pale); border-color: #f3c2c6; }
     .item.ok { border-color: #b7e2cc; }
     .statgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .statgrid div { background: var(--blue-pale); border-radius: 12px; padding: 10px; text-align: center; }
+    .statgrid button { background: var(--blue-pale); border-radius: 12px; padding: 10px; text-align: center; width: 100%; border: 1px solid transparent; }
+    .statgrid button.active { border-color: #E41F2C; box-shadow: 0 0 0 2px #E41F2C; }
     .statgrid strong { display: block; font-size: 1.3rem; }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 12px; }
+    .chips button { background: #fff; }
+    .chips button.active { background: #E41F2C; color: #fff; border-color: #E41F2C; font-weight: 700; }
     .error { display: none; background: var(--red-pale); color: var(--red-dark); border-radius: 10px; padding: 10px; margin: 8px 0; }
     .error.show { display: block; }
     #modal[hidden] { display: none; }
@@ -185,6 +189,11 @@
     const SECTIONS = ["300 Machine & Tools", "Hand Machine & Tools", "100 Machine", "Toilet", "Camera & Tools", "Air Tank", "Water Testing", "Drill", "Tubular Piping", "Caps", "Couplings & Elbows", "Miscellaneous", "Registration & Insurance"];
     const LIBRARY = [{"section": "300 Machine & Tools", "item": "Maintained 300 Machine with 75 Ft of cable", "qty": 1}, {"section": "300 Machine & Tools", "item": "Extra 25 Ft of cable", "qty": 2}, {"section": "300 Machine & Tools", "item": "Extra Pins", "qty": 5}, {"section": "300 Machine & Tools", "item": "Pairs of yellow gloves", "qty": 2}, {"section": "300 Machine & Tools", "item": "Whip", "qty": 1}, {"section": "300 Machine & Tools", "item": "U Blade 3\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Half Blade 3\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "U Blade 4\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Half Blade 4\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Saw blade", "qty": 1}, {"section": "300 Machine & Tools", "item": "Puncher & Stand", "qty": 1}, {"section": "300 Machine & Tools", "item": "Hammer", "qty": 1}, {"section": "300 Machine & Tools", "item": "Channel Lock 10\" or 12\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Channel Lock 6.5\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Pipe Wrench", "qty": 1}, {"section": "300 Machine & Tools", "item": "PB Blaster / WD-40", "qty": 1}, {"section": "300 Machine & Tools", "item": "Extension wire 25 ft", "qty": 1}, {"section": "300 Machine & Tools", "item": "Duct Tape", "qty": 2}, {"section": "300 Machine & Tools", "item": "Long gloves", "qty": 1}, {"section": "300 Machine & Tools", "item": "Philip screw driver", "qty": 1}, {"section": "300 Machine & Tools", "item": "Flat screw driver", "qty": 1}, {"section": "300 Machine & Tools", "item": "Nut Driver", "qty": 1}, {"section": "300 Machine & Tools", "item": "Screw driver 4 in 1", "qty": 1}, {"section": "300 Machine & Tools", "item": "Outlet adapters 2-3", "qty": 1}, {"section": "300 Machine & Tools", "item": "PVC pipe with elbow for trap out sewer 2\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Repair plates 4\"", "qty": 2}, {"section": "Hand Machine & Tools", "item": "Hand Machine with 25 ft cable", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Extra 25 ft cable", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Drop head 25 ft cable", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Construction gloves", "qty": 3}, {"section": "Hand Machine & Tools", "item": "Channel lock 10\" or 12\"", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Channel lock 6.5\"", "qty": 1}, {"section": "Hand Machine & Tools", "item": "PVC channel lock", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Vise grip", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Flat Screw driver", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Philip screw driver", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Nut driver", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Screw driver 4 in 1", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Teflon Tape", "qty": 5}, {"section": "Hand Machine & Tools", "item": "Electric Tape", "qty": 5}, {"section": "Hand Machine & Tools", "item": "Epoxy", "qty": 2}, {"section": "Hand Machine & Tools", "item": "Plumbers putty", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Outlet adapters 2-3", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Extension wire 25 ft", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Wheeling Case", "qty": 1}, {"section": "100 Machine", "item": "Maintained 100 machine with 75 ft cable", "qty": 1}, {"section": "100 Machine", "item": "Construction gloves", "qty": 3}, {"section": "100 Machine", "item": "Boiler plugs", "qty": 10}, {"section": "Toilet", "item": "Toilet auger", "qty": 1}, {"section": "Toilet", "item": "Wax Rings", "qty": 10}, {"section": "Toilet", "item": "Johnny bolts", "qty": 10}, {"section": "Toilet", "item": "Silicone gun", "qty": 1}, {"section": "Toilet", "item": "Silicone", "qty": 2}, {"section": "Toilet", "item": "Plaster", "qty": 1}, {"section": "Toilet", "item": "Foam spray", "qty": 1}, {"section": "Toilet", "item": "Fill valves (Fluidmaster)", "qty": 3}, {"section": "Toilet", "item": "Flappers", "qty": 5}, {"section": "Toilet", "item": "Ratchet wrench set", "qty": 1}, {"section": "Toilet", "item": "Lock wrench for johnny bolts", "qty": 1}, {"section": "Camera & Tools", "item": "Camera", "qty": 1}, {"section": "Camera & Tools", "item": "Locator", "qty": 1}, {"section": "Camera & Tools", "item": "Rags", "qty": 2}, {"section": "Air Tank", "item": "Maintained Air tank", "qty": 2}, {"section": "Air Tank", "item": "Hose", "qty": 1}, {"section": "Air Tank", "item": "Hose Adapter", "qty": 1}, {"section": "Air Tank", "item": "Flush bag 2\"", "qty": 1}, {"section": "Air Tank", "item": "Flush bag 1/2\"–3\"", "qty": 1}, {"section": "Air Tank", "item": "Flush bag 3\"–4\"", "qty": 1}, {"section": "Air Tank", "item": "Flush bag 3\"–6\"", "qty": 1}, {"section": "Water Testing", "item": "Water hose 150 Ft", "qty": 1}, {"section": "Water Testing", "item": "Speedy with adapter to sink / toilet", "qty": 1}, {"section": "Water Testing", "item": "Nozzle", "qty": 1}, {"section": "Drill", "item": "Electric Drill", "qty": 1}, {"section": "Drill", "item": "Carbide hole saw bit 7/8\"", "qty": 1}, {"section": "Drill", "item": "Center bits", "qty": 2}, {"section": "Drill", "item": "PVC saw hole bit 7/8\"", "qty": 2}, {"section": "Drill", "item": "Plugs 7/8\"", "qty": 5}, {"section": "Tubular Piping", "item": "Pipe Cutter", "qty": 1}, {"section": "Tubular Piping", "item": "Brass Sink traps", "qty": 2}, {"section": "Tubular Piping", "item": "P trap set 1 1/2\"", "qty": 2}, {"section": "Tubular Piping", "item": "Elbows 1 1/2\"", "qty": 5}, {"section": "Tubular Piping", "item": "Offsets 1 1/2\"", "qty": 2}, {"section": "Tubular Piping", "item": "Tail Ends 1 1/2\"", "qty": 2}, {"section": "Tubular Piping", "item": "Slip nuts & washers 1 1/2\"", "qty": 5}, {"section": "Tubular Piping", "item": "P Trap sets 1 1/4\"", "qty": 3}, {"section": "Tubular Piping", "item": "Elbows 1 1/4\"", "qty": 5}, {"section": "Tubular Piping", "item": "Offsets 1 1/4\"", "qty": 2}, {"section": "Tubular Piping", "item": "Tail ends 1 1/4\"", "qty": 2}, {"section": "Tubular Piping", "item": "Slip nuts & washers 1 1/4\"", "qty": 5}, {"section": "Caps", "item": "Caps 3\"", "qty": 5}, {"section": "Caps", "item": "Caps 3 1/2\"", "qty": 5}, {"section": "Caps", "item": "Caps 4\"", "qty": 10}, {"section": "Caps", "item": "Caps 4 1/2\"", "qty": 5}, {"section": "Caps", "item": "Jim Cap 3\"", "qty": 5}, {"section": "Caps", "item": "Jim Cap 4\"", "qty": 5}, {"section": "Caps", "item": "Jim Cap 5\"", "qty": 5}, {"section": "Caps", "item": "Test Plugs 3\"", "qty": 4}, {"section": "Caps", "item": "Test Plugs 4\"", "qty": 4}, {"section": "Couplings & Elbows", "item": "Couplings 4\"", "qty": 5}, {"section": "Couplings & Elbows", "item": "Couplings 3\"", "qty": 5}, {"section": "Couplings & Elbows", "item": "Couplings 2\"", "qty": 5}, {"section": "Couplings & Elbows", "item": "Couplings 2–1 1/2\"", "qty": 2}, {"section": "Miscellaneous", "item": "Grinder with blades", "qty": 1}, {"section": "Miscellaneous", "item": "Shop Vac", "qty": 1}, {"section": "Miscellaneous", "item": "Pump Vac", "qty": 1}, {"section": "Miscellaneous", "item": "Pump with hose", "qty": 1}, {"section": "Miscellaneous", "item": "Set of L keys", "qty": 1}, {"section": "Miscellaneous", "item": "Sledgehammer", "qty": 1}, {"section": "Miscellaneous", "item": "Chisel", "qty": 1}, {"section": "Miscellaneous", "item": "Suction cups", "qty": 2}, {"section": "Miscellaneous", "item": "Extra extension wire 25 ft", "qty": 1}, {"section": "Miscellaneous", "item": "Extra extension wire 50 ft", "qty": 1}, {"section": "Miscellaneous", "item": "Goggles", "qty": 2}, {"section": "Miscellaneous", "item": "Boxes latex gloves", "qty": 6}, {"section": "Miscellaneous", "item": "Bulb outlet adapter", "qty": 1}, {"section": "Miscellaneous", "item": "Regular / Rechargeable flashlight", "qty": 1}, {"section": "Miscellaneous", "item": "Rubber boots", "qty": 1}, {"section": "Miscellaneous", "item": "Disposable boots", "qty": 1}, {"section": "Miscellaneous", "item": "Raincoat", "qty": 1}, {"section": "Miscellaneous", "item": "Grabber", "qty": 1}, {"section": "Miscellaneous", "item": "Bolt Cutter", "qty": 1}, {"section": "Miscellaneous", "item": "Razor blade", "qty": 1}, {"section": "Miscellaneous", "item": "Head Flash light", "qty": 1}, {"section": "Miscellaneous", "item": "Crow Bar", "qty": 1}, {"section": "Miscellaneous", "item": "Long Bar", "qty": 1}, {"section": "Miscellaneous", "item": "Pump", "qty": 1}, {"section": "Miscellaneous", "item": "Degreasing Wipes", "qty": 1}, {"section": "Miscellaneous", "item": "Degrease Spray", "qty": 1}, {"section": "Miscellaneous", "item": "Shoe Covers", "qty": 10}, {"section": "Registration & Insurance", "item": "Registration in the van", "qty": 1}, {"section": "Registration & Insurance", "item": "Insurance card in the van", "qty": 1}];
     const PARAM_VAN = (new URLSearchParams(location.search).get("van") || "").trim();
+    const SHOW_VALUES = ["all", "none", "partial", "missing", "extra", "ok"];
+    function readShow() {
+      const raw = (new URLSearchParams(location.search).get("show") || "all").toLowerCase();
+      return SHOW_VALUES.indexOf(raw) === -1 ? "all" : raw;
+    }
     const UPDATE_NOTE = "Saving vans, part numbers, who paid, and giving stock to a van needs the updated script. In Apps Script, paste the new code, then Deploy, Manage deployments, the pencil, New version, Deploy.";
 
     const $ = (id) => document.getElementById(id);
@@ -199,7 +208,8 @@
       query: "",
       stockAt: "Power Brooklyn",
       selected: PARAM_VAN ? { type: "van", plate: PARAM_VAN } : null,
-      detailOpen: !!PARAM_VAN
+      detailOpen: !!PARAM_VAN,
+      show: readShow()
     };
     const catOpen = new Map();
 
@@ -656,22 +666,36 @@
         lines.push({ it, required, have, kind, missing: have == null ? null : Math.max(0, required - have), extraQty: have == null ? 0 : Math.max(0, have - required) });
       });
       const grid = el("div", "statgrid");
-      [["At listed amount", at, "ok"], ["Has none", none, "bad"], ["Partial", partial, "bad"], ["Extra", extra, ""]].forEach((pair) => {
-        const cell = el("div");
-        cell.appendChild(el("strong", pair[2], String(pair[1])));
-        cell.appendChild(document.createTextNode(pair[0]));
+      [["ok", "At listed amount", at, "ok"], ["none", "Has none", none, "bad"], ["partial", "Partial", partial, "bad"], ["extra", "Extra", extra, ""]].forEach((pair) => {
+        const cell = el("button", state.show === pair[0] ? "active" : "");
+        cell.type = "button";
+        cell.appendChild(el("strong", pair[3], String(pair[2])));
+        cell.appendChild(document.createTextNode(pair[1]));
+        cell.addEventListener("click", () => setShow(pair[0]));
         grid.appendChild(cell);
       });
       aside.appendChild(grid);
+      const chips = el("div", "chips");
+      [["all", "All", lines.length], ["none", "Has none", none], ["partial", "Partial", partial], ["missing", "Missing (none + partial)", none + partial], ["extra", "Extra", extra], ["ok", "OK", at]].forEach((chip) => {
+        const btn = el("button", state.show === chip[0] ? "active" : "", chip[1] + " " + chip[2]);
+        btn.type = "button";
+        btn.setAttribute("aria-pressed", state.show === chip[0] ? "true" : "false");
+        btn.addEventListener("click", () => setShow(chip[0]));
+        chips.appendChild(btn);
+      });
+      aside.appendChild(chips);
       const reg = lines.filter((row) => row.it.section === "Registration & Insurance" && row.kind !== "ok" && row.kind !== "extra");
       if (reg.length) aside.appendChild(el("div", "note", "Registration or insurance card is missing: " + reg.map((row) => row.it.item).join(", ") + "."));
       aside.appendChild(catTools());
       const rank = { none: 0, partial: 1, recount: 2, extra: 3, ok: 4, unknown: 5 };
-      groupBySection(lines.map((row) => Object.assign({ section: row.it.section, item: row.it.item }, row))).forEach((group) => {
+      const shown = lines.filter((row) => matchesShow(row.kind, state.show));
+      if (!shown.length) aside.appendChild(el("p", "muted", "Nothing in this filter."));
+      groupBySection(shown.map((row) => Object.assign({ section: row.it.section, item: row.it.item }, row))).forEach((group) => {
         const ordered = group.rows.slice().sort((a, b) => rank[a.kind] - rank[b.kind]);
         const shortRows = ordered.filter((row) => row.missing > 0);
         const pcs = shortRows.reduce((sum, row) => sum + row.missing, 0);
-        const det = sectionDetails("van-" + plate, group.section, shortRows.length, group.section + ": " + shortRows.length + " short, " + pcs + " pcs");
+        const openCount = state.show === "all" ? shortRows.length : ordered.length;
+        const det = sectionDetails("van-" + plate + "-" + state.show, group.section, openCount, group.section + ": " + shortRows.length + " short, " + pcs + " pcs");
         ordered.forEach((row) => det.appendChild(vanItem(plate, row)));
         aside.appendChild(det);
       });
@@ -718,12 +742,27 @@
       node.appendChild(document.createTextNode(value));
       return node;
     }
+    function matchesShow(kind, show) {
+      if (!show || show === "all") return true;
+      if (show === "missing") return kind === "none" || kind === "partial";
+      return kind === show;
+    }
+    function setShow(show) {
+      state.show = SHOW_VALUES.indexOf(show) === -1 ? "all" : show;
+      const url = new URL(location.href);
+      if (state.selected && state.selected.type === "van") url.searchParams.set("van", state.selected.plate);
+      if (state.show === "all") url.searchParams.delete("show");
+      else url.searchParams.set("show", state.show);
+      history.replaceState(null, "", url.toString());
+      render();
+    }
     function select(sel) {
       state.selected = sel;
       state.detailOpen = true;
       if (sel.type === "van") {
         const url = new URL(location.href);
         url.searchParams.set("van", sel.plate);
+        if (state.show && state.show !== "all") url.searchParams.set("show", state.show);
         history.replaceState(null, "", url.toString());
       }
       render();
