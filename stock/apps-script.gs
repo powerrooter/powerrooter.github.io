@@ -24,21 +24,54 @@ var ORDER_HEADERS = ["section", "item", "vendor", "url", "price", "pack", "prefe
 
 var SEED_ITEMS = [{"section": "300 Machine & Tools", "item": "Maintained 300 Machine with 75 Ft of cable", "qty": 1}, {"section": "300 Machine & Tools", "item": "Extra 25 Ft of cable", "qty": 2}, {"section": "300 Machine & Tools", "item": "Extra Pins", "qty": 5}, {"section": "300 Machine & Tools", "item": "Pairs of yellow gloves", "qty": 2}, {"section": "300 Machine & Tools", "item": "Whip", "qty": 1}, {"section": "300 Machine & Tools", "item": "U Blade 3\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Half Blade 3\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "U Blade 4\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Half Blade 4\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Saw blade", "qty": 1}, {"section": "300 Machine & Tools", "item": "Puncher & Stand", "qty": 1}, {"section": "300 Machine & Tools", "item": "Hammer", "qty": 1}, {"section": "300 Machine & Tools", "item": "Channel Lock 10\" or 12\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Channel Lock 6.5\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Pipe Wrench", "qty": 1}, {"section": "300 Machine & Tools", "item": "PB Blaster / WD-40", "qty": 1}, {"section": "300 Machine & Tools", "item": "Extension wire 25 ft", "qty": 1}, {"section": "300 Machine & Tools", "item": "Duct Tape", "qty": 2}, {"section": "300 Machine & Tools", "item": "Long gloves", "qty": 1}, {"section": "300 Machine & Tools", "item": "Philip screw driver", "qty": 1}, {"section": "300 Machine & Tools", "item": "Flat screw driver", "qty": 1}, {"section": "300 Machine & Tools", "item": "Nut Driver", "qty": 1}, {"section": "300 Machine & Tools", "item": "Screw driver 4 in 1", "qty": 1}, {"section": "300 Machine & Tools", "item": "Outlet adapters 2-3", "qty": 1}, {"section": "300 Machine & Tools", "item": "PVC pipe with elbow for trap out sewer 2\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Repair plates 4\"", "qty": 2}, {"section": "Hand Machine & Tools", "item": "Hand Machine with 25 ft cable", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Extra 25 ft cable", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Drop head 25 ft cable", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Construction gloves", "qty": 3}, {"section": "Hand Machine & Tools", "item": "Channel lock 10\" or 12\"", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Channel lock 6.5\"", "qty": 1}, {"section": "Hand Machine & Tools", "item": "PVC channel lock", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Vise grip", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Flat Screw driver", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Philip screw driver", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Nut driver", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Screw driver 4 in 1", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Teflon Tape", "qty": 5}, {"section": "Hand Machine & Tools", "item": "Electric Tape", "qty": 5}, {"section": "Hand Machine & Tools", "item": "Epoxy", "qty": 2}, {"section": "Hand Machine & Tools", "item": "Plumbers putty", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Outlet adapters 2-3", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Extension wire 25 ft", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Wheeling Case", "qty": 1}, {"section": "100 Machine", "item": "Maintained 100 machine with 75 ft cable", "qty": 1}, {"section": "100 Machine", "item": "Construction gloves", "qty": 3}, {"section": "100 Machine", "item": "Boiler plugs", "qty": 10}, {"section": "Toilet", "item": "Toilet auger", "qty": 1}, {"section": "Toilet", "item": "Wax Rings", "qty": 10}, {"section": "Toilet", "item": "Johnny bolts", "qty": 10}, {"section": "Toilet", "item": "Silicone gun", "qty": 1}, {"section": "Toilet", "item": "Silicone", "qty": 2}, {"section": "Toilet", "item": "Plaster", "qty": 1}, {"section": "Toilet", "item": "Foam spray", "qty": 1}, {"section": "Toilet", "item": "Fill valves (Fluidmaster)", "qty": 3}, {"section": "Toilet", "item": "Flappers", "qty": 5}, {"section": "Toilet", "item": "Ratchet wrench set", "qty": 1}, {"section": "Toilet", "item": "Lock wrench for johnny bolts", "qty": 1}, {"section": "Camera & Tools", "item": "Camera", "qty": 1}, {"section": "Camera & Tools", "item": "Locator", "qty": 1}, {"section": "Camera & Tools", "item": "Rags", "qty": 2}, {"section": "Air Tank", "item": "Maintained Air tank", "qty": 2}, {"section": "Air Tank", "item": "Hose", "qty": 1}, {"section": "Air Tank", "item": "Hose Adapter", "qty": 1}, {"section": "Air Tank", "item": "Flush bag 2\"", "qty": 1}, {"section": "Air Tank", "item": "Flush bag 1/2\"–3\"", "qty": 1}, {"section": "Air Tank", "item": "Flush bag 3\"–4\"", "qty": 1}, {"section": "Air Tank", "item": "Flush bag 3\"–6\"", "qty": 1}, {"section": "Water Testing", "item": "Water hose 150 Ft", "qty": 1}, {"section": "Water Testing", "item": "Speedy with adapter to sink / toilet", "qty": 1}, {"section": "Water Testing", "item": "Nozzle", "qty": 1}, {"section": "Drill", "item": "Electric Drill", "qty": 1}, {"section": "Drill", "item": "Carbide hole saw bit 7/8\"", "qty": 1}, {"section": "Drill", "item": "Center bits", "qty": 2}, {"section": "Drill", "item": "PVC saw hole bit 7/8\"", "qty": 2}, {"section": "Drill", "item": "Plugs 7/8\"", "qty": 5}, {"section": "Tubular Piping", "item": "Pipe Cutter", "qty": 1}, {"section": "Tubular Piping", "item": "Brass Sink traps", "qty": 2}, {"section": "Tubular Piping", "item": "P trap set 1 1/2\"", "qty": 2}, {"section": "Tubular Piping", "item": "Elbows 1 1/2\"", "qty": 5}, {"section": "Tubular Piping", "item": "Offsets 1 1/2\"", "qty": 2}, {"section": "Tubular Piping", "item": "Tail Ends 1 1/2\"", "qty": 2}, {"section": "Tubular Piping", "item": "Slip nuts & washers 1 1/2\"", "qty": 5}, {"section": "Tubular Piping", "item": "P Trap sets 1 1/4\"", "qty": 3}, {"section": "Tubular Piping", "item": "Elbows 1 1/4\"", "qty": 5}, {"section": "Tubular Piping", "item": "Offsets 1 1/4\"", "qty": 2}, {"section": "Tubular Piping", "item": "Tail ends 1 1/4\"", "qty": 2}, {"section": "Tubular Piping", "item": "Slip nuts & washers 1 1/4\"", "qty": 5}, {"section": "Caps", "item": "Caps 3\"", "qty": 5}, {"section": "Caps", "item": "Caps 3 1/2\"", "qty": 5}, {"section": "Caps", "item": "Caps 4\"", "qty": 10}, {"section": "Caps", "item": "Caps 4 1/2\"", "qty": 5}, {"section": "Caps", "item": "Jim Cap 3\"", "qty": 5}, {"section": "Caps", "item": "Jim Cap 4\"", "qty": 5}, {"section": "Caps", "item": "Jim Cap 5\"", "qty": 5}, {"section": "Caps", "item": "Test Plugs 3\"", "qty": 4}, {"section": "Caps", "item": "Test Plugs 4\"", "qty": 4}, {"section": "Couplings & Elbows", "item": "Couplings 4\"", "qty": 5}, {"section": "Couplings & Elbows", "item": "Couplings 3\"", "qty": 5}, {"section": "Couplings & Elbows", "item": "Couplings 2\"", "qty": 5}, {"section": "Couplings & Elbows", "item": "Couplings 2–1 1/2\"", "qty": 2}, {"section": "Miscellaneous", "item": "Grinder with blades", "qty": 1}, {"section": "Miscellaneous", "item": "Shop Vac", "qty": 1}, {"section": "Miscellaneous", "item": "Pump Vac", "qty": 1}, {"section": "Miscellaneous", "item": "Pump with hose", "qty": 1}, {"section": "Miscellaneous", "item": "Set of L keys", "qty": 1}, {"section": "Miscellaneous", "item": "Sledgehammer", "qty": 1}, {"section": "Miscellaneous", "item": "Chisel", "qty": 1}, {"section": "Miscellaneous", "item": "Suction cups", "qty": 2}, {"section": "Miscellaneous", "item": "Extra extension wire 25 ft", "qty": 1}, {"section": "Miscellaneous", "item": "Extra extension wire 50 ft", "qty": 1}, {"section": "Miscellaneous", "item": "Goggles", "qty": 2}, {"section": "Miscellaneous", "item": "Boxes latex gloves", "qty": 6}, {"section": "Miscellaneous", "item": "Bulb outlet adapter", "qty": 1}, {"section": "Miscellaneous", "item": "Regular / Rechargeable flashlight", "qty": 1}, {"section": "Miscellaneous", "item": "Rubber boots", "qty": 1}, {"section": "Miscellaneous", "item": "Disposable boots", "qty": 1}, {"section": "Miscellaneous", "item": "Raincoat", "qty": 1}, {"section": "Miscellaneous", "item": "Grabber", "qty": 1}, {"section": "Miscellaneous", "item": "Bolt Cutter", "qty": 1}, {"section": "Miscellaneous", "item": "Razor blade", "qty": 1}, {"section": "Miscellaneous", "item": "Head Flash light", "qty": 1}, {"section": "Miscellaneous", "item": "Crow Bar", "qty": 1}, {"section": "Miscellaneous", "item": "Long Bar", "qty": 1}, {"section": "Miscellaneous", "item": "Pump", "qty": 1}, {"section": "Miscellaneous", "item": "Degreasing Wipes", "qty": 1}, {"section": "Miscellaneous", "item": "Degrease Spray", "qty": 1}, {"section": "Miscellaneous", "item": "Shoe Covers", "qty": 10}, {"section": "Registration & Insurance", "item": "Registration in the van", "qty": 1}, {"section": "Registration & Insurance", "item": "Insurance card in the van", "qty": 1}];
 
-function doGet() {
+function doGet(e) {
   try {
     ensureSheets_();
-    return json_({
-      ok: true,
-      locations: LOCATIONS,
-      items: readItems_(),
-      log: readLog_(),
-      vanCounts: readVanCounts_(),
-      vehicles: readVehicles_(),
-      orderSources: readOrderSources_()
-    });
+    var pin = e && e.parameter ? e.parameter.pin : "";
+    if (text_(pin)) {
+      assertPin_(pin);
+      return json_(fullRead_());
+    }
+    return json_(publicChecklist_());
   } catch (err) {
     return json_({ ok: false, error: message_(err) });
   }
+}
+
+function fullRead_() {
+  return {
+    ok: true,
+    locations: LOCATIONS,
+    items: readItems_(),
+    log: readLog_(),
+    vanCounts: readVanCounts_(),
+    vehicles: readVehicles_(),
+    orderSources: readOrderSources_()
+  };
+}
+
+function onChecklist_(row) {
+  if (!row || row.retired) return false;
+  var flag = String(row.onChecklist == null ? "" : row.onChecklist).toLowerCase();
+  var qty = Number(row.qty);
+  if (flag === "no" || flag === "false" || flag === "0") return false;
+  if (!(isFinite(qty) && qty > 0)) return false;
+  return true;
+}
+
+function publicChecklist_() {
+  var items = [];
+  readItems_().forEach(function (row) {
+    if (!row || !text_(row.item) || !onChecklist_(row)) return;
+    items.push({
+      section: row.section || "",
+      item: row.item,
+      qty: Number(row.qty),
+      retired: false,
+      onChecklist: row.onChecklist || ""
+    });
+  });
+  return { ok: true, items: items };
 }
 
 function doPost(e) {
@@ -52,6 +85,10 @@ function doPost(e) {
     ensureSheets_();
     var data = readBody_(e);
     var action = String(data.action || "").trim().toUpperCase();
+    if (action === "READ") {
+      assertPin_(data.pin);
+      return json_(fullRead_());
+    }
     if (action === "CHECKLIST") return json_(saveChecklist_(data));
     if (action === "ADD_ITEM") return json_(addItem_(data));
     if (action === "EDIT_ITEM") return json_(editItem_(data));

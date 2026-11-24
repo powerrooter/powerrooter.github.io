@@ -1,6 +1,8 @@
 # Update the office stock script
 
-Do this so the dashboard can save order links, spare targets, and the van-checklist switch, and so vehicles, part numbers, who paid, and giving parts to a van are stored. The web address does not change. Until you do this, the dashboard still shows what the vans need from the checklists already in the sheet. Order links say "add with script update".
+Do this so inventory stays behind the office PIN. Until you deploy, the stock page still opens from the current script. After you deploy, a visit without the PIN only returns the van checklist names and quantities. The stock page asks for the PIN saved in the script (Script property `PIN`) and remembers it on this phone. A wrong PIN stays on that screen. The van checklist does not ask for the PIN.
+
+The web address does not change.
 
 1. Open the Office stock spreadsheet. Click Extensions, then Apps Script.
 2. Select all the code and delete it.
@@ -11,7 +13,7 @@ Do this so the dashboard can save order links, spare targets, and the van-checkl
 7. Click Deploy.
 8. Approve any permission Google asks for.
 
-Who has access stays Anyone. Execute as stays Me. Do not create a second web app. This only adds columns and an Order Sources tab. It does not delete items, the office log, or van checklists.
+Who has access stays Anyone. Execute as stays Me. Do not create a second web app. This does not delete items, the office log, or van checklists. The same deploy also saves order links, spare targets, the van-checklist switch, vehicles, part numbers, who paid, and giving parts to a van.
 
 The first time the new script runs, it adds van XSJJ22 / Chris Aguirre to Vehicles only if that plate is not already there.
 
