@@ -14,11 +14,13 @@ var SHEET_LOG = "Office Stock Log";
 var SHEET_VANS = "Van Counts";
 var SHEET_ITEMS = "Items";
 var SHEET_VEHICLES = "Vehicles";
+var SHEET_ORDERS = "Order Sources";
 
 var LOG_HEADERS = ["timestamp", "action", "item", "section", "qty", "person", "van plate", "note", "location", "PaidBy", "UnitCost", "Vendor", "Invoice"];
 var VAN_HEADERS = ["report date", "van plate", "mechanic", "item", "section", "listed qty", "actual qty", "status", "note", "received"];
-var ITEM_HEADERS = ["section", "item", "listed qty", "retired", "SKU", "Supplier", "UnitCost", "Unit", "Notes"];
+var ITEM_HEADERS = ["section", "item", "listed qty", "retired", "SKU", "Supplier", "UnitCost", "Unit", "Notes", "OnChecklist", "MinHQ", "MinBrooklyn"];
 var VEHICLE_HEADERS = ["plate", "make/model", "mechanic", "home location"];
+var ORDER_HEADERS = ["section", "item", "vendor", "url", "price", "pack", "preferred", "notes"];
 
 var SEED_ITEMS = [{"section": "300 Machine & Tools", "item": "Maintained 300 Machine with 75 Ft of cable", "qty": 1}, {"section": "300 Machine & Tools", "item": "Extra 25 Ft of cable", "qty": 2}, {"section": "300 Machine & Tools", "item": "Extra Pins", "qty": 5}, {"section": "300 Machine & Tools", "item": "Pairs of yellow gloves", "qty": 2}, {"section": "300 Machine & Tools", "item": "Whip", "qty": 1}, {"section": "300 Machine & Tools", "item": "U Blade 3\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Half Blade 3\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "U Blade 4\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Half Blade 4\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Saw blade", "qty": 1}, {"section": "300 Machine & Tools", "item": "Puncher & Stand", "qty": 1}, {"section": "300 Machine & Tools", "item": "Hammer", "qty": 1}, {"section": "300 Machine & Tools", "item": "Channel Lock 10\" or 12\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Channel Lock 6.5\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Pipe Wrench", "qty": 1}, {"section": "300 Machine & Tools", "item": "PB Blaster / WD-40", "qty": 1}, {"section": "300 Machine & Tools", "item": "Extension wire 25 ft", "qty": 1}, {"section": "300 Machine & Tools", "item": "Duct Tape", "qty": 2}, {"section": "300 Machine & Tools", "item": "Long gloves", "qty": 1}, {"section": "300 Machine & Tools", "item": "Philip screw driver", "qty": 1}, {"section": "300 Machine & Tools", "item": "Flat screw driver", "qty": 1}, {"section": "300 Machine & Tools", "item": "Nut Driver", "qty": 1}, {"section": "300 Machine & Tools", "item": "Screw driver 4 in 1", "qty": 1}, {"section": "300 Machine & Tools", "item": "Outlet adapters 2-3", "qty": 1}, {"section": "300 Machine & Tools", "item": "PVC pipe with elbow for trap out sewer 2\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Repair plates 4\"", "qty": 2}, {"section": "Hand Machine & Tools", "item": "Hand Machine with 25 ft cable", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Extra 25 ft cable", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Drop head 25 ft cable", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Construction gloves", "qty": 3}, {"section": "Hand Machine & Tools", "item": "Channel lock 10\" or 12\"", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Channel lock 6.5\"", "qty": 1}, {"section": "Hand Machine & Tools", "item": "PVC channel lock", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Vise grip", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Flat Screw driver", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Philip screw driver", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Nut driver", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Screw driver 4 in 1", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Teflon Tape", "qty": 5}, {"section": "Hand Machine & Tools", "item": "Electric Tape", "qty": 5}, {"section": "Hand Machine & Tools", "item": "Epoxy", "qty": 2}, {"section": "Hand Machine & Tools", "item": "Plumbers putty", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Outlet adapters 2-3", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Extension wire 25 ft", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Wheeling Case", "qty": 1}, {"section": "100 Machine", "item": "Maintained 100 machine with 75 ft cable", "qty": 1}, {"section": "100 Machine", "item": "Construction gloves", "qty": 3}, {"section": "100 Machine", "item": "Boiler plugs", "qty": 10}, {"section": "Toilet", "item": "Toilet auger", "qty": 1}, {"section": "Toilet", "item": "Wax Rings", "qty": 10}, {"section": "Toilet", "item": "Johnny bolts", "qty": 10}, {"section": "Toilet", "item": "Silicone gun", "qty": 1}, {"section": "Toilet", "item": "Silicone", "qty": 2}, {"section": "Toilet", "item": "Plaster", "qty": 1}, {"section": "Toilet", "item": "Foam spray", "qty": 1}, {"section": "Toilet", "item": "Fill valves (Fluidmaster)", "qty": 3}, {"section": "Toilet", "item": "Flappers", "qty": 5}, {"section": "Toilet", "item": "Ratchet wrench set", "qty": 1}, {"section": "Toilet", "item": "Lock wrench for johnny bolts", "qty": 1}, {"section": "Camera & Tools", "item": "Camera", "qty": 1}, {"section": "Camera & Tools", "item": "Locator", "qty": 1}, {"section": "Camera & Tools", "item": "Rags", "qty": 2}, {"section": "Air Tank", "item": "Maintained Air tank", "qty": 2}, {"section": "Air Tank", "item": "Hose", "qty": 1}, {"section": "Air Tank", "item": "Hose Adapter", "qty": 1}, {"section": "Air Tank", "item": "Flush bag 2\"", "qty": 1}, {"section": "Air Tank", "item": "Flush bag 1/2\"–3\"", "qty": 1}, {"section": "Air Tank", "item": "Flush bag 3\"–4\"", "qty": 1}, {"section": "Air Tank", "item": "Flush bag 3\"–6\"", "qty": 1}, {"section": "Water Testing", "item": "Water hose 150 Ft", "qty": 1}, {"section": "Water Testing", "item": "Speedy with adapter to sink / toilet", "qty": 1}, {"section": "Water Testing", "item": "Nozzle", "qty": 1}, {"section": "Drill", "item": "Electric Drill", "qty": 1}, {"section": "Drill", "item": "Carbide hole saw bit 7/8\"", "qty": 1}, {"section": "Drill", "item": "Center bits", "qty": 2}, {"section": "Drill", "item": "PVC saw hole bit 7/8\"", "qty": 2}, {"section": "Drill", "item": "Plugs 7/8\"", "qty": 5}, {"section": "Tubular Piping", "item": "Pipe Cutter", "qty": 1}, {"section": "Tubular Piping", "item": "Brass Sink traps", "qty": 2}, {"section": "Tubular Piping", "item": "P trap set 1 1/2\"", "qty": 2}, {"section": "Tubular Piping", "item": "Elbows 1 1/2\"", "qty": 5}, {"section": "Tubular Piping", "item": "Offsets 1 1/2\"", "qty": 2}, {"section": "Tubular Piping", "item": "Tail Ends 1 1/2\"", "qty": 2}, {"section": "Tubular Piping", "item": "Slip nuts & washers 1 1/2\"", "qty": 5}, {"section": "Tubular Piping", "item": "P Trap sets 1 1/4\"", "qty": 3}, {"section": "Tubular Piping", "item": "Elbows 1 1/4\"", "qty": 5}, {"section": "Tubular Piping", "item": "Offsets 1 1/4\"", "qty": 2}, {"section": "Tubular Piping", "item": "Tail ends 1 1/4\"", "qty": 2}, {"section": "Tubular Piping", "item": "Slip nuts & washers 1 1/4\"", "qty": 5}, {"section": "Caps", "item": "Caps 3\"", "qty": 5}, {"section": "Caps", "item": "Caps 3 1/2\"", "qty": 5}, {"section": "Caps", "item": "Caps 4\"", "qty": 10}, {"section": "Caps", "item": "Caps 4 1/2\"", "qty": 5}, {"section": "Caps", "item": "Jim Cap 3\"", "qty": 5}, {"section": "Caps", "item": "Jim Cap 4\"", "qty": 5}, {"section": "Caps", "item": "Jim Cap 5\"", "qty": 5}, {"section": "Caps", "item": "Test Plugs 3\"", "qty": 4}, {"section": "Caps", "item": "Test Plugs 4\"", "qty": 4}, {"section": "Couplings & Elbows", "item": "Couplings 4\"", "qty": 5}, {"section": "Couplings & Elbows", "item": "Couplings 3\"", "qty": 5}, {"section": "Couplings & Elbows", "item": "Couplings 2\"", "qty": 5}, {"section": "Couplings & Elbows", "item": "Couplings 2–1 1/2\"", "qty": 2}, {"section": "Miscellaneous", "item": "Grinder with blades", "qty": 1}, {"section": "Miscellaneous", "item": "Shop Vac", "qty": 1}, {"section": "Miscellaneous", "item": "Pump Vac", "qty": 1}, {"section": "Miscellaneous", "item": "Pump with hose", "qty": 1}, {"section": "Miscellaneous", "item": "Set of L keys", "qty": 1}, {"section": "Miscellaneous", "item": "Sledgehammer", "qty": 1}, {"section": "Miscellaneous", "item": "Chisel", "qty": 1}, {"section": "Miscellaneous", "item": "Suction cups", "qty": 2}, {"section": "Miscellaneous", "item": "Extra extension wire 25 ft", "qty": 1}, {"section": "Miscellaneous", "item": "Extra extension wire 50 ft", "qty": 1}, {"section": "Miscellaneous", "item": "Goggles", "qty": 2}, {"section": "Miscellaneous", "item": "Boxes latex gloves", "qty": 6}, {"section": "Miscellaneous", "item": "Bulb outlet adapter", "qty": 1}, {"section": "Miscellaneous", "item": "Regular / Rechargeable flashlight", "qty": 1}, {"section": "Miscellaneous", "item": "Rubber boots", "qty": 1}, {"section": "Miscellaneous", "item": "Disposable boots", "qty": 1}, {"section": "Miscellaneous", "item": "Raincoat", "qty": 1}, {"section": "Miscellaneous", "item": "Grabber", "qty": 1}, {"section": "Miscellaneous", "item": "Bolt Cutter", "qty": 1}, {"section": "Miscellaneous", "item": "Razor blade", "qty": 1}, {"section": "Miscellaneous", "item": "Head Flash light", "qty": 1}, {"section": "Miscellaneous", "item": "Crow Bar", "qty": 1}, {"section": "Miscellaneous", "item": "Long Bar", "qty": 1}, {"section": "Miscellaneous", "item": "Pump", "qty": 1}, {"section": "Miscellaneous", "item": "Degreasing Wipes", "qty": 1}, {"section": "Miscellaneous", "item": "Degrease Spray", "qty": 1}, {"section": "Miscellaneous", "item": "Shoe Covers", "qty": 10}, {"section": "Registration & Insurance", "item": "Registration in the van", "qty": 1}, {"section": "Registration & Insurance", "item": "Insurance card in the van", "qty": 1}];
 
@@ -31,7 +33,8 @@ function doGet() {
       items: readItems_(),
       log: readLog_(),
       vanCounts: readVanCounts_(),
-      vehicles: readVehicles_()
+      vehicles: readVehicles_(),
+      orderSources: readOrderSources_()
     });
   } catch (err) {
     return json_({ ok: false, error: message_(err) });
@@ -56,6 +59,7 @@ function doPost(e) {
     if (action === "ADD_VEHICLE") return json_(addVehicle_(data));
     if (action === "EDIT_VEHICLE") return json_(editVehicle_(data));
     if (action === "ISSUE" || action === "GIVE") return json_(issueToVan_(data));
+    if (action === "SAVE_ORDER_SOURCES") return json_(saveOrderSources_(data));
     return json_(appendMovement_(data));
   } catch (err) {
     return json_({ ok: false, error: message_(err) });
@@ -90,6 +94,7 @@ function ensureSheets_() {
   ensureHeaders_(getOrCreateSheet_(ss, SHEET_LOG), LOG_HEADERS);
   ensureHeaders_(getOrCreateSheet_(ss, SHEET_VANS), VAN_HEADERS);
   ensureVehicles_();
+  ensureOrderSources_();
   if (created) ss.setSpreadsheetTimeZone("America/New_York");
   return ss;
 }
@@ -230,7 +235,10 @@ function readItems_() {
       supplier: text_(cell_(row, parsed.map, "supplier")),
       unitCost: numberOrNull_(cell_(row, parsed.map, "unitcost")),
       unit: text_(cell_(row, parsed.map, "unit")),
-      notes: text_(cell_(row, parsed.map, "notes"))
+      notes: text_(cell_(row, parsed.map, "notes")),
+      onChecklist: text_(cell_(row, parsed.map, "onchecklist")),
+      minHQ: numberOrNull_(cell_(row, parsed.map, "minhq")) || 0,
+      minBrooklyn: numberOrNull_(cell_(row, parsed.map, "minbrooklyn")) || 0
     });
   });
   return out;
@@ -881,7 +889,10 @@ function addItem_(data) {
     "supplier": text_(data.supplier),
     "unitcost": data.unitCost === "" || data.unitCost == null ? "" : data.unitCost,
     "unit": text_(data.unit),
-    "notes": text_(data.notes || data.note)
+    "notes": text_(data.notes || data.note),
+    "onchecklist": text_(data.onChecklist),
+    "minhq": data.minHQ === "" || data.minHQ == null ? 0 : data.minHQ,
+    "minbrooklyn": data.minBrooklyn === "" || data.minBrooklyn == null ? 0 : data.minBrooklyn
   });
   logStartingStock_(section, name, "Power Brooklyn", brooklyn.value, note);
   logStartingStock_(section, name, "Power HQ", hq.value, note);
@@ -1024,6 +1035,9 @@ function setItemExtra_(found, data) {
   if (data.unitCost != null) setItemCell_(found, "unitcost", data.unitCost === "" ? "" : data.unitCost);
   if (data.unit != null) setItemCell_(found, "unit", text_(data.unit));
   if (data.notes != null) setItemCell_(found, "notes", text_(data.notes));
+  if (data.onChecklist != null) setItemCell_(found, "onchecklist", text_(data.onChecklist));
+  if (data.minHQ != null) setItemCell_(found, "minhq", data.minHQ === "" ? 0 : data.minHQ);
+  if (data.minBrooklyn != null) setItemCell_(found, "minbrooklyn", data.minBrooklyn === "" ? 0 : data.minBrooklyn);
 }
 
 function appendLogRow_(fields) {
@@ -1200,4 +1214,93 @@ function fifoLots_(log, section, item, location) {
     }
   });
   return lots.filter(function (lot) { return lot.qty > 0; });
+}
+
+function ensureOrderSources_() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = getOrCreateSheet_(ss, SHEET_ORDERS);
+  ensureHeaders_(sheet, ORDER_HEADERS);
+}
+
+function readOrderSources_() {
+  var parsed = readSheet_(SHEET_ORDERS);
+  var out = [];
+  parsed.rows.forEach(function (row) {
+    var item = text_(cell_(row, parsed.map, "item"));
+    var section = text_(cell_(row, parsed.map, "section"));
+    if (!item) return;
+    var preferred = text_(cell_(row, parsed.map, "preferred")).toLowerCase();
+    out.push({
+      section: section,
+      item: item,
+      vendor: text_(cell_(row, parsed.map, "vendor")),
+      url: text_(cell_(row, parsed.map, "url")),
+      price: numberOrNull_(cell_(row, parsed.map, "price")),
+      pack: text_(cell_(row, parsed.map, "pack")),
+      preferred: preferred === "yes" || preferred === "true" || preferred === "1",
+      notes: text_(cell_(row, parsed.map, "notes"))
+    });
+  });
+  return out;
+}
+
+function saveOrderSources_(data) {
+  assertPin_(data.pin);
+  var section = text_(data.section);
+  var item = text_(data.item);
+  if (!section || !item) return { ok: false, error: "Choose the part first." };
+  if (!findItemRow_(section, item)) return { ok: false, error: "That item is not on the list." };
+  var sources = data.sources || [];
+  if (!sources.length && data.vendor) sources = [data];
+  var clean = [];
+  for (var i = 0; i < sources.length; i++) {
+    var src = sources[i] || {};
+    var vendor = text_(src.vendor);
+    if (!vendor && !text_(src.url)) continue;
+    var price = src.price === "" || src.price == null ? "" : src.price;
+    if (price !== "" && !isFinite(Number(price))) return { ok: false, error: "Price has to be a number." };
+    clean.push({
+      vendor: vendor || "Store",
+      url: text_(src.url),
+      price: price,
+      pack: text_(src.pack),
+      preferred: src.preferred === true || String(src.preferred || "").toLowerCase() === "yes",
+      notes: text_(src.notes)
+    });
+  }
+  var preferredSeen = false;
+  clean.forEach(function (src) {
+    if (src.preferred && !preferredSeen) preferredSeen = true;
+    else src.preferred = false;
+  });
+  if (clean.length && !preferredSeen) clean[0].preferred = true;
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_ORDERS);
+  ensureHeaders_(sheet, ORDER_HEADERS);
+  deleteOrderRows_(sheet, section, item);
+  clean.forEach(function (src) {
+    appendByHeaders_(sheet, {
+      "section": section,
+      "item": item,
+      "vendor": src.vendor,
+      "url": src.url,
+      "price": src.price,
+      "pack": src.pack,
+      "preferred": src.preferred ? "yes" : "",
+      "notes": src.notes
+    });
+  });
+  return { ok: true, count: clean.length };
+}
+
+function deleteOrderRows_(sheet, section, item) {
+  if (!sheet || sheet.getLastRow() < 2) return;
+  var values = sheet.getDataRange().getValues();
+  var map = {};
+  values[0].forEach(function (header, index) { map[String(header || "").trim().toLowerCase()] = index; });
+  var rows = [];
+  for (var i = 1; i < values.length; i++) {
+    if (text_(cell_(values[i], map, "section")) === section && text_(cell_(values[i], map, "item")) === item) rows.push(i + 1);
+  }
+  rows.sort(function (a, b) { return b - a; });
+  rows.forEach(function (rowNumber) { sheet.deleteRow(rowNumber); });
 }

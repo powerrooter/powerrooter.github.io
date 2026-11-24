@@ -163,6 +163,7 @@
         <a href="/">Van checklist</a>
       </div>
       <div class="tabs" role="tablist">
+        <button type="button" data-tab="dashboard">Dashboard</button>
         <button type="button" data-tab="parts">Parts</button>
         <button type="button" data-tab="vehicles">Vehicles</button>
         <button type="button" data-tab="stock">Stock</button>
@@ -194,16 +195,23 @@
       const raw = (new URLSearchParams(location.search).get("show") || "all").toLowerCase();
       return SHOW_VALUES.indexOf(raw) === -1 ? "all" : raw;
     }
-    const UPDATE_NOTE = "Saving vans, part numbers, who paid, and giving stock to a van needs the updated script. In Apps Script, paste the new code, then Deploy, Manage deployments, the pencil, New version, Deploy.";
+    const UPDATE_NOTE = "Saving order links, office spare targets, the van-checklist switch, vehicles, part numbers, who paid, and giving stock to a van needs the updated script. In Apps Script, paste the new code, then Deploy, Manage deployments, the pencil, New version, Deploy.";
 
     const $ = (id) => document.getElementById(id);
     const state = {
-      tab: PARAM_VAN ? "vehicles" : "parts",
+      tab: PARAM_VAN ? "vehicles" : "dashboard",
       items: LIBRARY.map((it) => Object.assign({ retired: false, sku: "", supplier: "", unitCost: null, unit: "", notes: "" }, it)),
       log: [],
       vanCounts: [],
       vehicles: [],
+      orderSources: [],
       scriptReady: false,
+      ordersReady: false,
+      dashFilter: "all",
+      dashCategory: "",
+      dashVendor: "",
+      dashVan: "",
+      dashGroup: false,
       loaded: false,
       query: "",
       stockAt: "Power Brooklyn",
@@ -254,7 +262,15 @@
       const z = (n) => String(n).padStart(2, "0");
       return d.getFullYear() + "-" + z(d.getMonth() + 1) + "-" + z(d.getDate());
     }
+    function onChecklist(it) {
+      if (!it || it.retired) return false;
+      const flag = String(it.onChecklist == null ? "" : it.onChecklist).toLowerCase();
+      const qty = Number(it.qty);
+      if (flag === "no" || flag === "false" || flag === "0") return false;
+      return isFinite(qty) && qty > 0;
+    }
     function activeItems() { return state.items.filter((it) => !it.retired); }
+    function checklistItems() { return activeItems().filter(onChecklist); }
     function sectionRank(name) {
       const i = SECTIONS.indexOf(name);
       return i === -1 ? 100 : i;
@@ -386,8 +402,7 @@
     function needsCount(plate) {
       let n = 0;
       if (!latestReport(plate)) return 0;
-      activeItems().forEach((it) => {
-        if (!(Number(it.qty) > 0)) return;
+      checklistItems().forEach((it) => {
         const have = onVanQty(plate, it.section, it.item).have;
         if (have != null && have < Number(it.qty)) n += 1;
       });
@@ -434,8 +449,8 @@
     }
     function render() {
       document.querySelectorAll(".tabs button").forEach((btn) => btn.classList.toggle("active", btn.dataset.tab === state.tab));
-      const note = $("scriptNote");
-      if (state.loaded && !state.scriptReady) {
+        const note = $("scriptNote");
+      if (state.loaded && !state.ordersReady) {
         note.hidden = false;
         note.innerHTML = "";
         note.appendChild(el("strong", null, "Update the script"));
@@ -443,10 +458,186 @@
       } else note.hidden = true;
       const main = $("main");
       main.textContent = "";
-      if (state.tab === "parts") renderParts(main);
+      if (state.tab === "dashboard") renderDashboard(main);
+      else if (state.tab === "parts") renderParts(main);
       else if (state.tab === "vehicles") renderVehicles(main);
       else renderStock(main);
       renderDetail();
+    }
+    function sourcesFor(it) {
+      return (state.orderSources || []).filter((src) => src.section === it.section && src.item === it.item);
+    }
+    function preferredSource(it) {
+      const list = sourcesFor(it);
+      return list.find((src) => src.preferred) || list[0] || null;
+    }
+    function packCount(pack) {
+      const match = String(pack || "").match(/(\d+)/);
+      const n = match ? Number(match[1]) : 1;
+      return n > 0 ? n : 1;
+    }
+    function lineCost(orderQty, source) {
+      if (!source || source.price == null || !isFinite(Number(source.price)) || !(orderQty > 0)) return null;
+      return Math.ceil(orderQty / packCount(source.pack)) * Number(source.price);
+    }
+    function demandRows() {
+      const vans = vehicleList().filter((van) => latestReport(van.plate));
+      return checklistItems().map((it) => {
+        const byVan = [];
+        let vanPieces = 0;
+        vans.forEach((van) => {
+          const have = onVanQty(van.plate, it.section, it.item).have;
+          if (have == null) return;
+          const missing = Math.max(0, Number(it.qty) - have);
+          if (missing > 0) {
+            byVan.push({ plate: van.plate, qty: missing });
+            vanPieces += missing;
+          }
+        });
+        const hq = shelfQty(it.section, it.item, "Power HQ");
+        const bk = shelfQty(it.section, it.item, "Power Brooklyn");
+        const shelf = Math.max(0, hq) + Math.max(0, bk);
+        const spare = Math.max(0, (Number(it.minHQ) || 0) - Math.max(0, hq)) + Math.max(0, (Number(it.minBrooklyn) || 0) - Math.max(0, bk));
+        const give = Math.min(vanPieces, shelf);
+        const orderQty = Math.max(0, vanPieces - shelf) + spare;
+        const sources = sourcesFor(it);
+        const preferred = sources.find((src) => src.preferred) || sources[0] || null;
+        return { it, byVan, vanPieces, hq, bk, spare, give, orderQty, sources, preferred, cost: lineCost(orderQty, preferred) };
+      }).filter((row) => row.vanPieces > 0 || row.spare > 0);
+    }
+    function renderDashboard(main) {
+      main.appendChild(el("h2", null, "What to order"));
+      const rows = demandRows().sort((a, b) => (b.vanPieces + b.spare) - (a.vanPieces + a.spare));
+      const pieces = rows.reduce((sum, row) => sum + row.vanPieces, 0);
+      const cover = rows.filter((row) => row.vanPieces > 0 && row.give >= row.vanPieces).length;
+      const toOrder = rows.filter((row) => row.orderQty > 0);
+      const costRows = toOrder.filter((row) => row.cost != null);
+      const cost = costRows.reduce((sum, row) => sum + row.cost, 0);
+      const noLink = rows.filter((row) => row.orderQty > 0 && !(row.preferred && row.preferred.url)).length;
+      const cards = el("div", "statgrid");
+      [
+        ["Items vans need", rows.filter((row) => row.vanPieces > 0).length],
+        ["Pieces vans need", pieces],
+        ["Cover from stock", cover],
+        ["To order", toOrder.length],
+        ["Order cost", costRows.length ? money(cost) : "Not recorded"],
+        ["No order link", noLink]
+      ].forEach((pair) => {
+        const cell = el("div");
+        cell.appendChild(el("strong", null, String(pair[1])));
+        cell.appendChild(document.createTextNode(pair[0]));
+        cards.appendChild(cell);
+      });
+      main.appendChild(cards);
+      if (!state.ordersReady) main.appendChild(el("p", "note", "Order links and prices: add with script update. The needs below still come from the van checklists."));
+      const chips = el("div", "chips");
+      [["all", "All"], ["order", "To order"], ["give", "Can give from stock"], ["nolink", "No order link"]].forEach((chip) => {
+        const btn = el("button", state.dashFilter === chip[0] ? "active" : "", chip[1]);
+        btn.type = "button";
+        btn.addEventListener("click", () => { state.dashFilter = chip[0]; render(); });
+        chips.appendChild(btn);
+      });
+      main.appendChild(chips);
+      const filters = el("div", "toolbar");
+      filters.appendChild(dashSelect("Category", "dashCategory", [""].concat(SECTIONS), state.dashCategory, (value) => { state.dashCategory = value; render(); }));
+      const vendors = [];
+      rows.forEach((row) => { const name = row.preferred ? row.preferred.vendor : ""; if (name && vendors.indexOf(name) === -1) vendors.push(name); });
+      filters.appendChild(dashSelect("Vendor", "dashVendor", [""].concat(vendors), state.dashVendor, (value) => { state.dashVendor = value; render(); }));
+      filters.appendChild(dashSelect("Van", "dashVan", [""].concat(vehicleList().map((van) => van.plate)), state.dashVan, (value) => { state.dashVan = value; render(); }));
+      const group = el("button", state.dashGroup ? "active" : "", state.dashGroup ? "Grouped by vendor" : "Group by vendor");
+      group.type = "button";
+      group.addEventListener("click", () => { state.dashGroup = !state.dashGroup; render(); });
+      filters.appendChild(group);
+      const copy = el("button", "primary", "Copy order list");
+      copy.type = "button";
+      copy.addEventListener("click", () => copyOrderList(filteredDemand(rows)));
+      filters.appendChild(copy);
+      main.appendChild(filters);
+      const shown = filteredDemand(rows);
+      if (!shown.length) { main.appendChild(el("p", "muted", "Nothing in this filter.")); return; }
+      if (state.dashGroup) renderByVendor(main, shown.filter((row) => row.orderQty > 0));
+      else shown.forEach((row) => main.appendChild(demandCard(row)));
+    }
+    function filteredDemand(rows) {
+      return rows.filter((row) => {
+        if (state.dashFilter === "order" && !(row.orderQty > 0)) return false;
+        if (state.dashFilter === "give" && !(row.give > 0 && row.vanPieces > 0)) return false;
+        if (state.dashFilter === "nolink" && (!(row.orderQty > 0) || (row.preferred && row.preferred.url))) return false;
+        if (state.dashCategory && row.it.section !== state.dashCategory) return false;
+        if (state.dashVendor && ((row.preferred && row.preferred.vendor) || "") !== state.dashVendor) return false;
+        if (state.dashVan && !row.byVan.some((van) => normPlate(van.plate) === normPlate(state.dashVan))) return false;
+        return true;
+      });
+    }
+    function dashSelect(label, id, values, current, onChange) {
+      const wrap = el("label", null, label);
+      const select = document.createElement("select");
+      select.id = id;
+      values.forEach((value) => {
+        const opt = el("option", null, value || "All");
+        opt.value = value;
+        select.appendChild(opt);
+      });
+      select.value = current;
+      select.addEventListener("change", () => onChange(select.value));
+      wrap.appendChild(select);
+      return wrap;
+    }
+    function demandCard(row) {
+      const card = el("div", "item" + (row.orderQty > 0 ? " low" : ""));
+      card.appendChild(el("h3", null, row.it.item));
+      card.appendChild(el("div", "muted", row.it.section));
+      card.appendChild(el("div", null, "Vans need " + row.vanPieces + (row.byVan.length ? " (" + row.byVan.map((van) => van.plate + " x" + van.qty).join(", ") + ")" : "")));
+      card.appendChild(el("div", null, "Office spare short " + row.spare + " · HQ " + row.hq + " · Brooklyn " + row.bk));
+      card.appendChild(el("div", null, "Give from stock " + row.give + " · To order " + row.orderQty));
+      if (row.preferred) {
+        card.appendChild(el("div", null, row.preferred.vendor + (row.preferred.price == null ? "" : " · " + money(row.preferred.price)) + (row.cost == null ? "" : " · line " + money(row.cost))));
+        if (row.preferred.url) {
+          const link = el("a", null, "Order");
+          link.href = row.preferred.url;
+          link.target = "_blank";
+          link.rel = "noopener";
+          link.className = "primary";
+          card.appendChild(link);
+        }
+      } else card.appendChild(el("div", "muted", state.ordersReady ? "No order link yet" : "Order link: add with script update"));
+      return card;
+    }
+    function renderByVendor(main, rows) {
+      const groups = new Map();
+      rows.forEach((row) => {
+        const name = row.preferred && row.preferred.vendor ? row.preferred.vendor : "No vendor yet";
+        if (!groups.has(name)) groups.set(name, []);
+        groups.get(name).push(row);
+      });
+      groups.forEach((list, name) => {
+        const sub = list.reduce((sum, row) => sum + (row.cost || 0), 0);
+        const known = list.some((row) => row.cost != null);
+        main.appendChild(el("h3", null, name + (known ? " · " + money(sub) : "")));
+        list.forEach((row) => main.appendChild(demandCard(row)));
+      });
+    }
+    function orderListText(rows) {
+      const groups = new Map();
+      rows.filter((row) => row.orderQty > 0).forEach((row) => {
+        const name = row.preferred && row.preferred.vendor ? row.preferred.vendor : "No vendor yet";
+        if (!groups.has(name)) groups.set(name, []);
+        groups.get(name).push(row);
+      });
+      const lines = [];
+      groups.forEach((list, name) => {
+        lines.push(name);
+        list.forEach((row) => lines.push("- " + row.it.item + " x" + row.orderQty + " " + ((row.preferred && row.preferred.url) || "(no link)")));
+        const sub = list.reduce((sum, row) => sum + (row.cost || 0), 0);
+        if (list.some((row) => row.cost != null)) lines.push("Subtotal " + money(sub));
+        lines.push("");
+      });
+      return lines.join("\n").trim() || "Nothing to order.";
+    }
+    async function copyOrderList(rows) {
+      const text = orderListText(rows);
+      try { await navigator.clipboard.writeText(text); }
+      catch (err) { window.prompt("Copy this order list:", text); }
     }
     function renderParts(main) {
       main.appendChild(el("h2", null, "Parts library"));
@@ -477,6 +668,10 @@
           else bits.push("Office only");
           if (it.sku) bits.push(it.sku);
           card.appendChild(el("div", "muted", bits.join(" · ")));
+          const toggle = el("button", onChecklist(it) ? "primary tiny" : "tiny", onChecklist(it) ? "On van checklist" : "Not on checklist");
+          toggle.type = "button";
+          toggle.addEventListener("click", () => toggleChecklist(it));
+          card.appendChild(toggle);
           const open = el("button", "tiny", "Details");
           open.type = "button";
           open.addEventListener("click", () => select({ type: "part", section: it.section, item: it.item }));
@@ -615,7 +810,28 @@
       facts.appendChild(line("Supplier", it.supplier || "Not recorded"));
       facts.appendChild(line("Unit cost", it.unitCost == null ? "Not recorded" : money(it.unitCost) + (it.unit ? " / " + it.unit : "")));
       if (it.notes) facts.appendChild(line("Notes", it.notes));
+      facts.appendChild(line("On van checklist", onChecklist(it) ? "Yes · " + it.qty + " each van" : "No"));
+      facts.appendChild(line("Spare target", "HQ " + (Number(it.minHQ) || 0) + " · Brooklyn " + (Number(it.minBrooklyn) || 0)));
       aside.appendChild(facts);
+      aside.appendChild(el("h3", null, "Where to order"));
+      const sources = sourcesFor(it);
+      if (!state.ordersReady) aside.appendChild(el("p", "muted", "Order links: add with script update."));
+      else if (!sources.length) aside.appendChild(el("p", "muted", "No order link yet."));
+      sources.forEach((src) => {
+        const card = el("div", "item");
+        card.appendChild(el("h3", null, (src.preferred ? "Preferred · " : "") + (src.vendor || "Store")));
+        card.appendChild(el("div", null, (src.price == null ? "Price not recorded" : money(src.price)) + (src.pack ? " · " + src.pack : "")));
+        if (src.url) {
+          const link = document.createElement("a");
+          link.href = src.url;
+          link.target = "_blank";
+          link.rel = "noopener";
+          link.textContent = "Order";
+          link.className = "primary";
+          card.appendChild(link);
+        }
+        aside.appendChild(card);
+      });
       aside.appendChild(el("h3", null, "On the shelf"));
       LOCATIONS.forEach((loc) => {
         const qty = shelfQty(it.section, it.item, loc);
@@ -652,8 +868,7 @@
       }
       let at = 0, none = 0, partial = 0, extra = 0;
       const lines = [];
-      activeItems().forEach((it) => {
-        if (!(Number(it.qty) > 0)) return;
+      checklistItems().forEach((it) => {
         const pos = onVanQty(plate, it.section, it.item);
         const required = Number(it.qty);
         const have = pos.have;
@@ -954,8 +1169,82 @@
         field(form, "prodSupplier", "Supplier", "text");
         field(form, "prodCost", "Unit cost", "number");
         field(form, "prodUnit", "Unit", "text");
-        field(form, "prodQty", "Required qty per van", "number");
+        field(form, "prodQty", "Qty each van needs", "number");
+        form.appendChild(el("p", null, "On van checklist"));
+        const yes = document.createElement("input");
+        yes.type = "radio"; yes.name = "oncheck"; yes.value = "yes"; yes.id = "onYes";
+        const no = document.createElement("input");
+        no.type = "radio"; no.name = "oncheck"; no.value = "no"; no.id = "onNo";
+        const yesLab = el("label", null, " Yes, technicians count this");
+        yesLab.prepend(yes);
+        const noLab = el("label", null, " No, office only");
+        noLab.prepend(no);
+        form.appendChild(yesLab);
+        form.appendChild(noLab);
+        if (existing) (onChecklist(existing) ? yes : no).checked = true;
+        field(form, "minHQ", "Spare target at Power HQ", "number");
+        field(form, "minBrooklyn", "Spare target at Power Brooklyn", "number");
+        $("minHQ").value = existing ? String(Number(existing.minHQ) || 0) : "0";
+        $("minBrooklyn").value = existing ? String(Number(existing.minBrooklyn) || 0) : "0";
         field(form, "prodNotes", "Notes", "text");
+        form.appendChild(el("h3", null, "Order sources"));
+        if (!state.ordersReady) form.appendChild(el("p", "muted", "Order links: add with script update."));
+        const sources = (existing ? sourcesFor(existing) : []).map((src) => Object.assign({}, src));
+        const sourceBox = el("div");
+        sourceBox.id = "sourceBox";
+        form.appendChild(sourceBox);
+        function drawSources() {
+          sourceBox.textContent = "";
+          sources.forEach((src, index) => {
+            const block = el("div", "item");
+            block.appendChild(el("label", null, "Store"));
+            const vendor = document.createElement("input");
+            vendor.value = src.vendor || "";
+            vendor.addEventListener("input", () => { src.vendor = vendor.value; });
+            block.appendChild(vendor);
+            block.appendChild(el("label", null, "Order link"));
+            const url = document.createElement("input");
+            url.value = src.url || "";
+            url.placeholder = "https://";
+            url.addEventListener("input", () => { src.url = url.value; });
+            block.appendChild(url);
+            block.appendChild(el("label", null, "Price"));
+            const price = document.createElement("input");
+            price.type = "number"; price.min = "0"; price.step = "0.01";
+            price.value = src.price == null ? "" : String(src.price);
+            price.addEventListener("input", () => { src.price = price.value; });
+            block.appendChild(price);
+            block.appendChild(el("label", null, "Pack"));
+            const pack = document.createElement("input");
+            pack.value = src.pack || "";
+            pack.placeholder = "pack of 10";
+            pack.addEventListener("input", () => { src.pack = pack.value; });
+            block.appendChild(pack);
+            const pref = document.createElement("input");
+            pref.type = "checkbox";
+            pref.checked = !!src.preferred;
+            pref.addEventListener("change", () => {
+              sources.forEach((other) => { other.preferred = false; });
+              src.preferred = pref.checked;
+              drawSources();
+            });
+            const prefLab = el("label", null, " Preferred");
+            prefLab.prepend(pref);
+            block.appendChild(prefLab);
+            const remove = el("button", "tiny", "Remove");
+            remove.type = "button";
+            remove.addEventListener("click", () => { sources.splice(index, 1); drawSources(); });
+            block.appendChild(remove);
+            sourceBox.appendChild(block);
+          });
+        }
+        drawSources();
+        const addSrc = el("button", "tiny", "Add order source");
+        addSrc.type = "button";
+        addSrc.addEventListener("click", () => { sources.push({ vendor: "", url: "", price: "", pack: "", preferred: sources.length === 0, notes: "" }); drawSources(); });
+        form.appendChild(addSrc);
+        form.dataset.sources = "1";
+        form._sources = sources;
         const active = document.createElement("input");
         active.id = "prodActive";
         active.type = "checkbox";
@@ -981,7 +1270,11 @@
         const qty = $("prodQty").value.trim();
         if (!name) return modalError("Enter the product name.");
         if (!section) return modalError("Choose a category.");
-        if (!/^\d+$/.test(qty)) return modalError("Required qty has to be a whole number. Use 0 for office-only parts.");
+        if (!/^\d+$/.test(qty)) return modalError("Qty each van needs has to be a whole number. Use 0 for office-only parts.");
+        const choice = document.querySelector("input[name='oncheck']:checked");
+        if (!existing && !choice) return modalError("Say whether this goes on the van checklist.");
+        const onList = choice ? choice.value === "yes" : onChecklist(existing);
+        if (onList && Number(qty) <= 0) return modalError("A checklist part needs a quantity above 0.");
         button.disabled = true;
         try {
           const payload = {
@@ -994,10 +1287,18 @@
             unitCost: $("prodCost").value.trim(),
             unit: $("prodUnit").value.trim(),
             notes: $("prodNotes").value.trim(),
+            onChecklist: onList ? "yes" : "no",
+            minHQ: $("minHQ").value.trim() || "0",
+            minBrooklyn: $("minBrooklyn").value.trim() || "0",
             pin
           };
           if (existing) { payload.fromItem = existing.item; payload.fromSection = existing.section; }
           await post(payload);
+          const sources = (button.form && button.form._sources) || [];
+          if (sources.length || (existing && sourcesFor(existing).length)) {
+            if (state.ordersReady) await post({ action: "SAVE_ORDER_SOURCES", section, item: name, sources, pin });
+            else if (sources.some((src) => src.vendor || src.url)) showError("Order links: add with script update. The part itself was saved.");
+          }
           const shouldHide = !$("prodActive").checked;
           if (existing && !!existing.retired !== shouldHide) {
             await post({ action: "RETIRE_ITEM", item: name, section, retired: shouldHide, pin });
@@ -1050,6 +1351,28 @@
           button.disabled = false;
         }
       });
+    }
+    async function toggleChecklist(it) {
+      if (!state.ordersReady) return showError("The van-checklist switch needs the script update. " + UPDATE_NOTE);
+      if (!stored(PIN_KEY)) return openProductForm(it);
+      const on = !onChecklist(it);
+      let qty = Number(it.qty) || 0;
+      if (on && qty <= 0) qty = 1;
+      try {
+        await post({
+          action: "EDIT_ITEM",
+          fromItem: it.item,
+          fromSection: it.section,
+          item: it.item,
+          section: it.section,
+          qty,
+          onChecklist: on ? "yes" : "no",
+          pin: stored(PIN_KEY)
+        });
+        await load();
+      } catch (err) {
+        showError(/action must be add or take|unknown/i.test(err.message || "") ? UPDATE_NOTE : (err.message || "Couldn't update the checklist switch."));
+      }
     }
     async function retire(it, hide) {
       const pin = stored(PIN_KEY);
@@ -1119,7 +1442,10 @@
             supplier: row.supplier || "",
             unitCost: row.unitCost == null ? null : Number(row.unitCost),
             unit: row.unit || "",
-            notes: row.notes || ""
+            notes: row.notes || "",
+            onChecklist: row.onChecklist || "",
+            minHQ: Number(row.minHQ) || 0,
+            minBrooklyn: Number(row.minBrooklyn) || 0
           })).filter((row) => row.item);
         }
         state.log = (data.log || []).map((row) => Object.assign({ paidBy: "", unitCost: null, vendor: "", invoice: "" }, row, {
@@ -1128,7 +1454,9 @@
         }));
         state.vanCounts = data.vanCounts || [];
         state.scriptReady = Array.isArray(data.vehicles);
+        state.ordersReady = Array.isArray(data.orderSources);
         state.vehicles = state.scriptReady ? data.vehicles : [];
+        state.orderSources = state.ordersReady ? data.orderSources : [];
         state.loaded = true;
       } catch (err) {
         state.loaded = true;

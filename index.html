@@ -921,7 +921,9 @@
       (rows || []).forEach((row) => {
         const retired = row.retired === true || String(row.retired || "").toLowerCase() === "yes";
         const qty = Number(row.qty);
-        if (retired || !row.item || !isFinite(qty) || qty <= 0) return;
+        const flag = String(row.onChecklist == null ? "" : row.onChecklist).toLowerCase();
+        const onList = flag === "yes" || flag === "true" || flag === "1" ? isFinite(qty) && qty > 0 : (flag === "no" || flag === "false" || flag === "0" ? false : isFinite(qty) && qty > 0);
+        if (retired || !row.item || !onList) return;
         active.push({ section: String(row.section || "Other"), item: String(row.item), qty: qty });
       });
       const seen = [];

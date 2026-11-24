@@ -1,6 +1,6 @@
 # Update the office stock script
 
-Do this so the inventory page can save vehicles, part numbers, who paid for stock, and giving parts to a van. The web address does not change. Until you do this, the page still opens and shows the current stock. New fields say "Not recorded", and the buttons that need the new script tell you to update it.
+Do this so the dashboard can save order links, spare targets, and the van-checklist switch, and so vehicles, part numbers, who paid, and giving parts to a van are stored. The web address does not change. Until you do this, the dashboard still shows what the vans need from the checklists already in the sheet. Order links say "add with script update".
 
 1. Open the Office stock spreadsheet. Click Extensions, then Apps Script.
 2. Select all the code and delete it.
@@ -11,9 +11,9 @@ Do this so the inventory page can save vehicles, part numbers, who paid for stoc
 7. Click Deploy.
 8. Approve any permission Google asks for.
 
-Who has access stays Anyone. Execute as stays Me. Do not create a second web app.
+Who has access stays Anyone. Execute as stays Me. Do not create a second web app. This only adds columns and an Order Sources tab. It does not delete items, the office log, or van checklists.
 
-This adds columns and a Vehicles tab. It does not delete the items, the office log, or the van checklists already in the sheet. The first time the new script runs, it adds van XSJJ22 / Chris Aguirre to Vehicles only if that plate is not already there.
+The first time the new script runs, it adds van XSJJ22 / Chris Aguirre to Vehicles only if that plate is not already there.
 
 To load Chris's Nov 19 checklist again without sending another email, from the repo folder run:
 
