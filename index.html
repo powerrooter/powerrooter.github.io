@@ -3,255 +3,426 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#252F68" />
   <title>Power Rooter Weekly Van Inventory Checklist</title>
   <style>
     :root {
-      --navy: #1b3a4b;
-      --orange: #c45c26;
-      --paper: #f6f3ee;
-      --card: #ffffff;
-      --line: #d8d2c8;
-      --muted: #5c6b73;
-      --exact: #1f7a4d;
-      --exact-bg: #e7f6ee;
-      --less: #b42318;
-      --less-bg: #fdeceb;
-      --more: #b54708;
-      --more-bg: #fff4e5;
+      --red: #E41F2C;
+      --red-dark: #C11824;
+      --red-pale: #FEECEC;
+      --navy: #252F68;
+      --navy-2: #2E3A82;
+      --navy-deep: #1A2350;
+      --navy-soft: #8E99D4;
+      --navy-pale: #EDEFF7;
+      --bg: #F6F7FB;
+      --card: #fff;
+      --text: #112337;
+      --muted: #667085;
+      --line: #E2E6F0;
+      --green: #0F7B4F;
     }
     * { box-sizing: border-box; }
+    html, body { margin: 0; }
     body {
-      margin: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background: var(--paper);
-      color: var(--navy);
-      line-height: 1.4;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.35;
+      padding-bottom: calc(92px + env(safe-area-inset-bottom));
     }
+    button, input { font: inherit; touch-action: manipulation; }
+    button { cursor: pointer; }
     header {
       background: var(--navy);
       color: #fff;
-      padding: 18px 16px 16px;
+      padding: 14px 16px 12px;
       position: sticky;
       top: 0;
-      z-index: 5;
-      box-shadow: 0 2px 8px rgba(0,0,0,.15);
+      z-index: 30;
     }
-    header h1 {
-      margin: 0 0 4px;
-      font-size: 1.15rem;
+    .brand { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+    header h1 { margin: 0; font-size: 1.2rem; font-weight: 800; letter-spacing: -0.01em; }
+    header a { color: #fff; font-weight: 700; font-size: .9rem; }
+    .steps { display: flex; gap: 4px; margin: 12px 0 8px; }
+    .steps button {
+      flex: 1;
+      background: transparent;
+      border: 0;
+      color: var(--navy-soft);
+      font-size: .72rem;
+      font-weight: 700;
+      padding: 0;
+      min-height: 0;
     }
-    header p {
-      margin: 0;
+    .steps button b {
+      display: flex;
+      width: 28px;
+      height: 28px;
+      margin: 0 auto 4px;
+      border-radius: 50%;
+      background: var(--navy-deep);
+      color: var(--navy-soft);
+      align-items: center;
+      justify-content: center;
       font-size: .9rem;
-      color: #d7e2e8;
     }
+    .steps button.now { color: #fff; }
+    .steps button.now b { background: var(--red); color: #fff; }
+    .steps button.done { color: #fff; }
+    .steps button.done b { background: var(--green); color: #fff; }
+    .track { height: 6px; background: var(--navy-deep); border-radius: 999px; overflow: hidden; }
+    .track span { display: block; height: 100%; width: 25%; background: var(--red); }
     .wrap { max-width: 760px; margin: 0 auto; padding: 16px; }
-    .meta, .item, .summary {
+    h2 { margin: 0 0 12px; font-size: 1.2rem; }
+    .card, .meta, .item {
       background: var(--card);
       border: 1px solid var(--line);
-      border-radius: 12px;
+      border-radius: 14px;
       padding: 14px;
       margin-bottom: 12px;
     }
-    label { display: block; font-size: .8rem; font-weight: 600; margin-bottom: 4px; color: var(--muted); }
-    input[type="text"], input[type="date"], input[type="number"], textarea, select {
+    label { display: block; font-weight: 700; margin: 0 0 6px; }
+    .req { color: var(--red); }
+    .field { margin-bottom: 14px; }
+    input[type="text"], input[type="date"], input[type="number"] {
       width: 100%;
-      font: inherit;
-      padding: 10px 12px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: #fffaf4;
-      color: var(--navy);
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 10px;
-    }
-    @media (min-width: 560px) {
-      .grid { grid-template-columns: 1fr 1fr 1fr; }
-    }
-    .summary {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
-      text-align: center;
-    }
-    @media (max-width: 520px) {
-      .summary { grid-template-columns: repeat(2, 1fr); }
-    }
-    .summary div strong { display: block; font-size: 1.35rem; }
-    .summary .s-less strong { color: var(--less); }
-    .summary .s-more strong { color: var(--more); }
-    .summary .s-exact strong { color: var(--exact); }
-    .toolbar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin: 8px 0 16px;
-    }
-    button {
-      font: inherit;
-      border: 1px solid var(--line);
+      font-size: 1.05rem;
+      min-height: 56px;
+      padding: 12px 14px;
+      border: 1.5px solid var(--line);
+      border-radius: 12px;
       background: #fff;
-      color: var(--navy);
+      color: var(--text);
+    }
+    input.bad { border-color: var(--red); background: var(--red-pale); }
+    input[readonly] { background: var(--navy-pale); }
+    .fine { color: var(--muted); font-size: .95rem; margin: 8px 0 0; }
+    .fine a { color: var(--navy); font-weight: 700; }
+    .checked-line { margin: 0 0 10px; font-weight: 800; }
+    .toolbar { display: flex; gap: 8px; overflow-x: auto; margin: 0 0 10px; padding-bottom: 4px; }
+    .toolbar button {
+      flex: 0 0 auto;
+      min-height: 44px;
       border-radius: 999px;
       padding: 8px 14px;
-      cursor: pointer;
+      background: #fff;
+      border: 1px solid var(--line);
+      color: var(--text);
+      font-weight: 700;
     }
-    button.primary {
-      background: var(--orange);
-      border-color: var(--orange);
-      color: #fff;
-      font-weight: 600;
-    }
-    button.active { background: var(--navy); color: #fff; border-color: var(--navy); }
-    h2 {
-      font-size: 1rem;
-      margin: 20px 0 8px;
+    .toolbar button.active { background: var(--red); border-color: var(--red); color: #fff; }
+    details.cat { margin: 0 0 10px; }
+    details.cat > summary {
+      list-style: none;
       display: flex;
-      justify-content: space-between;
       align-items: center;
       gap: 8px;
-    }
-    h2 button { font-size: .8rem; padding: 6px 10px; }
-    .item h3 { margin: 0 0 4px; font-size: 1rem; }
-    .listed { color: var(--muted); font-size: .9rem; margin-bottom: 10px; }
-    .choices {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 10px;
-    }
-    .choices button { flex: 1; min-width: 88px; }
-    .choices button[data-val="Exact"].on { background: var(--exact-bg); border-color: var(--exact); color: var(--exact); font-weight: 700; }
-    .choices button[data-val="Less"].on { background: var(--less-bg); border-color: var(--less); color: var(--less); font-weight: 700; }
-    .choices button[data-val="More"].on { background: var(--more-bg); border-color: var(--more); color: var(--more); font-weight: 700; }
-    button.none-btn {
-      width: 100%;
-      min-height: 52px;
-      margin: 0 0 10px;
-      border-radius: 12px;
-      font-size: 1.05rem;
-      font-weight: 700;
-    }
-    button.none-btn.on { background: var(--less); border-color: var(--less); color: #fff; }
-    .item.need-count { border: 2px solid var(--less); background: var(--less-bg); }
-    .need-msg { display: none; color: var(--less); font-weight: 700; font-size: .95rem; margin: 0 0 8px; }
-    .item.need-count .need-msg { display: block; }
-    .item.need-count .actual { border: 2px solid var(--less); }
-    .qty-row { display: none; gap: 10px; align-items: end; }
-    .qty-row.show { display: grid; grid-template-columns: 1fr; }
-    .item.less { border-color: #f2b8b5; }
-    .item.more { border-color: #f5c88a; }
-    .item.exact { border-color: #9fd4b3; }
-    .hidden { display: none !important; }
-    details.cat { margin: 8px 0 14px; }
-    details.cat > summary {
-      cursor: pointer;
-      font-weight: 700;
+      min-height: 56px;
       padding: 12px 14px;
       background: #fff;
       border: 1px solid var(--line);
-      border-radius: 12px;
-      list-style: none;
+      border-radius: 14px;
+      font-weight: 800;
+      cursor: pointer;
     }
     details.cat > summary::-webkit-details-marker { display: none; }
-    details.cat.short > summary { border-color: var(--less); background: var(--less-bg); }
+    details.cat.short > summary { border-color: var(--red); background: var(--red-pale); }
     details.cat[open] > summary { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
-    details.cat .cat-body { padding: 8px 0 0; }
-    .req { color: var(--orange); }
-    footer { color: var(--muted); font-size: .85rem; margin: 8px 0 40px; }
-    footer a { color: var(--navy); font-weight: 600; }
-    .photos { scroll-margin-top: 96px; background: var(--card); border: 2px solid var(--orange); border-radius: 12px; padding: 14px; margin: 24px 0 12px; }
-    .photos h2 { margin-top: 0; }
-    .photos p.hint { margin: 0 0 12px; color: var(--muted); font-size: .9rem; }
-    .photos h4 { margin: 14px 0 8px; font-size: .9rem; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+    details.cat .cat-body {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-top: 0;
+      border-radius: 0 0 14px 14px;
+      padding: 8px;
+    }
+    details.cat.short .cat-body { border-color: var(--red); }
+    summary .name { flex: 1; }
+    summary .name::before {
+      content: "";
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      margin: 0 8px 2px 0;
+      border-right: 2px solid var(--navy);
+      border-bottom: 2px solid var(--navy);
+      transform: rotate(-45deg);
+    }
+    details[open] > summary .name::before { transform: rotate(45deg); }
+    .done { color: var(--muted); white-space: nowrap; }
+    .done.all { color: var(--green); }
+    .mark-exact {
+      width: 100%;
+      min-height: 48px;
+      border-radius: 12px;
+      margin: 4px 0 8px;
+      background: var(--navy-pale);
+      border: 1px solid var(--navy-soft);
+      color: var(--navy);
+      font-weight: 800;
+    }
+    .item-top { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; margin-bottom: 10px; }
+    .item h3 { margin: 0; font-size: 1.05rem; }
+    .listed { color: var(--muted); font-weight: 800; white-space: nowrap; }
+    .choices { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    .choices button {
+      min-height: 52px;
+      border-radius: 12px;
+      border: 1.5px solid var(--line);
+      background: #fff;
+      color: var(--text);
+      font-weight: 800;
+      padding: 8px 4px;
+    }
+    .choices button[data-val="Exact"].on { border-color: var(--green); color: var(--green); }
+    .choices button[data-val="Less"].on { background: var(--red-pale); border-color: var(--red); color: var(--red-dark); }
+    .choices button[data-val="More"].on { background: var(--navy-pale); border-color: var(--navy); color: var(--navy); }
+    .choices button.none-btn.on { background: var(--red); border-color: var(--red); color: #fff; }
+    .item.exact { border-color: var(--green); }
+    .item.less { border-color: var(--red); }
+    .item.more { border-color: var(--navy); }
+    .item.need-count { border: 2px solid var(--red); background: var(--red-pale); }
+    .need-msg { display: none; color: var(--red-dark); font-weight: 800; margin: 8px 0 0; }
+    .item.need-count .need-msg { display: block; }
+    .item.need-count .actual { border-color: var(--red); }
+    .qty-row { display: none; margin-top: 10px; }
+    .qty-row.show { display: block; }
+    .stepper { display: grid; grid-template-columns: 56px 1fr 56px; gap: 8px; }
+    .stepper.off { display: none; }
+    .stepper button {
+      min-height: 56px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: var(--navy-pale);
+      color: var(--navy);
+      font-size: 1.6rem;
+      font-weight: 800;
+    }
+    .stepper input { text-align: center; font-size: 1.35rem; font-weight: 800; }
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
+    .note { margin-top: 8px; }
+    .photos h2 { margin-bottom: 4px; }
     .slots { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    @media (min-width: 560px) { .slots { grid-template-columns: 1fr 1fr 1fr; } }
-    .slot { border: 1px dashed var(--line); border-radius: 10px; padding: 8px; background: #fffaf4; display: flex; flex-direction: column; gap: 6px; }
-    .slot.done { border: 1px solid #9fd4b3; background: var(--exact-bg); }
-    .slot.missing { border: 2px solid var(--less); background: var(--less-bg); }
-    .slot .slot-title { font-weight: 700; font-size: .9rem; }
-    .slot .thumb { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 8px; background: #ece6dc; display: block; }
-    .slot .thumb-empty { width: 100%; aspect-ratio: 4 / 3; border-radius: 8px; background: #ece6dc; display: flex; align-items: center; justify-content: center; color: var(--muted); font-size: .8rem; text-align: center; padding: 4px; }
+    .slot {
+      border: 1px dashed var(--line);
+      border-radius: 14px;
+      padding: 8px;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .slot.done { border: 1px solid var(--green); }
+    .slot.missing { border: 2px solid var(--red); background: var(--red-pale); }
+    .slot .slot-title { font-weight: 800; }
+    .slot .thumb, .slot .thumb-empty {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+      border-radius: 10px;
+      background: var(--navy-pale);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      text-align: center;
+      font-size: .8rem;
+    }
     .slot .slot-status { font-size: .75rem; color: var(--muted); min-height: 1em; }
-    .slot .slot-btns { display: flex; flex-wrap: wrap; gap: 6px; }
-    .slot .slot-btns label { flex: 1; margin: 0; text-align: center; border: 1px solid var(--line); border-radius: 999px; padding: 7px 8px; background: #fff; color: var(--navy); font-size: .8rem; cursor: pointer; }
+    .slot .slot-btns { display: flex; gap: 6px; }
+    .slot .slot-btns label {
+      flex: 1;
+      margin: 0;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      font-weight: 800;
+      font-size: .9rem;
+    }
     .slot .slot-btns label.cam { background: var(--navy); color: #fff; border-color: var(--navy); }
     .slot input[type="file"] { position: absolute; width: 1px; height: 1px; opacity: 0; overflow: hidden; }
-    .submit-box { margin: 12px 0 8px; }
-    .submit-box button.primary { width: 100%; padding: 14px; font-size: 1.05rem; }
-    .submit-box button:disabled { opacity: .6; }
-    #formError { display: none; background: var(--less-bg); border: 1px solid var(--less); color: var(--less); border-radius: 10px; padding: 10px 12px; margin-bottom: 10px; font-size: .9rem; white-space: pre-line; }
-    #sentBanner { display: none; background: var(--exact-bg); border: 1px solid var(--exact); color: var(--exact); border-radius: 10px; padding: 10px 12px; margin-bottom: 12px; font-weight: 600; }
-    input[readonly] { background: #eef1f3; }
+    .summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; text-align: center; margin-bottom: 12px; }
+    .summary div { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 10px 4px; }
+    .summary strong { display: block; font-size: 1.7rem; }
+    .summary .s-exact strong { color: var(--green); }
+    .summary .s-less strong { color: var(--red-dark); }
+    .summary .s-more strong { color: var(--navy); }
+    .rev-row { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--line); }
+    .rev-row span { color: var(--muted); font-weight: 700; }
+    .review-photos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+    .thumb-cell { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 6px; text-align: center; font-size: .75rem; font-weight: 700; color: var(--muted); }
+    .thumb-cell img, .thumb-cell .thumb-empty { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 8px; background: var(--navy-pale); display: flex; align-items: center; justify-content: center; }
+    .thumb-cell.missing { border-color: var(--red); background: var(--red-pale); color: var(--red-dark); }
+    .warn { background: var(--red-pale); border: 1px solid var(--red); color: var(--red-dark); border-radius: 14px; padding: 12px; font-weight: 700; margin: 0 0 12px; }
+    .warn div + div { margin-top: 6px; }
+    .list-line { padding: 8px 0; border-bottom: 1px solid var(--line); }
+    .muted { color: var(--muted); }
+    button.primary, #submitBtn {
+      width: 100%;
+      min-height: 52px;
+      border-radius: 12px;
+      border: 1.5px solid var(--red);
+      background: var(--red);
+      color: #fff;
+      font-weight: 800;
+      font-size: 1.05rem;
+      margin: 8px 0;
+    }
+    button:disabled { opacity: .5; }
+    #sentBanner { display: none; background: #e7f6ee; border: 1px solid var(--green); color: var(--green); border-radius: 14px; padding: 12px; margin-bottom: 12px; font-weight: 800; }
+    .panel { display: none; }
+    .panel.on { display: block; }
+    .dock {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 40;
+      background: #fff;
+      border-top: 1px solid var(--line);
+      padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+    }
+    .dock-inner { max-width: 880px; margin: 0 auto; display: flex; gap: 10px; }
+    .dock button { flex: 1; min-height: 52px; border-radius: 12px; font-weight: 800; font-size: 1.05rem; }
+    #backBtn { background: #fff; color: var(--navy); border: 1.5px solid var(--line); }
+    #nextBtn { background: var(--red); color: #fff; border: 1.5px solid var(--red); }
+    #formError {
+      display: none;
+      position: fixed;
+      left: 12px;
+      right: 12px;
+      bottom: calc(78px + env(safe-area-inset-bottom));
+      z-index: 45;
+      background: var(--red-pale);
+      border: 1px solid var(--red);
+      color: var(--red-dark);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-weight: 700;
+      white-space: pre-line;
+      max-height: 36vh;
+      overflow: auto;
+    }
     #toast {
       display: none;
       position: fixed;
-      bottom: 20px;
       left: 50%;
+      bottom: calc(84px + env(safe-area-inset-bottom));
       transform: translateX(-50%);
       background: var(--navy);
       color: #fff;
       padding: 10px 16px;
       border-radius: 999px;
-      z-index: 10;
+      z-index: 50;
+      font-weight: 700;
+    }
+    @media (min-width: 800px) {
+      .wrap { max-width: 880px; }
+      .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+      .grid .field { margin-bottom: 0; }
+      .brand, .steps, .track { max-width: 880px; margin-left: auto; margin-right: auto; }
+      .slots { grid-template-columns: 1fr 1fr 1fr; }
+    }
+    @media print {
+      .dock, #formError, #toast, .steps, .track, .toolbar, .slot-btns, #submitBtn, #copyBtn, #printBtn, #clearBtn { display: none !important; }
+      body { padding: 0; background: #fff; }
+      header { position: static; }
+      .panel { display: block !important; }
     }
   </style>
 </head>
 <body>
   <header>
-    <h1>Weekly Van Inventory &amp; Maintenance</h1>
-    <p>Note your name and the van's license plate, then mark Exact, Less, or More than the listed amount</p>
+    <div class="brand">
+      <h1>Weekly Van Inventory</h1>
+      <a href="/stock/">Office stock</a>
+    </div>
+    <div class="steps" id="steps">
+      <button type="button" data-step="1"><b>1</b>Van</button>
+      <button type="button" data-step="2"><b>2</b>Items</button>
+      <button type="button" data-step="3"><b>3</b>Photos</button>
+      <button type="button" data-step="4"><b>4</b>Review</button>
+    </div>
+    <div class="track"><span id="barFill"></span></div>
   </header>
   <div class="wrap">
     <div id="sentBanner">Checklist and photos sent to the office. Thank you!</div>
-    <div class="meta">
-      <div class="grid">
-        <div>
-          <label for="name">Which mechanic <span class="req">*</span></label>
-          <input id="name" type="text" autocomplete="name" placeholder="Mechanic's full name" required />
-        </div>
-        <div>
-          <label for="date">Date <span class="req">*</span></label>
-          <input id="date" type="date" required />
-        </div>
-        <div>
-          <label for="van">Van license plate <span class="req">*</span></label>
-          <input id="van" type="text" placeholder="License plate (e.g. ABC1234)" autocapitalize="characters" required />
+    <section class="panel" data-step="1">
+      <h2>Van &amp; mechanic</h2>
+      <div class="meta">
+        <div class="grid">
+          <div class="field">
+            <label for="name">Mechanic <span class="req">*</span></label>
+            <input id="name" type="text" autocomplete="name" placeholder="Mechanic's full name" required />
+          </div>
+          <div class="field">
+            <label for="van">License plate <span class="req">*</span></label>
+            <input id="van" type="text" placeholder="License plate" autocapitalize="characters" autocomplete="off" required />
+          </div>
+          <div class="field">
+            <label for="date">Date <span class="req">*</span></label>
+            <input id="date" type="date" required />
+          </div>
         </div>
       </div>
-    </div>
-    <div class="summary" id="summary"></div>
-    <div class="toolbar">
-      <button class="active" data-filter="all" type="button">All items</button>
-      <button data-filter="unchecked" type="button">Not checked</button>
-      <button data-filter="Less" type="button">Less only</button>
-      <button data-filter="More" type="button">More only</button>
-      <button id="jumpBtn" class="primary" type="button">Photos &amp; submit &darr;</button>
-      <button id="copyBtn" type="button">Copy report</button>
-      <button id="printBtn" type="button">Print</button>
-      <button id="clearBtn" type="button">Clear form</button>
-      <button id="expandAll" type="button">Expand all</button>
-      <button id="collapseAll" type="button">Collapse all</button>
-    </div>
-    <div id="list"></div>
-    <section class="photos" id="photos">
-      <h2><span>Van photos <span class="req">*</span></span></h2>
-      <p class="hint">All 6 photos are required. Tap <strong>Camera</strong> to take one now, or <strong>Library</strong> to pick one you already took. Tap again to retake.</p>
-      <h4>Exterior</h4>
+      <p class="fine">Due every Sunday before 9:00 AM ET. <a href="/stock/">Office stock</a></p>
+    </section>
+    <section class="panel" data-step="2">
+      <h2>Items</h2>
+      <p class="checked-line" id="checkedLine"></p>
+      <div class="toolbar">
+        <button class="active" data-filter="all" type="button">All items</button>
+        <button data-filter="unchecked" type="button">Not checked</button>
+        <button data-filter="Less" type="button">Less only</button>
+        <button data-filter="More" type="button">More only</button>
+        <button id="expandAll" type="button">Expand all</button>
+        <button id="collapseAll" type="button">Collapse all</button>
+      </div>
+      <div id="list"></div>
+    </section>
+    <section class="panel photos" data-step="3" id="photos">
+      <h2>Photos</h2>
+      <p class="fine">All 6 required. Camera or Library. Tap again to retake.</p>
+      <h3>Exterior</h3>
       <div class="slots" id="slots-exterior"></div>
-      <h4>Interior</h4>
+      <h3>Interior</h3>
       <div class="slots" id="slots-interior"></div>
     </section>
-    <div class="submit-box">
-      <div id="formError" role="alert"></div>
-      <button id="submitBtn" class="primary" type="button">Submit checklist &amp; photos</button>
-    </div>
-    <footer>Submit every Sunday before 9:00 AM. Submit sends the report and the 6 van photos to office@powerrooter.com, and it is passed to Inventory &amp; Parts. <a href="/stock/">Office stock</a></footer>
+    <section class="panel" data-step="4">
+      <h2>Review &amp; submit</h2>
+      <div class="card" id="reviewMeta"></div>
+      <div id="reviewWarn"></div>
+      <div class="summary" id="summary"></div>
+      <p class="checked-line" id="reviewChecked"></p>
+      <h3>Photos</h3>
+      <div class="review-photos" id="reviewPhotos"></div>
+      <h3>Short</h3>
+      <div id="reviewShort"></div>
+      <h3>Extra</h3>
+      <div id="reviewExtra"></div>
+      <button id="submitBtn" type="button">Submit</button>
+      <div class="toolbar">
+        <button id="copyBtn" type="button">Copy report</button>
+        <button id="printBtn" type="button">Print</button>
+        <button id="clearBtn" type="button">Clear form</button>
+      </div>
+      <p class="fine">Due every Sunday before 9:00 AM ET. Submit sends the report and the 6 van photos to office@powerrooter.com, and it is passed to Inventory &amp; Parts. <a href="/stock/">Office stock</a></p>
+    </section>
   </div>
+  <div id="formError" role="alert"></div>
   <div id="toast">Report copied.</div>
+  <div class="dock">
+    <div class="dock-inner">
+      <button id="backBtn" type="button">Back</button>
+      <button id="nextBtn" type="button">Continue</button>
+    </div>
+  </div>
   <script>
     let ITEMS = [{"section": "300 Machine & Tools", "item": "Maintained 300 Machine with 75 Ft of cable", "qty": 1}, {"section": "300 Machine & Tools", "item": "Extra 25 Ft of cable", "qty": 2}, {"section": "300 Machine & Tools", "item": "Extra Pins", "qty": 5}, {"section": "300 Machine & Tools", "item": "Pairs of yellow gloves", "qty": 2}, {"section": "300 Machine & Tools", "item": "Whip", "qty": 1}, {"section": "300 Machine & Tools", "item": "U Blade 3\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Half Blade 3\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "U Blade 4\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Half Blade 4\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Saw blade", "qty": 1}, {"section": "300 Machine & Tools", "item": "Puncher & Stand", "qty": 1}, {"section": "300 Machine & Tools", "item": "Hammer", "qty": 1}, {"section": "300 Machine & Tools", "item": "Channel Lock 10\" or 12\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Channel Lock 6.5\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Pipe Wrench", "qty": 1}, {"section": "300 Machine & Tools", "item": "PB Blaster / WD-40", "qty": 1}, {"section": "300 Machine & Tools", "item": "Extension wire 25 ft", "qty": 1}, {"section": "300 Machine & Tools", "item": "Duct Tape", "qty": 2}, {"section": "300 Machine & Tools", "item": "Long gloves", "qty": 1}, {"section": "300 Machine & Tools", "item": "Philip screw driver", "qty": 1}, {"section": "300 Machine & Tools", "item": "Flat screw driver", "qty": 1}, {"section": "300 Machine & Tools", "item": "Nut Driver", "qty": 1}, {"section": "300 Machine & Tools", "item": "Screw driver 4 in 1", "qty": 1}, {"section": "300 Machine & Tools", "item": "Outlet adapters 2-3", "qty": 1}, {"section": "300 Machine & Tools", "item": "PVC pipe with elbow for trap out sewer 2\"", "qty": 1}, {"section": "300 Machine & Tools", "item": "Repair plates 4\"", "qty": 2}, {"section": "Hand Machine & Tools", "item": "Hand Machine with 25 ft cable", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Extra 25 ft cable", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Drop head 25 ft cable", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Construction gloves", "qty": 3}, {"section": "Hand Machine & Tools", "item": "Channel lock 10\" or 12\"", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Channel lock 6.5\"", "qty": 1}, {"section": "Hand Machine & Tools", "item": "PVC channel lock", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Vise grip", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Flat Screw driver", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Philip screw driver", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Nut driver", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Screw driver 4 in 1", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Teflon Tape", "qty": 5}, {"section": "Hand Machine & Tools", "item": "Electric Tape", "qty": 5}, {"section": "Hand Machine & Tools", "item": "Epoxy", "qty": 2}, {"section": "Hand Machine & Tools", "item": "Plumbers putty", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Outlet adapters 2-3", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Extension wire 25 ft", "qty": 1}, {"section": "Hand Machine & Tools", "item": "Wheeling Case", "qty": 1}, {"section": "100 Machine", "item": "Maintained 100 machine with 75 ft cable", "qty": 1}, {"section": "100 Machine", "item": "Construction gloves", "qty": 3}, {"section": "100 Machine", "item": "Boiler plugs", "qty": 10}, {"section": "Toilet", "item": "Toilet auger", "qty": 1}, {"section": "Toilet", "item": "Wax Rings", "qty": 10}, {"section": "Toilet", "item": "Johnny bolts", "qty": 10}, {"section": "Toilet", "item": "Silicone gun", "qty": 1}, {"section": "Toilet", "item": "Silicone", "qty": 2}, {"section": "Toilet", "item": "Plaster", "qty": 1}, {"section": "Toilet", "item": "Foam spray", "qty": 1}, {"section": "Toilet", "item": "Fill valves (Fluidmaster)", "qty": 3}, {"section": "Toilet", "item": "Flappers", "qty": 5}, {"section": "Toilet", "item": "Ratchet wrench set", "qty": 1}, {"section": "Toilet", "item": "Lock wrench for johnny bolts", "qty": 1}, {"section": "Camera & Tools", "item": "Camera", "qty": 1}, {"section": "Camera & Tools", "item": "Locator", "qty": 1}, {"section": "Camera & Tools", "item": "Rags", "qty": 2}, {"section": "Air Tank", "item": "Maintained Air tank", "qty": 2}, {"section": "Air Tank", "item": "Hose", "qty": 1}, {"section": "Air Tank", "item": "Hose Adapter", "qty": 1}, {"section": "Air Tank", "item": "Flush bag 2\"", "qty": 1}, {"section": "Air Tank", "item": "Flush bag 1/2\"–3\"", "qty": 1}, {"section": "Air Tank", "item": "Flush bag 3\"–4\"", "qty": 1}, {"section": "Air Tank", "item": "Flush bag 3\"–6\"", "qty": 1}, {"section": "Water Testing", "item": "Water hose 150 Ft", "qty": 1}, {"section": "Water Testing", "item": "Speedy with adapter to sink / toilet", "qty": 1}, {"section": "Water Testing", "item": "Nozzle", "qty": 1}, {"section": "Drill", "item": "Electric Drill", "qty": 1}, {"section": "Drill", "item": "Carbide hole saw bit 7/8\"", "qty": 1}, {"section": "Drill", "item": "Center bits", "qty": 2}, {"section": "Drill", "item": "PVC saw hole bit 7/8\"", "qty": 2}, {"section": "Drill", "item": "Plugs 7/8\"", "qty": 5}, {"section": "Tubular Piping", "item": "Pipe Cutter", "qty": 1}, {"section": "Tubular Piping", "item": "Brass Sink traps", "qty": 2}, {"section": "Tubular Piping", "item": "P trap set 1 1/2\"", "qty": 2}, {"section": "Tubular Piping", "item": "Elbows 1 1/2\"", "qty": 5}, {"section": "Tubular Piping", "item": "Offsets 1 1/2\"", "qty": 2}, {"section": "Tubular Piping", "item": "Tail Ends 1 1/2\"", "qty": 2}, {"section": "Tubular Piping", "item": "Slip nuts & washers 1 1/2\"", "qty": 5}, {"section": "Tubular Piping", "item": "P Trap sets 1 1/4\"", "qty": 3}, {"section": "Tubular Piping", "item": "Elbows 1 1/4\"", "qty": 5}, {"section": "Tubular Piping", "item": "Offsets 1 1/4\"", "qty": 2}, {"section": "Tubular Piping", "item": "Tail ends 1 1/4\"", "qty": 2}, {"section": "Tubular Piping", "item": "Slip nuts & washers 1 1/4\"", "qty": 5}, {"section": "Caps", "item": "Caps 3\"", "qty": 5}, {"section": "Caps", "item": "Caps 3 1/2\"", "qty": 5}, {"section": "Caps", "item": "Caps 4\"", "qty": 10}, {"section": "Caps", "item": "Caps 4 1/2\"", "qty": 5}, {"section": "Caps", "item": "Jim Cap 3\"", "qty": 5}, {"section": "Caps", "item": "Jim Cap 4\"", "qty": 5}, {"section": "Caps", "item": "Jim Cap 5\"", "qty": 5}, {"section": "Caps", "item": "Test Plugs 3\"", "qty": 4}, {"section": "Caps", "item": "Test Plugs 4\"", "qty": 4}, {"section": "Couplings & Elbows", "item": "Couplings 4\"", "qty": 5}, {"section": "Couplings & Elbows", "item": "Couplings 3\"", "qty": 5}, {"section": "Couplings & Elbows", "item": "Couplings 2\"", "qty": 5}, {"section": "Couplings & Elbows", "item": "Couplings 2–1 1/2\"", "qty": 2}, {"section": "Miscellaneous", "item": "Grinder with blades", "qty": 1}, {"section": "Miscellaneous", "item": "Shop Vac", "qty": 1}, {"section": "Miscellaneous", "item": "Pump Vac", "qty": 1}, {"section": "Miscellaneous", "item": "Pump with hose", "qty": 1}, {"section": "Miscellaneous", "item": "Set of L keys", "qty": 1}, {"section": "Miscellaneous", "item": "Sledgehammer", "qty": 1}, {"section": "Miscellaneous", "item": "Chisel", "qty": 1}, {"section": "Miscellaneous", "item": "Suction cups", "qty": 2}, {"section": "Miscellaneous", "item": "Extra extension wire 25 ft", "qty": 1}, {"section": "Miscellaneous", "item": "Extra extension wire 50 ft", "qty": 1}, {"section": "Miscellaneous", "item": "Goggles", "qty": 2}, {"section": "Miscellaneous", "item": "Boxes latex gloves", "qty": 6}, {"section": "Miscellaneous", "item": "Bulb outlet adapter", "qty": 1}, {"section": "Miscellaneous", "item": "Regular / Rechargeable flashlight", "qty": 1}, {"section": "Miscellaneous", "item": "Rubber boots", "qty": 1}, {"section": "Miscellaneous", "item": "Disposable boots", "qty": 1}, {"section": "Miscellaneous", "item": "Raincoat", "qty": 1}, {"section": "Miscellaneous", "item": "Grabber", "qty": 1}, {"section": "Miscellaneous", "item": "Bolt Cutter", "qty": 1}, {"section": "Miscellaneous", "item": "Razor blade", "qty": 1}, {"section": "Miscellaneous", "item": "Head Flash light", "qty": 1}, {"section": "Miscellaneous", "item": "Crow Bar", "qty": 1}, {"section": "Miscellaneous", "item": "Long Bar", "qty": 1}, {"section": "Miscellaneous", "item": "Pump", "qty": 1}, {"section": "Miscellaneous", "item": "Degreasing Wipes", "qty": 1}, {"section": "Miscellaneous", "item": "Degrease Spray", "qty": 1}, {"section": "Miscellaneous", "item": "Shoe Covers", "qty": 10}, {"section": "Registration & Insurance", "item": "Registration in the van", "qty": 1}, {"section": "Registration & Insurance", "item": "Insurance card in the van", "qty": 1}];
     const $ = (id) => document.getElementById(id);
@@ -267,12 +438,10 @@
       const z = (n) => String(n).padStart(2, "0");
       return d.getFullYear() + "-" + z(d.getMonth() + 1) + "-" + z(d.getDate());
     }
-
     function load() {
       try { return JSON.parse(localStorage.getItem(KEY) || "{}"); } catch (e) { return {}; }
     }
     function save(state) { localStorage.setItem(KEY, JSON.stringify(state)); }
-
     function defaultState() {
       const iso = localISODate(new Date());
       return {
@@ -282,7 +451,6 @@
         rows: ITEMS.map(() => ({ status: "", actual: "", note: "" }))
       };
     }
-
     let state = Object.assign(defaultState(), load());
     if (!state.rows || state.rows.length !== ITEMS.length) {
       const fresh = defaultState();
@@ -291,14 +459,16 @@
     if (!state.date) state.date = defaultState().date;
     if (PARAM_MECHANIC) state.name = PARAM_MECHANIC;
     if (PARAM_VAN) state.van = PARAM_VAN;
-    // After a successful send, start fresh next time (keep the van so it doesn't need retyping).
     if (JUST_SENT) {
       const keptVan = state.van;
       state = defaultState();
       if (keptVan) state.van = keptVan;
       save(state);
     }
-
+    let step = 1;
+    let filter = "all";
+    let showCountErrors = false;
+    const catOpen = new Map();
     function persist() {
       state.name = PARAM_MECHANIC || $("name").value;
       state.date = $("date").value;
@@ -306,32 +476,61 @@
       save(state);
       renderSummary();
     }
-
     function countMissing(row) {
       return (row.status === "Less" || row.status === "More") && (row.actual === "" || row.actual == null || !isFinite(Number(row.actual)));
     }
-
+    function isChoice(row, val) {
+      if (val === "None") return row.status === "Less" && String(row.actual) === "0";
+      if (val === "Less") return row.status === "Less" && String(row.actual) !== "0";
+      return row.status === val;
+    }
     function markNone(i) {
       state.rows[i].status = "Less";
       state.rows[i].actual = "0";
       save(state);
-      renderList();
+      renderList(true);
     }
-
     function setStatus(i, status) {
       const listed = ITEMS[i].qty;
       state.rows[i].status = status;
       if (status === "Exact") state.rows[i].actual = String(listed);
-      if (status === "Less" && (state.rows[i].actual === "" || Number(state.rows[i].actual) >= listed)) {
+      if (status === "Less" && (state.rows[i].actual === "" || String(state.rows[i].actual) === "0" || Number(state.rows[i].actual) >= listed)) {
         state.rows[i].actual = "";
       }
       if (status === "More" && (state.rows[i].actual === "" || Number(state.rows[i].actual) <= listed)) {
         state.rows[i].actual = "";
       }
       save(state);
-      renderList();
+      renderList(true);
     }
-
+    function paintCard(card, i) {
+      const row = state.rows[i];
+      card.classList.remove("exact", "less", "more");
+      if (row.status) card.classList.add(row.status.toLowerCase());
+      card.classList.toggle("need-count", showCountErrors && countMissing(row));
+      card.querySelectorAll(".choices button").forEach((b) => b.classList.toggle("on", isChoice(row, b.dataset.val)));
+      const qtyRow = card.querySelector(".qty-row");
+      const stepper = card.querySelector(".stepper");
+      if (qtyRow) qtyRow.classList.toggle("show", row.status === "Less" || row.status === "More");
+      if (stepper) stepper.classList.toggle("off", isChoice(row, "None"));
+    }
+    function refreshSection(section) {
+      const det = [...document.querySelectorAll("details.cat")].find((node) => node.dataset.section === section);
+      if (!det) return;
+      let done = 0, total = 0, less = 0;
+      ITEMS.forEach((it, idx) => {
+        if (it.section !== section) return;
+        total += 1;
+        if (state.rows[idx].status) done += 1;
+        if (state.rows[idx].status === "Less") less += 1;
+      });
+      det.classList.toggle("short", less > 0);
+      const count = det.querySelector(".done");
+      if (count) {
+        count.textContent = done + " of " + total;
+        count.classList.toggle("all", total > 0 && done === total);
+      }
+    }
     function setActual(i, value) {
       state.rows[i].actual = value;
       const n = Number(value);
@@ -342,20 +541,23 @@
         else state.rows[i].status = "More";
       }
       save(state);
-      renderSummary();
       const card = document.querySelector('[data-index="' + i + '"]');
       if (card) {
-        card.classList.remove("exact", "less", "more");
-        if (state.rows[i].status) card.classList.add(state.rows[i].status.toLowerCase());
-        card.querySelectorAll(".choices button").forEach((b) => {
-          b.classList.toggle("on", b.dataset.val === state.rows[i].status);
-        });
-        const noneBtn = card.querySelector(".none-btn");
-        if (noneBtn) noneBtn.classList.toggle("on", state.rows[i].status === "Less" && String(state.rows[i].actual) === "0");
-        card.classList.toggle("need-count", showCountErrors && countMissing(state.rows[i]));
+        paintCard(card, i);
+        const input = card.querySelector(".actual");
+        if (input && document.activeElement !== input) input.value = state.rows[i].actual || "";
       }
+      refreshSection(ITEMS[i].section);
+      renderSummary();
     }
-
+    function bump(i, dir) {
+      const listed = Number(ITEMS[i].qty);
+      const raw = state.rows[i].actual;
+      let n = raw === "" || raw == null ? NaN : Number(raw);
+      if (!isFinite(n)) n = dir < 0 ? Math.max(0, listed - 1) : listed + 1;
+      else n = Math.max(0, n + dir);
+      setActual(i, String(n));
+    }
     function markSectionExact(section) {
       ITEMS.forEach((it, i) => {
         if (it.section === section) {
@@ -364,9 +566,8 @@
         }
       });
       save(state);
-      renderList();
+      renderList(true);
     }
-
     function counts() {
       let exact = 0, less = 0, more = 0, checked = 0;
       state.rows.forEach((r) => {
@@ -377,40 +578,26 @@
       });
       return { exact, less, more, checked, total: ITEMS.length };
     }
-
     function renderSummary() {
       const c = counts();
-      $("summary").innerHTML = `
-        <div><strong>${c.checked}/${c.total}</strong>checked</div>
-        <div class="s-exact"><strong>${c.exact}</strong>exact</div>
-        <div class="s-less"><strong>${c.less}</strong>less</div>
-        <div class="s-more"><strong>${c.more}</strong>more</div>`;
+      const box = $("summary");
+      if (box) {
+        box.textContent = "";
+        [["exact", c.exact, "Exact"], ["less", c.less, "Less"], ["more", c.more, "More"]].forEach((part) => {
+          const d = document.createElement("div");
+          d.className = "s-" + part[0];
+          const strong = document.createElement("strong");
+          strong.textContent = String(part[1]);
+          d.appendChild(strong);
+          d.appendChild(document.createTextNode(part[2]));
+          box.appendChild(d);
+        });
+      }
+      if ($("checkedLine")) $("checkedLine").textContent = c.checked + " of " + c.total + " checked";
+      if ($("reviewChecked")) $("reviewChecked").textContent = c.checked + " of " + c.total + " checked";
     }
-
-    let filter = "all";
-    let showCountErrors = false;
-    const catOpen = new Map();
-
     function sectionVisible(row) {
       return filter === "all" || (filter === "unchecked" && !row.status) || row.status === filter;
-    }
-    function sectionDetails(section, shortCount, pcs) {
-      const key = section;
-      if (!catOpen.has(key)) catOpen.set(key, shortCount > 0);
-      const det = document.createElement("details");
-      det.className = "cat" + (shortCount > 0 ? " short" : "");
-      det.dataset.key = key;
-      det.open = !!catOpen.get(key);
-      det.addEventListener("toggle", () => { catOpen.set(key, det.open); });
-      const sum = document.createElement("summary");
-      sum.textContent = section + ": " + shortCount + " short, " + pcs + " pcs";
-      det.appendChild(sum);
-      const mark = document.createElement("button");
-      mark.type = "button";
-      mark.textContent = "Mark section exact";
-      mark.addEventListener("click", () => markSectionExact(section));
-      det.appendChild(mark);
-      return det;
     }
     function setAllSections(open) {
       document.querySelectorAll("details.cat").forEach((det) => {
@@ -418,15 +605,23 @@
         if (det.dataset.key) catOpen.set(det.dataset.key, open);
       });
     }
-
-    function renderList() {
+    function renderList(keepScroll) {
+      const y = keepScroll ? window.scrollY : 0;
       $("name").value = state.name || "";
       if (PARAM_MECHANIC) { $("name").readOnly = true; $("name").title = "Set by your personal checklist link"; }
       $("date").value = state.date || "";
       $("van").value = state.van || "";
       renderSummary();
       const root = $("list");
-      root.innerHTML = "";
+      root.textContent = "";
+      const stats = new Map();
+      ITEMS.forEach((it, i) => {
+        if (!stats.has(it.section)) stats.set(it.section, { done: 0, total: 0, less: 0 });
+        const stat = stats.get(it.section);
+        stat.total += 1;
+        if (state.rows[i].status) stat.done += 1;
+        if (state.rows[i].status === "Less") stat.less += 1;
+      });
       const groups = [];
       let current = null;
       ITEMS.forEach((it, i) => {
@@ -437,72 +632,119 @@
         }
         current.indexes.push(i);
       });
+      if (!groups.length) {
+        const empty = document.createElement("p");
+        empty.className = "muted";
+        empty.textContent = "Nothing in this filter.";
+        root.appendChild(empty);
+      }
       groups.forEach((group) => {
-        let short = 0;
-        let pcs = 0;
-        group.indexes.forEach((i) => {
-          const row = state.rows[i];
-          if (row.status !== "Less") return;
-          short += 1;
-          const actual = row.actual === "" || row.actual == null ? 0 : Number(row.actual);
-          if (isFinite(actual)) pcs += Math.max(0, ITEMS[i].qty - actual);
-        });
-        const det = sectionDetails(group.section, short, pcs);
-        group.indexes.forEach((i) => det.appendChild(itemCard(i)));
+        const stat = stats.get(group.section);
+        const key = group.section;
+        if (!catOpen.has(key)) catOpen.set(key, stat.less > 0);
+        const det = document.createElement("details");
+        det.className = "cat" + (stat.less > 0 ? " short" : "");
+        det.dataset.section = group.section;
+        det.dataset.key = key;
+        det.open = !!catOpen.get(key);
+        det.addEventListener("toggle", () => { catOpen.set(key, det.open); });
+        const sum = document.createElement("summary");
+        const name = document.createElement("span");
+        name.className = "name";
+        name.textContent = group.section;
+        const count = document.createElement("span");
+        count.className = "done" + (stat.total > 0 && stat.done === stat.total ? " all" : "");
+        count.textContent = stat.done + " of " + stat.total;
+        sum.appendChild(name);
+        sum.appendChild(count);
+        det.appendChild(sum);
+        const body = document.createElement("div");
+        body.className = "cat-body";
+        const mark = document.createElement("button");
+        mark.type = "button";
+        mark.className = "mark-exact";
+        mark.textContent = "Mark this section exact";
+        mark.addEventListener("click", () => markSectionExact(group.section));
+        body.appendChild(mark);
+        group.indexes.forEach((i) => body.appendChild(itemCard(i)));
+        det.appendChild(body);
         root.appendChild(det);
       });
+      if (keepScroll) window.scrollTo(0, y);
     }
-
     function itemCard(i) {
-        const it = ITEMS[i];
-        const row = state.rows[i];
-        const card = document.createElement("div");
-        const needsCount = showCountErrors && countMissing(row);
-        card.className = "item" + (row.status ? " " + row.status.toLowerCase() : "") + (needsCount ? " need-count" : "");
-        card.dataset.index = String(i);
-        card.innerHTML = `
-          <h3></h3>
-          <div class="listed"></div>
-          <div class="choices">
-            <button type="button" data-val="Exact">Exact</button>
-            <button type="button" data-val="Less">Less</button>
-            <button type="button" data-val="More">More</button>
-          </div>
-          <button type="button" class="none-btn">None / missing</button>
-          <p class="need-msg">Enter how many you have, or tap None / missing.</p>
-          <div class="qty-row">
-            <div>
-              <label>How many do you actually have?</label>
-              <input type="number" min="0" step="1" inputmode="numeric" class="actual" />
-            </div>
-            <div>
-              <label>Note (optional)</label>
-              <input type="text" class="note" placeholder="Damaged, borrowed, extra, etc." />
-            </div>
-          </div>`;
-        card.querySelector("h3").textContent = it.item;
-        card.querySelector(".listed").textContent = "Listed amount: " + it.qty;
-        const qtyRow = card.querySelector(".qty-row");
-        if (row.status === "Less" || row.status === "More") qtyRow.classList.add("show");
-        card.querySelectorAll(".choices button").forEach((btn) => {
-          if (btn.dataset.val === row.status) btn.classList.add("on");
-          btn.addEventListener("click", () => setStatus(i, btn.dataset.val));
-        });
-        const noneBtn = card.querySelector(".none-btn");
-        if (row.status === "Less" && String(row.actual) === "0") noneBtn.classList.add("on");
-        noneBtn.addEventListener("click", () => markNone(i));
-        const actual = card.querySelector(".actual");
-        actual.value = row.actual || "";
-        actual.addEventListener("input", (e) => setActual(i, e.target.value));
-        const note = card.querySelector(".note");
-        note.value = row.note || "";
-        note.addEventListener("input", (e) => {
-          state.rows[i].note = e.target.value;
-          save(state);
-        });
-        return card;
+      const it = ITEMS[i];
+      const row = state.rows[i];
+      const card = document.createElement("div");
+      card.className = "item" + (row.status ? " " + row.status.toLowerCase() : "") + (showCountErrors && countMissing(row) ? " need-count" : "");
+      card.dataset.index = String(i);
+      const top = document.createElement("div");
+      top.className = "item-top";
+      const h3 = document.createElement("h3");
+      h3.textContent = it.item;
+      const listed = document.createElement("div");
+      listed.className = "listed";
+      listed.textContent = "Listed " + it.qty;
+      top.appendChild(h3);
+      top.appendChild(listed);
+      card.appendChild(top);
+      const choices = document.createElement("div");
+      choices.className = "choices";
+      ["Exact", "Less", "More", "None"].forEach((val) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.dataset.val = val;
+        btn.textContent = val;
+        if (val === "None") btn.classList.add("none-btn");
+        if (isChoice(row, val)) btn.classList.add("on");
+        btn.addEventListener("click", () => { if (val === "None") markNone(i); else setStatus(i, val); });
+        choices.appendChild(btn);
+      });
+      card.appendChild(choices);
+      const msg = document.createElement("p");
+      msg.className = "need-msg";
+      msg.textContent = "Enter how many you have, or tap None.";
+      card.appendChild(msg);
+      const qtyRow = document.createElement("div");
+      qtyRow.className = "qty-row" + ((row.status === "Less" || row.status === "More") ? " show" : "");
+      const stepper = document.createElement("div");
+      stepper.className = "stepper" + (isChoice(row, "None") ? " off" : "");
+      const minus = document.createElement("button");
+      minus.type = "button";
+      minus.className = "step-minus";
+      minus.textContent = "−";
+      minus.setAttribute("aria-label", "Decrease");
+      const actual = document.createElement("input");
+      actual.type = "number";
+      actual.min = "0";
+      actual.step = "1";
+      actual.inputMode = "numeric";
+      actual.className = "actual";
+      actual.setAttribute("aria-label", "How many do you actually have?");
+      actual.value = row.actual || "";
+      const plus = document.createElement("button");
+      plus.type = "button";
+      plus.className = "step-plus";
+      plus.textContent = "+";
+      plus.setAttribute("aria-label", "Increase");
+      minus.addEventListener("click", () => bump(i, -1));
+      plus.addEventListener("click", () => bump(i, 1));
+      actual.addEventListener("input", (e) => setActual(i, e.target.value));
+      stepper.appendChild(minus);
+      stepper.appendChild(actual);
+      stepper.appendChild(plus);
+      const note = document.createElement("input");
+      note.type = "text";
+      note.className = "note";
+      note.placeholder = "Note (optional)";
+      note.setAttribute("aria-label", "Note");
+      note.value = row.note || "";
+      note.addEventListener("input", (e) => { state.rows[i].note = e.target.value; save(state); });
+      qtyRow.appendChild(stepper);
+      qtyRow.appendChild(note);
+      card.appendChild(qtyRow);
+      return card;
     }
-
     function reportText() {
       const c = counts();
       const lines = [];
@@ -515,9 +757,7 @@
       const problems = [];
       ITEMS.forEach((it, i) => {
         const row = state.rows[i];
-        if (row.status === "Less" || row.status === "More") {
-          problems.push(it.section + ": " + needPhrase(it, row));
-        }
+        if (row.status === "Less" || row.status === "More") problems.push(it.section + ": " + needPhrase(it, row));
       });
       if (problems.length) {
         lines.push("Items that are less or more than listed:");
@@ -527,33 +767,120 @@
       }
       return lines.join("\n");
     }
-
-    $("name").addEventListener("input", persist);
-    $("date").addEventListener("input", persist);
-    $("van").addEventListener("input", persist);
-    document.querySelectorAll("[data-filter]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        filter = btn.dataset.filter;
-        document.querySelectorAll("[data-filter]").forEach((b) => b.classList.toggle("active", b === btn));
-        renderList();
+    function fillLines(target, rows, empty) {
+      target.textContent = "";
+      if (!rows.length) {
+        const p = document.createElement("p");
+        p.className = "muted";
+        p.textContent = empty;
+        target.appendChild(p);
+        return;
+      }
+      rows.forEach((text) => {
+        const line = document.createElement("div");
+        line.className = "list-line";
+        line.textContent = text;
+        target.appendChild(line);
       });
-    });
-    $("expandAll").addEventListener("click", () => setAllSections(true));
-    $("collapseAll").addEventListener("click", () => setAllSections(false));
-    function problemLines(status) {
-      const lines = [];
+    }
+    function renderReview() {
+      const meta = $("reviewMeta");
+      meta.textContent = "";
+      [["Mechanic", state.name], ["License plate", state.van], ["Date", state.date]].forEach((pair) => {
+        const row = document.createElement("div");
+        row.className = "rev-row";
+        const label = document.createElement("span");
+        label.textContent = pair[0];
+        const value = document.createElement("strong");
+        value.textContent = (pair[1] || "").trim() || "—";
+        row.appendChild(label);
+        row.appendChild(value);
+        meta.appendChild(row);
+      });
+      renderSummary();
+      const c = counts();
+      const warns = [];
+      if (!(state.name || "").trim() || !(state.van || "").trim() || !(state.date || "").trim()) warns.push("Mechanic, license plate, and date are required.");
+      if (c.checked < c.total) warns.push((c.total - c.checked) + " items not checked.");
+      const blank = [];
+      ITEMS.forEach((it, i) => { if (countMissing(state.rows[i])) blank.push(it.item); });
+      if (blank.length) warns.push("Enter a count for: " + blank.join(", ") + ".");
+      const missingPhotos = PHOTO_SLOTS.filter((s) => !photos[s.id]).map(slotTitle);
+      if (missingPhotos.length) warns.push("Missing photos: " + missingPhotos.join(", ") + ".");
+      const warn = $("reviewWarn");
+      warn.textContent = "";
+      warn.className = warns.length ? "warn" : "";
+      warns.forEach((text) => {
+        const line = document.createElement("div");
+        line.textContent = text;
+        warn.appendChild(line);
+      });
+      const shots = $("reviewPhotos");
+      shots.textContent = "";
+      PHOTO_SLOTS.forEach((s) => {
+        const cell = document.createElement("div");
+        cell.className = "thumb-cell" + (photos[s.id] ? "" : " missing");
+        if (photos[s.id]) {
+          const img = document.createElement("img");
+          img.src = photos[s.id].url;
+          img.alt = slotTitle(s);
+          cell.appendChild(img);
+        } else {
+          const empty = document.createElement("div");
+          empty.className = "thumb-empty";
+          empty.textContent = "Missing";
+          cell.appendChild(empty);
+        }
+        const cap = document.createElement("div");
+        cap.textContent = s.label;
+        cell.appendChild(cap);
+        shots.appendChild(cell);
+      });
+      const short = [];
+      const extra = [];
       ITEMS.forEach((it, i) => {
         const row = state.rows[i];
-        if (row.status === status) {
-          const have = row.actual === "" ? "?" : row.actual;
-          const extra = row.note ? " — " + row.note : "";
-          lines.push(it.section + ": " + it.item + " (listed " + it.qty + ", have " + have + ")" + extra);
-        }
+        const phrase = needPhrase(it, row);
+        if (!phrase) return;
+        if (row.status === "Less") short.push(it.section + ": " + phrase);
+        if (row.status === "More") extra.push(it.section + ": " + phrase);
       });
-      return lines.length ? lines.join("\n") : "None";
+      fillLines($("reviewShort"), short, "Nothing short.");
+      fillLines($("reviewExtra"), extra, "None");
     }
-
-    // ---------- Van photos ----------
+    function canLeave(from) {
+      if (from !== 1) return true;
+      persist();
+      const bad = [];
+      if (!(state.name || "").trim()) bad.push("name");
+      if (!(state.van || "").trim()) bad.push("van");
+      if (!(state.date || "").trim()) bad.push("date");
+      ["name", "van", "date"].forEach((id) => $(id).classList.toggle("bad", bad.indexOf(id) !== -1));
+      if (!bad.length) { hideError(); return true; }
+      showError("Enter mechanic name, license plate, and date.");
+      return false;
+    }
+    function showStep(n, keepScroll) {
+      step = n;
+      document.querySelectorAll(".panel").forEach((panel) => panel.classList.toggle("on", Number(panel.dataset.step) === n));
+      document.querySelectorAll("#steps button").forEach((btn) => {
+        const i = Number(btn.dataset.step);
+        btn.classList.toggle("now", i === n);
+        btn.classList.toggle("done", i < n);
+      });
+      $("barFill").style.width = (n / 4 * 100) + "%";
+      $("backBtn").disabled = n === 1;
+      $("nextBtn").textContent = n === 4 ? "Submit" : "Continue";
+      if (n === 1) {
+        $("name").value = state.name || "";
+        $("date").value = state.date || "";
+        $("van").value = state.van || "";
+      }
+      if (n === 2) renderList(!!keepScroll);
+      if (n === 3) PHOTO_SLOTS.forEach(renderSlot);
+      if (n === 4) renderReview();
+      if (!keepScroll) window.scrollTo(0, 0);
+    }
     const PHOTO_SLOTS = [
       { id: "exterior-front", group: "exterior", label: "Front" },
       { id: "exterior-back", group: "exterior", label: "Back" },
@@ -562,11 +889,9 @@
       { id: "interior-cab-dashboard", group: "interior", label: "Cab / dashboard" },
       { id: "interior-cargo-shelves", group: "interior", label: "Cargo area / shelves" }
     ];
-    const MAX_TOTAL_BYTES = 9 * 1024 * 1024; // FormSubmit caps all attachments together at 10 MB
-    const photos = {}; // slot id -> { original: File, blob: Blob, url: string }
-
+    const MAX_TOTAL_BYTES = 9 * 1024 * 1024;
+    const photos = {};
     function slotTitle(s) { return (s.group === "exterior" ? "Exterior — " : "Interior — ") + s.label; }
-
     function loadImage(file) {
       return new Promise(function (resolve, reject) {
         const url = URL.createObjectURL(file);
@@ -576,15 +901,13 @@
         img.src = url;
       });
     }
-
     async function compressImage(file, maxSide, quality) {
       let source = null, w = 0, h = 0, revoke = null;
       try {
-        // createImageBitmap honours EXIF rotation where supported
         source = await createImageBitmap(file, { imageOrientation: "from-image" });
         w = source.width; h = source.height;
       } catch (e) {
-        const r = await loadImage(file); // <img> also honours EXIF orientation in current Safari/Chrome
+        const r = await loadImage(file);
         source = r.img; w = r.img.naturalWidth; h = r.img.naturalHeight; revoke = r.url;
       }
       try {
@@ -605,9 +928,7 @@
         if (revoke) URL.revokeObjectURL(revoke);
       }
     }
-
     function fmtKB(n) { return n > 1024 * 1024 ? (n / 1024 / 1024).toFixed(1) + " MB" : Math.round(n / 1024) + " KB"; }
-
     function renderSlot(s) {
       const el = document.querySelector('[data-slot="' + s.id + '"]');
       if (!el) return;
@@ -631,10 +952,9 @@
       el.querySelector(".cam").firstChild.nodeValue = p ? "Retake" : "Camera";
       el.querySelector(".slot-status").textContent = p ? "Ready · " + fmtKB(p.blob.size) : "";
     }
-
     async function handlePhoto(s, input) {
       const file = input.files && input.files[0];
-      input.value = ""; // allow picking the same file again (retake)
+      input.value = "";
       if (!file) return;
       const el = document.querySelector('[data-slot="' + s.id + '"]');
       const status = el.querySelector(".slot-status");
@@ -643,10 +963,8 @@
       try {
         blob = await compressImage(file, 1600, 0.7);
       } catch (e) {
-        // Browser can't decode it (e.g. HEIC on a non-Apple browser). Use the original only if it's a small JPEG/PNG.
-        if (/^image\/(jpeg|png)$/i.test(file.type) && file.size < 1.5 * 1024 * 1024) {
-          blob = file;
-        } else {
+        if (/^image\/(jpeg|png)$/i.test(file.type) && file.size < 1.5 * 1024 * 1024) blob = file;
+        else {
           status.textContent = "";
           alert("Couldn't read that photo for " + slotTitle(s) + ". Please take it with the Camera button, or choose a JPEG photo.");
           return;
@@ -657,7 +975,6 @@
       renderSlot(s);
       hideError();
     }
-
     function buildSlots() {
       PHOTO_SLOTS.forEach(function (s) {
         const el = document.createElement("div");
@@ -680,10 +997,8 @@
         renderSlot(s);
       });
     }
-
     function hideError() { const e = $("formError"); e.style.display = "none"; e.textContent = ""; }
     function showError(msg) { const e = $("formError"); e.textContent = msg; e.style.display = "block"; }
-
     function missingFields() {
       const missing = [];
       if (!(state.name || "").trim()) missing.push("Which mechanic");
@@ -692,11 +1007,9 @@
       PHOTO_SLOTS.forEach(function (s) { if (!photos[s.id]) missing.push("Photo: " + slotTitle(s)); });
       return missing;
     }
-
     function totalPhotoBytes() {
       return PHOTO_SLOTS.reduce(function (n, s) { return n + (photos[s.id] ? photos[s.id].blob.size : 0); }, 0);
     }
-
     async function shrinkPhotosIfNeeded() {
       const steps = [[1280, 0.6], [1024, 0.55], [800, 0.5]];
       for (let i = 0; i < steps.length && totalPhotoBytes() > MAX_TOTAL_BYTES; i++) {
@@ -707,7 +1020,6 @@
       }
       return totalPhotoBytes() <= MAX_TOTAL_BYTES;
     }
-
     function canSetFileInputs() {
       try {
         const dt = new DataTransfer();
@@ -718,7 +1030,6 @@
         return inp.files && inp.files.length === 1;
       } catch (e) { return false; }
     }
-
     async function submitReport() {
       persist();
       const name = (state.name || "").trim();
@@ -737,11 +1048,13 @@
           filter = "all";
           document.querySelectorAll("[data-filter]").forEach((b) => b.classList.toggle("active", b.dataset.filter === "all"));
         }
-        renderList();
         const lines = missing.slice();
         if (blankCounts.length) lines.push("How many you have for: " + blankCounts.map((i) => ITEMS[i].item).join(", "));
         const msg = "Can't submit yet. Still missing:\n• " + lines.join("\n• ") + (blankCounts.length ? "\n\nTap None / missing if the van has zero." : "");
         showError(msg);
+        if (blankCounts.length) showStep(2, true);
+        else if (missing[0].indexOf("Photo:") === 0) showStep(3, true);
+        else showStep(1, true);
         alert(msg);
         if (blankCounts.length) {
           const card = document.querySelector('[data-index="' + blankCounts[0] + '"]');
@@ -758,20 +1071,25 @@
       const c = counts();
       if (c.checked < c.total && !confirm("You still have " + (c.total - c.checked) + " items not checked. Submit anyway?")) return;
       const btn = $("submitBtn");
+      const next = $("nextBtn");
       const oldLabel = btn.textContent;
+      const oldNext = next.textContent;
       btn.disabled = true;
+      next.disabled = true;
       btn.textContent = "Preparing photos…";
+      next.textContent = "Preparing photos…";
       if (!(await shrinkPhotosIfNeeded())) {
-        btn.disabled = false; btn.textContent = oldLabel;
+        btn.disabled = false; next.disabled = false; btn.textContent = oldLabel; next.textContent = oldNext;
         showError("The photos are too large to send together (limit 10 MB). Please retake them with the Camera button.");
         return;
       }
       if (!canSetFileInputs()) {
-        btn.disabled = false; btn.textContent = oldLabel;
+        btn.disabled = false; next.disabled = false; btn.textContent = oldLabel; next.textContent = oldNext;
         showError("This browser is too old to attach the photos. Please update your phone (Safari or Chrome) and try again, or use Copy report and text the photos to the office.");
         return;
       }
       btn.textContent = "Sending…";
+      next.textContent = "Sending…";
       const lessLines = [];
       const moreLines = [];
       ITEMS.forEach(function (it, i) {
@@ -797,8 +1115,6 @@
         back.searchParams.set("sent", "1");
         payload._next = back.toString();
       }
-      // FormSubmit only documents file attachments for a normal multipart form POST
-      // (its AJAX examples are JSON, which can't carry files), so post a real form.
       const form = document.createElement("form");
       form.method = "POST";
       form.action = "https://formsubmit.co/office@powerrooter.com";
@@ -822,15 +1138,13 @@
         form.appendChild(input);
       });
       document.body.appendChild(form);
-      window.__lastSubmitForm = form; // for testing
-      if (window.__PR_TEST_NO_SUBMIT) { btn.disabled = false; btn.textContent = oldLabel; return form; }
+      window.__lastSubmitForm = form;
+      if (window.__PR_TEST_NO_SUBMIT) { btn.disabled = false; next.disabled = false; btn.textContent = oldLabel; next.textContent = oldNext; return form; }
       postChecklist(name, date, van);
       form.submit();
     }
-
     const STOCK_API_URL = "https://script.google.com/macros/s/AKfycbzmF5ifybYu5rBY5BpRdhgDS22-wLWB-l_vK2sW47ThvBbQ4jTyoo0qnPDZGOqwPE8t2A/exec";
     const CHECKLIST_KEY = "pr-checklist-2026";
-
     function needPhrase(it, row) {
       const listed = it.qty;
       const note = row.note ? " — " + row.note : "";
@@ -844,7 +1158,6 @@
       if (row.status === "More") return it.item + ": have " + Number(row.actual) + ", listed " + listed + note;
       return "";
     }
-
     function postChecklist(name, date, van) {
       try {
         const items = ITEMS.map(function (it, i) {
@@ -875,46 +1188,6 @@
         }).catch(function () {});
       } catch (e) {}
     }
-
-    buildSlots();
-    $("jumpBtn").addEventListener("click", function () { $("photos").scrollIntoView({ behavior: "smooth", block: "start" }); });
-    if (JUST_SENT) {
-      $("sentBanner").style.display = "block";
-      try {
-        const u = new URL(location.href);
-        u.searchParams.delete("sent");
-        history.replaceState(null, "", u.toString());
-      } catch (e) {}
-    }
-
-    $("submitBtn").addEventListener("click", submitReport);
-    $("copyBtn").addEventListener("click", async () => {
-      const text = reportText();
-      try {
-        await navigator.clipboard.writeText(text);
-      } catch (e) {
-        window.prompt("Copy this report:", text);
-      }
-      const toast = $("toast");
-      toast.style.display = "block";
-      setTimeout(() => { toast.style.display = "none"; }, 2200);
-    });
-    $("printBtn").addEventListener("click", () => window.print());
-    $("clearBtn").addEventListener("click", () => {
-      if (!confirm("Clear everything on this form?")) return;
-      state = defaultState();
-      save(state);
-      PHOTO_SLOTS.forEach(function (s) {
-        if (photos[s.id] && photos[s.id].url) URL.revokeObjectURL(photos[s.id].url);
-        delete photos[s.id];
-        renderSlot(s);
-      });
-      hideError();
-      renderList();
-    });
-    renderList();
-    refreshChecklistItems();
-
     function orderChecklistItems(rows) {
       const official = ["300 Machine & Tools", "Hand Machine & Tools", "100 Machine", "Toilet", "Camera & Tools", "Air Tank", "Water Testing", "Drill", "Tubular Piping", "Caps", "Couplings & Elbows", "Miscellaneous", "Registration & Insurance"];
       const active = [];
@@ -940,16 +1213,15 @@
       seen.forEach((section) => active.forEach((row) => { if (row.section === section) out.push(row); }));
       return out;
     }
-
     function applyChecklistItems(next) {
       const prev = {};
       ITEMS.forEach((it, i) => { prev[it.section + "\n" + it.item] = state.rows[i] || { status: "", actual: "", note: "" }; });
       ITEMS = next;
       state.rows = ITEMS.map((it) => prev[it.section + "\n" + it.item] || { status: "", actual: "", note: "" });
       save(state);
-      renderList();
+      renderList(true);
+      if (step === 4) renderReview();
     }
-
     async function refreshChecklistItems() {
       try {
         const response = await fetch(STOCK_API_URL + (STOCK_API_URL.indexOf("?") === -1 ? "?" : "&") + "t=" + Date.now(), { cache: "no-store", redirect: "follow" });
@@ -958,6 +1230,80 @@
         if (next.length) applyChecklistItems(next);
       } catch (e) { /* keep the built-in list */ }
     }
+    function clearForm() {
+      if (!confirm("Clear everything on this form?")) return;
+      state = defaultState();
+      save(state);
+      showCountErrors = false;
+      filter = "all";
+      catOpen.clear();
+      document.querySelectorAll("[data-filter]").forEach((b) => b.classList.toggle("active", b.dataset.filter === "all"));
+      PHOTO_SLOTS.forEach(function (s) {
+        if (photos[s.id] && photos[s.id].url) URL.revokeObjectURL(photos[s.id].url);
+        delete photos[s.id];
+        renderSlot(s);
+      });
+      hideError();
+      showStep(1);
+      renderList(false);
+    }
+    buildSlots();
+    ["name", "date", "van"].forEach((id) => {
+      $(id).addEventListener("input", () => { $(id).classList.remove("bad"); persist(); });
+    });
+    document.querySelectorAll("[data-filter]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        filter = btn.dataset.filter;
+        document.querySelectorAll("[data-filter]").forEach((b) => b.classList.toggle("active", b === btn));
+        renderList(false);
+      });
+    });
+    $("expandAll").addEventListener("click", () => setAllSections(true));
+    $("collapseAll").addEventListener("click", () => setAllSections(false));
+    $("backBtn").addEventListener("click", () => { if (step > 1) showStep(step - 1); });
+    $("nextBtn").addEventListener("click", () => {
+      if (step === 4) { submitReport(); return; }
+      if (step === 1 && !canLeave(1)) return;
+      showStep(step + 1);
+    });
+    document.querySelectorAll("#steps button").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const n = Number(btn.dataset.step);
+        if (n === step) return;
+        if (n > 1 && step === 1 && !canLeave(1)) return;
+        showStep(n);
+      });
+    });
+    $("submitBtn").addEventListener("click", submitReport);
+    $("copyBtn").addEventListener("click", () => {
+      const text = reportText();
+      const toast = $("toast");
+      navigator.clipboard.writeText(text).then(() => {
+        toast.style.display = "block";
+        setTimeout(() => { toast.style.display = "none"; }, 2200);
+      }).catch(() => { window.prompt("Copy this report:", text); });
+    });
+    $("printBtn").addEventListener("click", () => window.print());
+    $("clearBtn").addEventListener("click", clearForm);
+    window.addEventListener("beforeprint", () => {
+      document.querySelectorAll("details.cat").forEach((d) => { d.dataset.wasOpen = d.open ? "1" : "0"; d.open = true; });
+      document.querySelectorAll(".panel").forEach((p) => p.classList.add("on"));
+    });
+    window.addEventListener("afterprint", () => {
+      document.querySelectorAll("details.cat").forEach((d) => { d.open = d.dataset.wasOpen === "1"; });
+      showStep(step, true);
+    });
+    renderList(false);
+    showStep(1);
+    if (JUST_SENT) {
+      $("sentBanner").style.display = "block";
+      try {
+        const u = new URL(location.href);
+        u.searchParams.delete("sent");
+        history.replaceState(null, "", u.toString());
+      } catch (e) {}
+    }
+    refreshChecklistItems();
   </script>
 </body>
 </html>
